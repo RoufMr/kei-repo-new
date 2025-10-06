@@ -119,6 +119,54 @@ $this->setData([
 
                         <!-- Thumbnail Link to Google Drive -->
                         <div class="mb-3 text-center">
+<<<<<<< HEAD
+=======
+                            <?php if (session()->get('isLoggedIn')): ?>
+                                <!-- Kalau user sudah login -->
+                                <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                    <div class="thumbnail-wrapper">
+                                        <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
+                                            alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
+                                            class="img-fluid rounded shadow-sm mb-3" />
+                                        <div class="play-button"></div>
+                                    </div>
+                                </a>
+                            <?php else: ?>
+                                <!-- Kalau belum login, panggil modal -->
+                                <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginNoticeModal">
+                                    <div class="thumbnail-wrapper">
+                                        <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
+                                            alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
+                                            class="img-fluid rounded shadow-sm mb-3" />
+                                        <div class="play-button"></div>
+                                    </div>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Modal Notifikasi Login -->
+                        <div class="modal fade" id="loginNoticeModal" tabindex="-1" aria-labelledby="loginNoticeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content text-center">
+                                    <div class="modal-header border-0">
+                                        <h5 class="modal-title w-100" id="loginNoticeModalLabel" alt="<?= base_url($lang .  '/' . $informasi) ?>"><?php echo lang('Blog.informasi'); ?></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><?= lang('Blog.informasiDetail'); ?></p>
+                                    </div>
+                                    <div class="modal-footer justify-content-center border-0">
+                                        <a href="<?= base_url('/login'); ?>" class="btn btn-primary">Login</a>
+                                        <a class="btn btn-primary"
+                                            href="<?= base_url($lang .  '/' . $pendaftaranLink) ?>"><?php echo lang('Blog.headerPendaftaran'); ?></a>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= lang('Blog.batal') ?></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="mb-3 text-center">
+>>>>>>> rama
                             <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
                                 <div class="thumbnail-wrapper">
                                     <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
@@ -127,7 +175,11 @@ $this->setData([
                                     <div class="play-button"></div>
                                 </div>
                             </a>
+<<<<<<< HEAD
                         </div>
+=======
+                        </div> -->
+>>>>>>> rama
                         <!-- <video id="player" controls></video> -->
 
                         <!-- Description -->

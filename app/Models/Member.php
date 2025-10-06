@@ -23,6 +23,10 @@ class Member extends Model
         'nama_perusahaan',
         'deskripsi_perusahaan',
         'deskripsi_perusahaan_en',
+<<<<<<< HEAD
+=======
+        'status',
+>>>>>>> rama
         'tipe_bisnis',
         'tipe_bisnis_en',
         'produk_utama',

@@ -7,8 +7,11 @@ return [
     'headerMateri' => 'Export Lesson',
     'headerPendaftaran' => 'Registration',
     'headerVideo' => 'Video Tutorials',
+<<<<<<< HEAD
     'headerMasuk' => 'Login',
     'headerKeluar' => 'Logout',
+=======
+>>>>>>> rama
     'headerMember' => 'Members',
     'headerAplikasi' => 'Application',
     'headerApp1' => 'Export Price Calculator',
@@ -260,4 +263,13 @@ return [
 
     'gambarUtamaLandingPage' => 'Still no Main Image',
     'gambarPerusahaanLandingPage' => 'Still no Company Image',
+<<<<<<< HEAD
 ];
+=======
+
+    // Video Tutorial
+    'informasi' => 'Information',
+    'batal' => 'Cancel',
+    'informasiDetail' => 'You are not logged in as a member. Please log in or subscribe to watch videos.',
+];
+>>>>>>> rama

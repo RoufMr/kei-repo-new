@@ -7,20 +7,34 @@
 
     <title><?= isset($meta_title) ? $meta_title : 'Default Title'; ?></title>
     <meta name="title" content="<?= isset($meta_title) ? $meta_title : 'Default Title for the website.'; ?>">
+<<<<<<< HEAD
     <meta name="description" content="<?= isset($meta_description) ? $meta_description : 'Default description for the website.'; ?>">
 
     <?= $this->renderSection('meta'); ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+=======
+    <meta name="description"
+        content="<?= isset($meta_description) ? $meta_description : 'Default description for the website.'; ?>">
+
+    <?= $this->renderSection('meta'); ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+>>>>>>> rama
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<<<<<<< HEAD
     <!-- <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <link href="https://vjs.zencdn.net/8.9.0/video-js.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script> -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+=======
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet">
+>>>>>>> rama
 </head>
 
 <style>
@@ -153,6 +167,7 @@
         color: #fff;
     }
 
+<<<<<<< HEAD
     .container {
         overflow: visible;
     }
@@ -168,6 +183,8 @@
     }
 
 
+=======
+>>>>>>> rama
     /* end */
     .dropdown-menu {
         position: absolute;
@@ -353,17 +370,38 @@
     }
 
     /* end */
+<<<<<<< HEAD
 
     @media (max-width: 768px) {
         .icon {
             font-size: 10px;
             position: relative;
             left: 20px;
+=======
+    @media (max-width: 768px) {
+
+        .header,
+        .container,
+        .head,
+        .icon,
+        .icon-text {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .icon-text {
+            position: relative;
+            left: 50px;
+>>>>>>> rama
         }
 
         .border-top {
             width: 90px !important;
             height: 1.5px !important;
+<<<<<<< HEAD
             margin: 15px 0 !important;
         }
 
@@ -385,6 +423,25 @@
 
         .col-md-6 p {
             margin-left: 20px;
+=======
+            margin: 10px 0 !important;
+        }
+
+        .navbar img {
+            margin-left: 50px;
+        }
+
+        .py-4 p {
+            text-align: center;
+        }
+
+        .col-md-6 img {
+            margin-left: 30px;
+        }
+
+        .col-md-6 p {
+            margin-left: 30px;
+>>>>>>> rama
         }
 
         .container2 {
@@ -393,6 +450,7 @@
     }
 
     @media (max-width: 576px) {
+<<<<<<< HEAD
 
         .header,
         .container,
@@ -427,11 +485,16 @@
 
         .footer h5 {
             margin-left: 40px;
+=======
+        .col-md-2 h5 {
+            margin-left: 30px;
+>>>>>>> rama
         }
 
         .col-md-2 p {
             margin-left: 30px;
         }
+<<<<<<< HEAD
     }
 
 
@@ -569,11 +632,54 @@
             font-size: 11px;
             position: relative;
             right: 20px;
+=======
+
+        .icon-text {
+            font-size: 10px;
+        }
+    }
+
+    @media (max-width: 425px) {
+        .icon-text {
+            font-size: 6px;
+            position: relative;
+            left: 30px;
+        }
+
+        .social-link {
+            position: relative;
+            right: 20px;
+        }
+
+        .navbar img {
+            position: relative;
+            right: 30px;
+        }
+
+        .navbar-toggler {
+            margin-right: 20px;
+        }
+
+        .py-4 p {
+            font-size: 13px;
+            position: relative;
+            right: 22px;
+            top: 4px;
+        }
+    }
+
+    @media (max-width: 375px) {
+        .py-4 p {
+            font-size: 10px;
+            position: relative;
+            right: 22px;
+>>>>>>> rama
             top: 4px;
         }
     }
 
     @media (max-width: 320px) {
+<<<<<<< HEAD
 
         .header,
         .container,
@@ -658,11 +764,25 @@
             font-size: 0.875rem;
             width: 70px;
             height: 30px;
+=======
+        .icon-text {
+            font-size: 5px;
+            position: relative;
+            left: 20px;
+        }
+
+        .py-4 p {
+            font-size: 9px;
+            position: relative;
+            right: 22px;
+            top: 3px;
+>>>>>>> rama
         }
     }
 </style>
 
 <body>
+<<<<<<< HEAD
     <?php
     // Ambil bahasa yang disimpan di session
     $lang = session()->get('lang') ?? 'id'; // Default ke 'en' jika tidak ada di session
@@ -726,25 +846,44 @@
     $indonesia_url = base_url($clean_url);
     ?>
       <!-- header -->
+=======
+    <!-- header -->
+>>>>>>> rama
     <header class="header" style="background-color: #F2BF02;">
         <div class="container">
             <div class="head d-flex justify-content-between align-items-center" style="width: 100%; height: 40px;">
                 <!-- Alamat dan Email -->
+<<<<<<< HEAD
                 <div class="icon d-flex justify-content-start">
                     <div class=" d-flex align-items-center gap-2 icon-text text-light">
                         <i class="fas fa-phone" style="color: white;"></i>
+=======
+                <div class="d-flex justify-content-start gap-3">
+                    <div class="d-flex align-items-center gap-2 icon-text text-light" style="white-space: nowrap;">
+                        <i class="fas fa-phone m-0" style="color: white;"></i>
+>>>>>>> rama
                         <a href="https://wa.me/<?= $webprofile[0]['nohp_web'] ?>" target="_blank" style="color: white; text-decoration: none;">
                             <p class="mb-0"><?= $webprofile[0]['nohp_web'] ?></p>
                         </a>
                     </div>
+<<<<<<< HEAD
                     <div class="d-flex align-items-center gap-2 icon-text text-light ms-2">
                         <i class="fas fa-envelope" style="color: white;"></i>
                         <p class="mb-0" style="color: white; "><?= $webprofile[0]['email_web'] ?></p>
+=======
+                    <div class="d-flex align-items-center gap-2 icon-text text-light" style="white-space: nowrap;">
+                        <i class="fas fa-envelope m-0" style="color: white;"></i>
+                        <p class="mb-0" style="color: white;"><?= $webprofile[0]['email_web'] ?></p>
+>>>>>>> rama
                     </div>
                 </div>
                 <!-- Ikon Sosial Media dan Garis -->
                 <div class="d-flex align-items-center">
+<<<<<<< HEAD
                     <div class="sosmed d-flex gap-2 me-4">
+=======
+                    <div class="d-flex gap-2">
+>>>>>>> rama
                         <a href="<?= $webprofile[0]['link_ig_web'] ?>" target="_blank" class="social-link">
                             <i class="fab fa-instagram"></i>
                         </a>
@@ -755,6 +894,7 @@
                             <i class="fab fa-facebook"></i>
                         </a>
                     </div>
+<<<<<<< HEAD
                     <div class="border-top2" style="width: 1.5px; height: 20px; background-color: white; margin-right: 20px;"></div>
                     <div class="dropdown">
                         <button class="btn text-light language-btn" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -776,6 +916,9 @@
                     </div>
                 </div>
                 <!-- Language Dropdown -->
+=======
+                </div>
+>>>>>>> rama
             </div>
         </div>
     </header>
@@ -794,6 +937,7 @@
             <div class="collapse navbar-collapse line" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto d-flex align-items-center">
                     <li class="nav-item">
+<<<<<<< HEAD
                         <a class="nav-link" href="<?= base_url('/') ?>">
                             <?php echo lang('Blog.headerBeranda'); ?>
                         </a>
@@ -801,24 +945,58 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url($lang .  '/' . $aboutLink) ?>">
                             <?php echo lang('Blog.headerTentang'); ?>
+=======
+                        <a class="nav-link" href="<?= base_url('/beranda') ?>">
+                            Beranda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/tentang-kami') ?>">
+                            Tentang Kami
+>>>>>>> rama
                         </a>
                     </li>
                     <div id="navbarNavDarkDropdown">
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
+<<<<<<< HEAD
                                 <button class="btn dropdown-toggle text-light nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                                     <?php echo lang('Blog.headerArtikel'); ?>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-light">
                                     <li><a class="dropdown-item nav-link" href="<?= base_url($lang .  '/' . $belajarEksporLink) ?>"><?php echo lang('Blog.headerMateri'); ?></a></li>
                                     <li><a class="dropdown-item nav-link" href="<?= base_url($lang .  '/' . $videoTutorialLink) ?>"><?php echo lang('Blog.headerVideo'); ?></a></li>
+=======
+                                <button class="btn dropdown-toggle text-light nav-link" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Belajar Ekspor
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-light">
+                                    <li>
+                                        <a class="dropdown-item nav-link"
+                                            href="<?= base_url('materi-ekspor') ?>">
+                                            Materi Ekspor
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item nav-link"
+                                            href="<?= base_url('video-tutorial') ?>">
+                                            Video Tutorial
+                                        </a>
+                                    </li>
+>>>>>>> rama
                                 </ul>
                             </li>
                         </ul>
                     </div>
                     <li class="nav-item">
+<<<<<<< HEAD
                         <a class="nav-link" href="<?= base_url($lang .  '/' . $memberLink) ?>">
                             <?php echo lang('Blog.headerMember'); ?></a>
+=======
+                        <a class="nav-link" href="<?= base_url('data-member') ?>">
+                            Data Member
+>>>>>>> rama
                         </a>
                     </li>
                     <!-- <li class="nav-item">
@@ -871,14 +1049,22 @@
                             </div>
                             <?php if (session()->get('role') == 'admin'): ?>
                                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
+<<<<<<< HEAD
                                     <li><a class="dropdown-item" href="<?= base_url('/admin-dashboard') ?>"><i class="bi bi-box-arrow-in-left" style="color: #03AADE; font-size: 20px;"></i> <?= session()->get('username') ?></a></li>
+=======
+                                    <li><a class="dropdown-item" href="<?= base_url('/admin-dashboard') ?>"><i class="bi bi-box-arrow-in-left" style="color: #03AADE; font-size: 20px;"></i> Tampilan Admin</a></li>
+>>>>>>> rama
                                     <li><a class="dropdown-item" href="<?= base_url('/logout') ?>"><i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;"></i> Logout</a></li>
                                 </ul>
                             <?php endif; ?>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
+<<<<<<< HEAD
                                 <li><a class="dropdown-item" href="<?= base_url('/logout') ?>">
                                         <i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;">
                                         </i> Logout</a></li>
+=======
+                                <li><a class="dropdown-item" href="<?= base_url('/logout') ?>"><i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;"></i> Logout</a></li>
+>>>>>>> rama
                             </ul>
                         </div>
                     <?php else: ?>
@@ -959,7 +1145,11 @@
                         <div class="list-unstyled pt-2">
                             <p><a href="<?= base_url('beranda') ?>" class="footer-link">Beranda</a></p>
                             <p><a href="<?= base_url('tentang-kami') ?>" class="footer-link">Tentang Kami</a></p>
+<<<<<<< HEAD
                             <p><a href="<?= base_url('member-materi-ekspor') ?>" class="footer-link">Materi Ekspor</a></p>
+=======
+                            <p><a href="<?= base_url('materi-ekspor') ?>" class="footer-link">Materi Ekspor</a></p>
+>>>>>>> rama
                             <p><a href="<?= base_url('video-tutorial') ?>" class="footer-link">Video Tutorial</a></p>
                             <p><a href="<?= base_url('data-member') ?>" class="footer-link">Data Member</a></p>
                             <p><a href="<?= base_url('data-buyers') ?>" class="footer-link">Data Buyers</a></p>

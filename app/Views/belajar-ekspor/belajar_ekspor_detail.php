@@ -6,6 +6,7 @@ $this->setData([
     'meta_title' => ($lang == 'id') ? $artikel['meta_title'] : $artikel['meta_title_en'],
     'meta_description' => ($lang == 'id') ? $artikel['meta_deskripsi'] : $artikel['meta_deskripsi_en']
 ]);
+<<<<<<< HEAD
 
 
 ?>
@@ -14,6 +15,13 @@ $this->setData([
     .artikel-detail-section {
         position: relative;
         /* supaya overlay absolute menempel di sini */
+=======
+?>
+
+<style>
+    /* Artikel Detail Section */
+    .artikel-detail-section {
+>>>>>>> rama
         padding: 60px 15px;
         background-color: #f9f9f9;
         border-bottom: 1px solid #ddd;
@@ -133,6 +141,7 @@ $this->setData([
         .artikel-text {
             font-size: 1rem;
         }
+<<<<<<< HEAD
 
     }
 
@@ -197,6 +206,8 @@ $this->setData([
         margin-top: 20px;
         line-height: 1.6;
         text-align: justify;
+=======
+>>>>>>> rama
     }
 </style>
 
@@ -227,6 +238,7 @@ $this->setData([
 
             <!-- Deskripsi artikel -->
             <div class="artikel-text">
+<<<<<<< HEAD
                 <div class="text-container">
                     <?php
                     // ambil konten asli sesuai bahasa
@@ -269,6 +281,13 @@ $this->setData([
                 </div>
             </div>
 
+=======
+                <!-- Teks hanya dipanggil sekali -->
+                <div class="text-container">
+                    <?= nl2br(($lang == 'en') ? $artikel['deskripsi_belajar_ekspor_en'] : $artikel['deskripsi_belajar_ekspor']); ?>
+                </div>
+            </div>
+>>>>>>> rama
         </div>
 
         <!-- Back Button -->
@@ -276,6 +295,7 @@ $this->setData([
             <a href="<?= base_url(($lang == 'en') ? 'en/export-lessons' : 'id/materi-ekspor'); ?>" class="btn btn-custom"><?= lang('Blog.backtoArticle') ?></a>
         </div>
     </div>
+<<<<<<< HEAD
     <!-- Paywall overlay -->
     <div class="paywall-overlay" id="paywallOverlay"></div>
 
@@ -288,6 +308,8 @@ $this->setData([
 
     </div>
 
+=======
+>>>>>>> rama
 </section>
 
 <!-- artikel-detail section end -->
@@ -323,6 +345,7 @@ $this->setData([
     </div>
 </section>
 
+<<<<<<< HEAD
 <script>
     <?php if ($isGuest): ?>
         document.addEventListener('DOMContentLoaded', function() {
@@ -359,4 +382,6 @@ $this->setData([
     <?php endif; ?>
 </script>
 
+=======
+>>>>>>> rama
 <?= $this->endSection(); ?>

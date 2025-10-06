@@ -28,6 +28,47 @@
         box-shadow: 0px 0px 25px #03AADE !important;
         transform: translateY(-5px) !important;
     }
+<<<<<<< HEAD
+=======
+
+    .thumbnail-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .thumbnail-wrapper img {
+        filter: brightness(70%);
+        transition: filter 0.3s ease;
+    }
+
+    .thumbnail-wrapper:hover img {
+        filter: brightness(50%);
+    }
+
+    .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 64px;
+        height: 64px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .play-button::before {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 20px solid #03AADE;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+    }
+>>>>>>> rama
 </style>
 
 <!-- Video Details Start -->
@@ -49,12 +90,24 @@
                         <h4 class="py-3 text-uppercase font-weight-bold"><?= esc($video['judul_video']); ?></h4>
 
                         <!-- Plyr Video Player Start -->
+<<<<<<< HEAD
                         <div class="ratio ratio-16x9 mb-3">
                             <video id="plyr-video" class="rounded shadow-sm" controls preload="auto">
                                 <!-- <source src="https://drive.google.com/uc?export=download&id=<?= esc($video['video_url']); ?>" type="video/mp4"> -->
                                 <source src="https://drive.google.com/file/d/<?= esc($video['video_url']); ?>/view?usp=drive_link" type="video/mp4">
                                 Browser Anda tidak mendukung pemutar video HTML5.
                             </video>
+=======
+                        <div class="mb-3 text-center">
+                            <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                <div class="thumbnail-wrapper">
+                                    <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
+                                        alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
+                                        class="img-fluid rounded shadow-sm mb-3" />
+                                    <div class="play-button"></div>
+                                </div>
+                            </a>
+>>>>>>> rama
                         </div>
                         <!-- Plyr Video Player End -->
 
@@ -100,7 +153,11 @@
 <!-- Video Details End -->
 
 <!-- Init Plyr + Disable Right Click -->
+<<<<<<< HEAD
 <script>
+=======
+<!-- <script>
+>>>>>>> rama
     document.addEventListener('DOMContentLoaded', () => {
         const player = new Plyr('#plyr-video');
 
@@ -109,6 +166,10 @@
         video.addEventListener('contextmenu', e => e.preventDefault());
         video.addEventListener('dragstart', e => e.preventDefault());
     });
+<<<<<<< HEAD
 </script>
+=======
+</script> -->
+>>>>>>> rama
 
 <?= $this->endSection(); ?>
