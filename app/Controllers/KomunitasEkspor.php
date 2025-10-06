@@ -385,14 +385,11 @@ class KomunitasEkspor extends BaseController
         $webprofile = $model_webprofile->findAll();
 
         $data['webprofile'] = $webprofile;
-<<<<<<< HEAD
          $model_meta = new Meta();
         $meta = $model_meta
             ->select('meta_title_beranda, meta_title_beranda_en, meta_description_beranda, meta_description_beranda_en')
             ->first();
         $data['meta'] = $meta;
-=======
->>>>>>> rama
 
         $model_slider = new Slider();
         $model_member = new Member();
@@ -671,11 +668,7 @@ class KomunitasEkspor extends BaseController
     public function belajar_ekspor_detail($slug)
     {
         $lang = session()->get('lang') ?? 'id';
-<<<<<<< HEAD
         $pendaftaranLink = ($lang === 'en') ? 'registration' : 'pendaftaran';
-=======
-
->>>>>>> rama
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
 
@@ -713,22 +706,14 @@ class KomunitasEkspor extends BaseController
             'kategori' => $kategori,
             'belajar_ekspor' => $related_artikel,
             'webprofile' => $webprofile,
-<<<<<<< HEAD
             'lang' => $lang,
             'pendaftaranLink' => $pendaftaranLink,
             'isGuest' => ! session()->has('user_id'), // Flag guest
-=======
-            'lang' => $lang
->>>>>>> rama
         ];
 
         return view('belajar-ekspor/belajar_ekspor_detail', $data);
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> rama
     public function pendaftaran()
     {
         $model_webprofile = new WebProfile();
@@ -768,11 +753,8 @@ class KomunitasEkspor extends BaseController
         $lang = session()->get('lang') ?? 'id';
         $data['lang'] = $lang;
 
-<<<<<<< HEAD
-=======
         $data['pendaftaranLink'] = ($lang === 'en') ? 'register' : 'pendaftaran';
 
->>>>>>> rama
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
         $data['webprofile'] = $webprofile;
@@ -809,8 +791,6 @@ class KomunitasEkspor extends BaseController
         return view('video-tutorial/video_tutorial', $data);
     }
 
-<<<<<<< HEAD
-=======
     protected $videoModel;
 
     public function __construct()
@@ -836,7 +816,6 @@ class KomunitasEkspor extends BaseController
         return redirect()->to($video['video_url']);
     }
 
->>>>>>> rama
 
     public function video_selengkapnya($slug)
     {
@@ -893,13 +872,10 @@ class KomunitasEkspor extends BaseController
     public function video_tutorial_detail($slug)
     {
         $lang = session()->get('lang') ?? 'id';
-<<<<<<< HEAD
-=======
         $pendaftaranLink = ($lang === 'en') ? 'registration' : 'pendaftaran';
         $informasi = ($lang === 'en') ? 'information' : 'informasi';
         $batal = ($lang === 'en') ? 'cancel' : 'batal';
         $informasiDetail = ($lang === 'en') ? 'You are not logged in as a member. Please login or subscribe to watch videos.' : 'Anda belum login sebagai member. Silakan login atau mendaftar untuk menonton video.';
->>>>>>> rama
 
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
@@ -943,13 +919,10 @@ class KomunitasEkspor extends BaseController
             'webprofile' => $webprofile,
             'lang' => $lang,
             'meta' => $meta,
-<<<<<<< HEAD
-=======
             'pendaftaranLink' => $pendaftaranLink,
             'informasi' => $informasi,
             'batal' => $batal,
             'informasiDetail' => $informasiDetail
->>>>>>> rama
         ];
 
         // Mengembalikan view dengan data yang telah disiapkan
@@ -974,7 +947,6 @@ class KomunitasEkspor extends BaseController
     // }
     public function registrasiMember()
     {
-<<<<<<< HEAD
         $recaptchaResponse = $this->request->getPost('g-recaptcha-response');
         $secretKey = "6LfFqdsrAAAAANncDSHh52IX8-blFSlTsKrfVnAR"; // ambil dari Google reCAPTCHA admin
 
@@ -989,19 +961,12 @@ class KomunitasEkspor extends BaseController
             return redirect()->back()->with('error', 'Captcha tidak valid, coba lagi.');
         }
 
-=======
->>>>>>> rama
         $userModel = new Member();
         $model_webprofile = new WebProfile();
         $no_hp = $model_webprofile->select('nohp_web')->first();
         $no_hp = $no_hp['nohp_web']; // Access the specific field from the array
         $no_hp = str_replace('+', '', $no_hp);
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> rama
         // Ambil input dari form
         $username = $this->request->getPost('username');
         $email = $this->request->getPost('email');
@@ -1379,12 +1344,8 @@ class KomunitasEkspor extends BaseController
         $data['sertifikat'] = $sertifikat;
         $data['produk'] = $produk;
 
-<<<<<<< HEAD
-        return view('data-member/detail', $data);
-=======
         // return view('data-member/detail', $data);
         return view('beranda/index', $data);
->>>>>>> rama
     }
 
     public function member_data_member()
@@ -1418,12 +1379,8 @@ class KomunitasEkspor extends BaseController
         $data['member'] = $members;
         $data['pager'] = $model_member->pager; // Get the pager instance
 
-<<<<<<< HEAD
-        return view('member/data-member/index', $data);
-=======
         // return view('member/data-member/index', $data);
         return view('beranda/index', $data);
->>>>>>> rama
     }
 
     public function member_detail_member($slug)
@@ -1490,12 +1447,8 @@ class KomunitasEkspor extends BaseController
         $data['sertifikat'] = $sertifikat;
         $data['produk'] = $produk;
 
-<<<<<<< HEAD
-        return view('member/data-member/detail', $data);
-=======
         // return view('member/data-member/detail', $data);
         return view('beranda/index', $data);
->>>>>>> rama
     }
 
     // public function data_buyers()
@@ -3341,10 +3294,7 @@ class KomunitasEkspor extends BaseController
 
         // Look for the user by username
         $user = $memberModel->where('username', $username)->first();
-<<<<<<< HEAD
-=======
         $status = $memberModel->where('status', 1)->first();
->>>>>>> rama
 
         // Check if user exists
         if ($user) {
@@ -3360,29 +3310,18 @@ class KomunitasEkspor extends BaseController
                 ];
                 $session->set($sessionData);
 
-<<<<<<< HEAD
                 $lang = session()->get('lang') ?? 'id';
-=======
->>>>>>> rama
                 // Check if the user is an admin
                 if ($user['role'] === 'admin') {
                     return redirect()->to('/admin-dashboard');  // Redirect to admin dashboard
                 } else if ($user['role'] === 'member' || ($user['role'] === 'premium' && $user['status_premium'] !== 'verified')) {
-<<<<<<< HEAD
                     return redirect()->to("/{$lang}/beranda");  // Redirect to regular user page
-=======
-                    return redirect()->to('/beranda');  // Redirect to regular user page
->>>>>>> rama
                 } else if ($user['role'] === 'premium') {
                     return redirect()->to('/beranda-premium');  // Redirect to regular user page
                 }
             } else {
                 // Password incorrect
-<<<<<<< HEAD
-                $session->setFlashdata('error', 'Password salah.');
-=======
                 $session->setFlashdata('error', 'Username atau password salah. Atau belum di konfirmasi oleh Admin');
->>>>>>> rama
                 return redirect()->back();
             }
         } else {
@@ -3725,12 +3664,9 @@ class KomunitasEkspor extends BaseController
 
     public function member_video_tutorial($slug = null)
     {
-<<<<<<< HEAD
-=======
         $lang = session()->get('lang') ?? 'id';
 
 
->>>>>>> rama
         $model_webprofile = new WebProfile();
 
         $webprofile = $model_webprofile->findAll();
@@ -3759,10 +3695,7 @@ class KomunitasEkspor extends BaseController
         $data['video_tutorial'] = $vidio;
         $data['kategori_vidio'] = $kategori;
         $data['selected_category'] = $slug;
-<<<<<<< HEAD
-=======
         $data['lang'] = $lang;
->>>>>>> rama
 
         return view('member/video-tutorial/video_tutorial', $data);
     }
@@ -3803,11 +3736,8 @@ class KomunitasEkspor extends BaseController
 
     public function member_video_tutorial_detail($slug)
     {
-<<<<<<< HEAD
-=======
         $lang = session()->get('lang') ?? 'id';
 
->>>>>>> rama
         $model_webprofile = new WebProfile();
 
         $webprofile = $model_webprofile->findAll();
@@ -3837,10 +3767,7 @@ class KomunitasEkspor extends BaseController
 
         // Menyiapkan data untuk dikirimkan ke view
         $data = [
-<<<<<<< HEAD
-=======
             'lang' => $lang,
->>>>>>> rama
             'video' => $video,
             'related_videos' => $related_videos,
             'kategori' => $kategori,
@@ -3972,11 +3899,7 @@ class KomunitasEkspor extends BaseController
         $kategoribelajarekspor = $model_kategoribelajarekspor->countAll();
         $kategorivideo = $model_kategorivideo->countAll();
         $manfaatjoin = $model_manfaatjoin->countAll();
-<<<<<<< HEAD
-        $member = $model_member->where('role', 'member')->countAllResults();
-=======
         $member = $model_member->where(['role' => 'member', 'status' => '1'])->countAllResults();
->>>>>>> rama
         $mpm = $model_mpm->countAll();
         $pengumuman = $model_pengumuman->countAll();
         $produk = $model_produk->countAll();
@@ -4020,11 +3943,7 @@ class KomunitasEkspor extends BaseController
         $page = $this->request->getVar('page') ?? 1;
 
         $member = $model_member
-<<<<<<< HEAD
-            ->where('role', 'member')
-=======
             ->where(['role' => 'member', 'status' => '1'])
->>>>>>> rama
             ->orderBy('tanggal_verifikasi', 'DESC')
             ->paginate($perPage);
 
@@ -4095,8 +4014,6 @@ class KomunitasEkspor extends BaseController
         return view('admin/member/search', $data);
     }
 
-<<<<<<< HEAD
-=======
     public function admin_calon_member()
     {
         $model_member = new Member();
@@ -4120,7 +4037,6 @@ class KomunitasEkspor extends BaseController
     }
 
 
->>>>>>> rama
     public function admin_add_member()
     {
         $model_kategori_induk = new KategoriInduk();
