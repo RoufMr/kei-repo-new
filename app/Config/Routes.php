@@ -42,6 +42,8 @@ $routes->group('id', function ($routes) {
     // $routes->get('data-buyers/search', 'KomunitasEkspor::search_buyers');
 });
 
+$routes->get('/syarat-ketentuan', 'KomunitasEkspor::syarat_ketentuan');
+
 $routes->group('en', function ($routes) {
     $routes->get('/', 'KomunitasEkspor::index');
 
