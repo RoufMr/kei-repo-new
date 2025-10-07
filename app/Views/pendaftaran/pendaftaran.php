@@ -69,10 +69,42 @@ $this->setData([
 
     .form-group input,
     .form-group select {
+        width: 100%;
         flex: 1;
         padding: 8px;
         border: 1px solid #ccc;
         border-radius: 4px;
+    }
+
+    .form-group.fullwidth {
+        display: block !important;
+        /* hapus aturan flex */
+    }
+
+    /* Perbaikan tampilan checkbox + teks */
+    .form-group.fullwidth .form-check {
+        display: flex !important;
+        align-items: flex-start;
+        /* sejajarkan atas teks */
+        gap: 8px;
+        /* jarak kotak dan teks */
+        width: 100%;
+    }
+
+    /* khusus checkbox biar tidak ikut width 100% */
+    .form-group input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+        flex: 0 0 auto;
+        /* supaya tidak melar */
+        margin-top: 3px;
+    }
+
+
+    .form-check-label {
+        flex: 1;
+        white-space: normal;
+        /* teks panjang bisa turun */
     }
 
     .showpw {
@@ -110,16 +142,34 @@ $this->setData([
         border: 1px solid #ccc;
         border-radius: 4px;
         width: 100%;
-        /* Menyelaraskan panjang dengan input lainnya */
         min-height: 100px;
-        /* Memberikan sedikit lebar ke bawah */
         resize: vertical;
-        /* Membolehkan pengguna menyesuaikan tinggi */
+    }
+
+    .btn-sm {
+        padding: .25rem .5rem;
+        font-size: .875rem;
+        border-radius: .25rem;
+    }
+
+    .rekening-admin {
+        position: relative;
+        display: inline-block;
+    }
+
+    .rekening-admin i {
+        position: absolute;
+        top: 0;
+        right: -20px;
+        background: none;
+        border: none;
+        color: #0d6efd;
+        font-size: 14px;
+        cursor: pointer;
     }
 
     /*responsive mobile*/
     @media (max-width: 768px) {
-
         .h3 {
             margin-top: 30px;
         }
@@ -254,6 +304,18 @@ $this->setData([
                     <div class="form-group">
                         <label for="deskripsi_perusahaan"><?= lang('Blog.deskripsiPerusahaan'); ?><span class="required">*</span></label>
                         <textarea type="text" id="deskripsi_perusahaan" name="deskripsi_perusahaan" required placeholder="<?= lang('Blog.placeholderDeskripsiPerusahaan'); ?>" value="<?= old('deskripsi_perusahaan') ?>"></textarea>
+                    </div>
+
+                    <!-- Deskripsi Perusahaan EN -->
+                    <div class="form-group">
+                        <label for="deskripsi_usaha_en"><?= lang('Blog.deskripsiUsahaEN'); ?><span class="required">*</span></label>
+                        <textarea type="text" id="deskripsi_usaha_en" name="deskripsi_usaha_en" required placeholder="<?= lang('Blog.placeholderDeskripsiUsahaEN'); ?>" value="<?= old('deskripsi_usaha_en') ?>"></textarea>
+                    </div>
+
+                    <!-- Upload Foto Usaha -->
+                    <div class="form-group">
+                        <label for="foto_usaha"><?= lang('Blog.fotousaha'); ?></label>
+                        <input type="file" id="foto_usaha" name="foto_usaha" accept="image/*">
                     </div>
 
                     <!-- Tahun Berdiri Perusahaan -->
