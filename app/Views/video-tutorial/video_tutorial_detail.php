@@ -119,8 +119,6 @@ $this->setData([
 
                         <!-- Thumbnail Link to Google Drive -->
                         <div class="mb-3 text-center">
-<<<<<<< HEAD
-=======
                             <?php if (session()->get('isLoggedIn')): ?>
                                 <!-- Kalau user sudah login -->
                                 <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
@@ -166,7 +164,6 @@ $this->setData([
                         </div>
 
                         <!-- <div class="mb-3 text-center">
->>>>>>> rama
                             <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
                                 <div class="thumbnail-wrapper">
                                     <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
@@ -175,11 +172,7 @@ $this->setData([
                                     <div class="play-button"></div>
                                 </div>
                             </a>
-<<<<<<< HEAD
-                        </div>
-=======
                         </div> -->
->>>>>>> rama
                         <!-- <video id="player" controls></video> -->
 
                         <!-- Description -->

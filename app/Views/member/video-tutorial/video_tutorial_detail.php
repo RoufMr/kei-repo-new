@@ -28,8 +28,6 @@
         box-shadow: 0px 0px 25px #03AADE !important;
         transform: translateY(-5px) !important;
     }
-<<<<<<< HEAD
-=======
 
     .thumbnail-wrapper {
         position: relative;
@@ -68,7 +66,6 @@
         border-top: 12px solid transparent;
         border-bottom: 12px solid transparent;
     }
->>>>>>> rama
 </style>
 
 <!-- Video Details Start -->
@@ -90,14 +87,6 @@
                         <h4 class="py-3 text-uppercase font-weight-bold"><?= esc($video['judul_video']); ?></h4>
 
                         <!-- Plyr Video Player Start -->
-<<<<<<< HEAD
-                        <div class="ratio ratio-16x9 mb-3">
-                            <video id="plyr-video" class="rounded shadow-sm" controls preload="auto">
-                                <!-- <source src="https://drive.google.com/uc?export=download&id=<?= esc($video['video_url']); ?>" type="video/mp4"> -->
-                                <source src="https://drive.google.com/file/d/<?= esc($video['video_url']); ?>/view?usp=drive_link" type="video/mp4">
-                                Browser Anda tidak mendukung pemutar video HTML5.
-                            </video>
-=======
                         <div class="mb-3 text-center">
                             <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
                                 <div class="thumbnail-wrapper">
@@ -107,7 +96,6 @@
                                     <div class="play-button"></div>
                                 </div>
                             </a>
->>>>>>> rama
                         </div>
                         <!-- Plyr Video Player End -->
 
@@ -153,11 +141,7 @@
 <!-- Video Details End -->
 
 <!-- Init Plyr + Disable Right Click -->
-<<<<<<< HEAD
-<script>
-=======
 <!-- <script>
->>>>>>> rama
     document.addEventListener('DOMContentLoaded', () => {
         const player = new Plyr('#plyr-video');
 
@@ -166,10 +150,6 @@
         video.addEventListener('contextmenu', e => e.preventDefault());
         video.addEventListener('dragstart', e => e.preventDefault());
     });
-<<<<<<< HEAD
-</script>
-=======
 </script> -->
->>>>>>> rama
 
 <?= $this->endSection(); ?>

@@ -794,12 +794,8 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto d-flex align-items-center">
                     <li class="nav-item">
-<<<<<<< HEAD
                         <a class="nav-link" href="<?= base_url('/') ?>">
                             <?php echo lang('Blog.headerBeranda'); ?>
-=======
-                        <a class="nav-link" href="<?= base_url('/') ?>"> <?php echo lang('Blog.headerBeranda'); ?>
->>>>>>> rama
                         </a>
                     </li>
                     <li class="nav-item">
@@ -819,7 +815,6 @@
                             </li>
                         </ul>
                     </div>
-<<<<<<< HEAD
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url($lang .  '/' . $memberLink) ?>"><?php echo lang('Blog.headerMember'); ?></a>
                     </li>
@@ -878,29 +873,6 @@
                         </a>
                     <?php endif; ?>
 
-=======
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang .  '/' . $memberLink) ?>"><?php echo lang('Blog.headerMember'); ?></a>
-                    </li> -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang .  '/' . $pendaftaranLink) ?>"><?php echo lang('Blog.headerPendaftaran'); ?></a>
-                    </li>
-                    <div class="border-top line " style="width: 1.5px; height: 40px; background-color: white; margin: 0 23px;"></div>
-                    <?php if (session()->get('logged_in')): ?>
-                        <?php if (session()->get('role') == 'admin'): ?>
-                            <a href="<?= base_url('/admin-dashboard') ?>">
-                                <button type="button" class="btn btn-outline-light">Tampilan Admin</button>
-                            </a>
-                        <?php endif; ?>
-                        <a href="<?= base_url('/logout') ?>">
-                            <button type="button" class="btn btn-outline-light">Logout</button>
-                        </a>
-                    <?php else: ?>
-                        <a href="<?= base_url('/login') ?>">
-                            <button type="button" class="btn btn-outline-light login">Login</button>
-                        </a>
-                    <?php endif; ?>
->>>>>>> rama
                 </ul>
             </div>
         </div>

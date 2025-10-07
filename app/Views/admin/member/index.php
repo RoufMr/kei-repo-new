@@ -201,13 +201,8 @@
             </div>
 
             <div class="col-auto">
-<<<<<<< HEAD
-                <a href="<?= base_url('admin-add-member') ?>" class="btn text-white" style="background-color: #03AADE;">
-                    + Tambah Data Member</a>
-=======
                 <a href="<?= base_url('admin-member-baru') ?>" class="btn text-white" style="background-color: #03AADE;">
                     Member Baru</a>
->>>>>>> rama
             </div>
         </div>
         <div class="tab-content" id="orders-table-tab-content">

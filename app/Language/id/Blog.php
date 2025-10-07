@@ -8,11 +8,8 @@ return [
     'headerMateri' => 'Materi Ekspor',
     'headerPendaftaran' => 'Pendaftaran',
     'headerVideo' => 'Video Tutorial',
-<<<<<<< HEAD
     'headerMasuk' => 'Masuk',
     'headerKeluar' => 'Keluar',
-=======
->>>>>>> rama
     'headerMember' => 'Data Member',
     'headerAplikasi' => 'Aplikasi',
     'headerApp1' => 'Kalkulator Harga Ekspor',
@@ -253,11 +250,7 @@ return [
     'currentPackage' => 'Paket Saat Ini',
     'joinNow' => 'Bergabung Sekarang',
     'deskNonMember' => 'Akses dasar untuk eksplorasi awal',
-<<<<<<< HEAD
     'deskMemberFree' => 'Bergabunglah sekarang untuk mendapatkan semua fitur!',
-=======
-    'deskMemberFree' => 'Bergabunglah sekarang untuk semua fitur!',
->>>>>>> rama
     'deskMemberPremium' => 'Dapatkan semua fitur premium sekarang juga!',
 
     'alertSliderBeranda' => 'Masih belum ada Data Slider',
@@ -269,12 +262,9 @@ return [
 
     'gambarUtamaLandingPage' => 'Masih belum ada Gambar Utama',
     'gambarPerusahaanLandingPage' => 'Masih belum ada Gambar Perusahaan',
-<<<<<<< HEAD
-=======
 
     // Video tutorial
     'informasi' => 'Informasi',
     'batal' => 'Batal',
     'informasiDetail' => 'Anda belum login sebagai member. Silakan login atau mendaftar untuk menonton video.',
->>>>>>> rama
 ];

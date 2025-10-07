@@ -283,7 +283,6 @@ $this->setData([
                     </div>
 
                     <!-- Kategori Produk -->
-<<<<<<< HEAD
                     <div class="form-group mb-3">
                         <label for="kategori_produk" class="form-label">
                             Kategori Produk <span class="text-danger">*</span>
@@ -367,26 +366,6 @@ $this->setData([
 
 
 
-=======
-                    <div class="form-group">
-                        <label for="kategori_produk"><?= lang('Blog.kategoriProduk'); ?><span class="required">*</span></label>
-                        <select id="kategori_produk" name="kategori_produk" required>
-                            <option value="" disabled selected><?= lang('Blog.placeholderKategoriProduk'); ?></option>
-                            <?php foreach ($kategori_induk as $item): ?>
-                                <optgroup label='<?= ($lang == 'id') ? $item['nama_kategori_induk'] : $item['nama_kategori_induk_en'] ?>'>
-                                    <?php if (!empty($kategori_produk_terkelompok[$item['id_kategori_induk']])): ?>
-                                        <?php foreach ($kategori_produk_terkelompok[$item['id_kategori_induk']] as $produk): ?>
-                                            <option value="<?= ($lang == 'id') ? $produk['nama_kategori_produk'] : $produk['nama_kategori_produk_en'] ?>">
-                                                <?= ($lang == 'id') ? $produk['nama_kategori_produk'] : $produk['nama_kategori_produk_en'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </optgroup>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
->>>>>>> rama
 
                     <!-- Alamat Website Perusahaan -->
                     <div class="form-group">
@@ -418,7 +397,6 @@ $this->setData([
                         <input type="tel" id="nomor_pic" name="nomor_pic" required placeholder="<?= lang('Blog.placeholderNoPIC'); ?>" value="<?= old('nomor_pic') ?>">
                     </div>
 
-<<<<<<< HEAD
                     <!-- reCAPTCHA -->
                     <div class="form-group mt-3">
                         <div class="g-recaptcha" data-sitekey="6LfFqdsrAAAAAML7-q53U81Jk7jB8GeUOqfHkCZN" required></div>
@@ -434,10 +412,6 @@ $this->setData([
 
                     <!-- Script Google reCAPTCHA -->
                     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-=======
-                    <!-- Tombol Submit -->
-                    <button type="submit" class="btn btn-custom mt-3" style="width: 100%;"><?= lang('Blog.submitButton'); ?></button>
->>>>>>> rama
                 </form>
             </div>
         </div>
