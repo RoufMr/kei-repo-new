@@ -689,21 +689,22 @@
     $lang_segment = substr($current_url, 0, strpos($current_url, '/') + 1); // Menyimpan 'id/' atau 'en/'
 
     // Definisikan tautan untuk setiap halaman berdasarkan bahasa
-    $homeLink = ($lang_segment === 'en/') ? '/' : '/';
-    $aboutLink = ($lang_segment === 'en/') ? 'about-us' : 'tentang-kami';
-    $belajarEksporLink = ($lang_segment === 'en/') ? 'export-lessons' : 'member-materi-ekspor';
+    $homeLink = ($lang_segment === 'en/') ? 'member-beranda' : 'member-beranda';
+    $aboutLink = ($lang_segment === 'en/') ? 'member-about-us' : 'member-tentang-kami';
+    $belajarEksporLink = ($lang_segment === 'en/') ? 'member-export-lessons' : 'member-materi-ekspor';
     $pendaftaranLink = ($lang_segment === 'en/') ? 'registration' : 'pendaftaran';
-    $videoTutorialLink = ($lang_segment === 'en/') ? 'tutorial-video' : 'video-tutorial';
+    $videoTutorialLink = ($lang_segment === 'en/') ? 'member-tutorial-video' : 'member-video-tutorial';
     $memberLink = ($lang_segment === 'en/') ? 'data-member' : 'data-member';
     $buyersLink = ($lang_segment === 'en/') ? 'data-buyers' : 'data-buyers';
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
-        'tentang-kami' => 'about-us',
+        'member-beranda' => 'member-beranda',
+        'member-tentang-kami' => 'member-about-us',
         'pendaftaran' => 'registration',
-        'member-materi-ekspor' => 'export-lessons',
+        'member-materi-ekspor' => 'member-export-lessons',
         'kategori' => 'category',
-        'video-tutorial' => 'tutorial-video',
+        'member-video-tutorial' => 'member-tutorial-video',
     ];
 
     // Ambil bagian dari URL tanpa segmen bahasa
@@ -807,7 +808,7 @@
             <div class="collapse navbar-collapse line" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto d-flex align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('/') ?>">
+                        <a class="nav-link" href="<?= base_url($lang.'/'.$homeLink) ?>">
                             <?php echo lang('Blog.headerBeranda'); ?>
                         </a>
                     </li>
@@ -970,10 +971,10 @@
                     <div class="col-md-2">
                         <h5 class="mt-4"><b>Menu</b></h5>
                         <div class="list-unstyled pt-2">
-                            <p><a href="<?= base_url('beranda') ?>" class="footer-link">Beranda</a></p>
-                            <p><a href="<?= base_url('tentang-kami') ?>" class="footer-link">Tentang Kami</a></p>
+                            <p><a href="<?= base_url('member-beranda') ?>" class="footer-link">Beranda</a></p>
+                            <p><a href="<?= base_url('member-tentang-kami') ?>" class="footer-link">Tentang Kami</a></p>
                             <p><a href="<?= base_url('member-materi-ekspor') ?>" class="footer-link">Materi Ekspor</a></p>
-                            <p><a href="<?= base_url('video-tutorial') ?>" class="footer-link">Video Tutorial</a></p>
+                            <p><a href="<?= base_url('member-video-tutorial') ?>" class="footer-link">Video Tutorial</a></p>
                             <p><a href="<?= base_url('data-member') ?>" class="footer-link">Data Member</a></p>
                             <p><a href="<?= base_url('data-buyers') ?>" class="footer-link">Data Buyers</a></p>
                             <p><a href="<?= base_url('pengumuman') ?>" class="footer-link">Pengumuman</a></p>

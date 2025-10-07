@@ -849,7 +849,7 @@
                                         <a class="dropdown-item" href="<?= base_url('/admin-dashboard') ?>">
                                             <i class="bi bi-box-arrow-in-right" style="color: #03AADE; font-size: 20px;"></i>
                                             <!-- <?= session()->get('username') ?> -->
-                                             Dashboard
+                                            Dashboard
                                         </a>
                                     </li>
                                     <li>

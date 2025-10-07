@@ -385,7 +385,7 @@ class KomunitasEkspor extends BaseController
         $webprofile = $model_webprofile->findAll();
 
         $data['webprofile'] = $webprofile;
-         $model_meta = new Meta();
+        $model_meta = new Meta();
         $meta = $model_meta
             ->select('meta_title_beranda, meta_title_beranda_en, meta_description_beranda, meta_description_beranda_en')
             ->first();
@@ -949,7 +949,6 @@ class KomunitasEkspor extends BaseController
     {
         $recaptchaResponse = $this->request->getPost('g-recaptcha-response');
         $secretKey = "6LfFqdsrAAAAANncDSHh52IX8-blFSlTsKrfVnAR"; // ambil dari Google reCAPTCHA admin
-
         // Verifikasi ke Google
         $verifyResponse = file_get_contents(
             "https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaResponse}"
@@ -963,9 +962,12 @@ class KomunitasEkspor extends BaseController
 
         $userModel = new Member();
         $model_webprofile = new WebProfile();
-        $no_hp = $model_webprofile->select('nohp_web')->first();
+        $no_hp = $model_webprofile->select('nohp_web')->first(); //+6281229957212
         $no_hp = $no_hp['nohp_web']; // Access the specific field from the array
         $no_hp = str_replace('+', '', $no_hp);
+        $kategoriProdukModel = new KategoriProduk();
+
+
 
         // Ambil input dari form
         $username = $this->request->getPost('username');
@@ -982,6 +984,24 @@ class KomunitasEkspor extends BaseController
         $pic = $this->request->getPost('pic');
         $nomor_pic = $this->request->getPost('nomor_pic');
         $pilihan = $this->request->getPost('pilihan');
+
+        // Jika pilih "other", ambil kategori induk + nama kategori baru
+        if ($kategori_produk === 'other') {
+            $id_induk = $this->request->getPost('id_induk');
+            $kategori_baru = $this->request->getPost('kategori_baru');
+
+            if ($id_induk && $kategori_baru) {
+                // Simpan ke tabel kategori_produk
+                $kategori_produk_id = $kategoriProdukModel->insert([
+                    'id_kategori_induk'    => $id_induk,
+                    'nama_kategori_produk' => $kategori_baru,
+                    'nama_kategori_produk_en' => $kategori_baru // sementara sama
+                ]);
+
+                // pakai kategori baru sebagai value kategori_produk
+                $kategori_produk = $kategori_baru;
+            }
+        }
 
         // Validasi data
         $existingUserByUsername = $userModel->where('username', $username)->first();
@@ -1024,7 +1044,9 @@ class KomunitasEkspor extends BaseController
 
         // Redirect ke WhatsApp dengan pesan yang sudah dibuat
         return redirect()->to($whatsapp);
+        // return redirect()->back()->with('success', 'Data sudah masuk');
     }
+
 
 
     public function daftarMemberPremium()
@@ -3315,7 +3337,7 @@ class KomunitasEkspor extends BaseController
                 if ($user['role'] === 'admin') {
                     return redirect()->to('/admin-dashboard');  // Redirect to admin dashboard
                 } else if ($user['role'] === 'member' || ($user['role'] === 'premium' && $user['status_premium'] !== 'verified')) {
-                    return redirect()->to("/{$lang}/beranda");  // Redirect to regular user page
+                    return redirect()->to("/{$lang}/member-beranda");  // Redirect to regular user page
                 } else if ($user['role'] === 'premium') {
                     return redirect()->to('/beranda-premium');  // Redirect to regular user page
                 }
@@ -3367,6 +3389,9 @@ class KomunitasEkspor extends BaseController
 
     public function member_belajar_ekspor($slug = null)
     {
+        $lang = session()->get('lang') ?? 'id';
+        $data['lang'] = $lang;
+
         $model_webprofile = new WebProfile();
         $model_kategori = new KategoriBelajarEksporModel();
 
@@ -3714,6 +3739,7 @@ class KomunitasEkspor extends BaseController
 
         $perPage = 9; // Number of items per page
         $page = $this->request->getVar('page') ?? 1; // Get the current page number
+        $lang = session()->get('lang') ?? 'id';
 
         // Jika kategori ditemukan, ambil video yang sesuai
         if ($kategori) {
@@ -3727,6 +3753,7 @@ class KomunitasEkspor extends BaseController
             'kategori' => $kategori,
             'video_tutorial' => $videos,
             'webprofile' => $webprofile,
+            'lang' => $lang,
         ];
 
         $data['pager'] = $vidioModel->pager; // Get the pager instance

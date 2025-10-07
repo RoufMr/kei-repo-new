@@ -80,7 +80,7 @@
         <?php if (!empty($video_tutorial)): ?>
             <?php foreach ($video_tutorial as $video): ?>
                 <div class="col">
-                    <a href="<?= base_url('/video-tutorial-detail/' . $video['slug']); ?>" class="text-decoration-none">
+                    <a href="<?= base_url($lang.'/member-video-tutorial-detail/' . $video['slug']); ?>" class="text-decoration-none">
                         <div class="card h-100">
                             <img src="<?= base_url('/img/' . $video['thumbnail']); ?>" class="card-img-top img-fluid" alt="<?= $video['judul_video']; ?>" style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
                             <div class="card-body d-flex flex-column">
@@ -113,7 +113,7 @@
 
 <!-- Back Button -->
 <div class="artikel-detail-footer text-center mt-5">
-    <a href="<?= base_url('video-tutorial'); ?>" class="btn btn-custom">Kembali ke Video</a>
+    <a href="<?= base_url('member-video-tutorial'); ?>" class="btn btn-custom">Kembali ke Video</a>
 </div>
 
 

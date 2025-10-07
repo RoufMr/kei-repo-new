@@ -89,10 +89,10 @@ $routes->group('id', ['filter' => 'auth'], function ($routes) {
     $routes->get('daftar-premium', 'KomunitasEkspor::daftarMemberPremium');
 
     // Member - Beranda
-    $routes->get('beranda', 'KomunitasEkspor::freeindex');
+    $routes->get('member-beranda', 'KomunitasEkspor::freeindex');
 
     // Member - Tentang Kami
-    $routes->get('tentang-kami', 'KomunitasEkspor::member_tentang_kami');
+    $routes->get('member-tentang-kami', 'KomunitasEkspor::member_tentang_kami');
 
     // Member - Edit Member
     $routes->get('edit-profile', 'KomunitasEkspor::edit_profile');
@@ -168,13 +168,13 @@ $routes->group('id', ['filter' => 'auth'], function ($routes) {
     // Member - Belajar Ekspor
     $routes->get('member-materi-ekspor', 'KomunitasEkspor::member_belajar_ekspor');
     //$routes->get('member-belajar-ekspor/search', 'KomunitasEkspor::member_search_belajar_ekspor');
-    $routes->get('materi-ekspor-detail/(:segment)', 'KomunitasEkspor::member_belajar_ekspor_detail/$1');
+    $routes->get('member-materi-ekspor-detail/(:segment)', 'KomunitasEkspor::member_belajar_ekspor_detail/$1');
     $routes->get('kategori/(:any)', 'KomunitasEkspor::member_kategori_belajar_ekspor/$1');
 
     // Member - Video Tutorial
-    $routes->get('video-tutorial', 'KomunitasEkspor::member_video_tutorial');
-    $routes->get('video-tutorial-selengkapnya/(:segment)', 'KomunitasEkspor::member_video_selengkapnya/$1');
-    $routes->get('video-tutorial-detail/(:segment)', 'KomunitasEkspor::member_video_tutorial_detail/$1');
+    $routes->get('member-video-tutorial', 'KomunitasEkspor::member_video_tutorial');
+    $routes->get('member-video-tutorial-selengkapnya/(:segment)', 'KomunitasEkspor::member_video_selengkapnya/$1');
+    $routes->get('member-video-tutorial-detail/(:segment)', 'KomunitasEkspor::member_video_tutorial_detail/$1');
 
     // Member - Website Audit
     // $routes->get('website-audit', 'KomunitasEkspor::website_audit');
