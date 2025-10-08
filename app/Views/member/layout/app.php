@@ -696,6 +696,7 @@
     $videoTutorialLink = ($lang_segment === 'en/') ? 'member-tutorial-video' : 'member-video-tutorial';
     $memberLink = ($lang_segment === 'en/') ? 'data-member' : 'data-member';
     $buyersLink = ($lang_segment === 'en/') ? 'data-buyers' : 'data-buyers';
+    $kalkulatorLink = ($lang_segment === 'en/') ? 'calculator-export' : 'kalkulator-ekspor';
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
@@ -707,6 +708,7 @@
         'member-video-tutorial' => 'member-tutorial-video',
         'data-member' => 'data-member',
         'data-buyers' => 'data-buyers',
+        'kalkulator-ekspor' => 'calculator-export',
     ];
 
     // Ambil bagian dari URL tanpa segmen bahasa
@@ -847,11 +849,11 @@
                             <li class="nav-item dropdown">
                                 <button class="btn dropdown-toggle text-light nav-link" data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    Aplikasi
+                                    <?php echo lang('Blog.headerAplikasi'); ?></a>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-light">
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url('kalkulator-ekspor') ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url($lang .  '/' . $kalkulatorLink) ?>">
                                             Kalkulator Harga Ekspor
                                         </a>
                                     </li>

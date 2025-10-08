@@ -92,6 +92,10 @@ $routes->get('/logout', 'KomunitasEkspor::logout');
 
 $routes->post('/daftar-member', 'KomunitasEkspor::registrasiMember');
 
+
+
+
+//---------------------------------member---------------------------------//
 $routes->group('id', ['filter' => 'auth', 'admin'], function ($routes) {
 
     // Member - Daftar Premium
@@ -267,6 +271,8 @@ $routes->get('premium-kategori/(:any)', 'KomunitasEkspor::premium_kategori_belaj
 //     $routes->get('/premium-video-tutorial-selengkapnya/(:segment)', 'KomunitasEkspor::premium_video_selengkapnya/$1');
 //     $routes->get('/premium-video-tutorial-detail/(:segment)', 'KomunitasEkspor::premium_video_tutorial_detail/$1');
 // });
+
+//---------------------------------------admin----------------------------//
 
 $routes->group('', ['filter' => 'admin'], function ($routes) {
     // Admin - Dashboard
