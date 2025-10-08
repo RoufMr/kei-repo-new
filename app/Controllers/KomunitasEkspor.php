@@ -3306,45 +3306,49 @@ class KomunitasEkspor extends BaseController
         $username = $this->request->getVar('username');
         $password = $this->request->getVar('password');
 
-        // Look for the user by username
+        // Cari user berdasarkan username
         $user = $memberModel->where('username', $username)->first();
-        $status = $memberModel->where('status', 1)->first();
 
-        // Check if user exists
         if ($user) {
-            // Verify password
+            // Pastikan status aktif
+            if ($user['status'] != 1) {
+                $session->setFlashdata('error', 'Akun Anda belum dikonfirmasi oleh admin.');
+                return redirect()->back();
+            }
+
+            // Verifikasi password
             if (password_verify($password, $user['password'])) {
-                // Prepare session data
+                // Simpan data sesi
                 $sessionData = [
-                    'user_id' => $user['id_member'],
-                    'username' => $user['username'],
-                    'role' => $user['role'],  // Store role in session
+                    'user_id'        => $user['id_member'],
+                    'username'       => $user['username'],
+                    'role'           => $user['role'],
                     'status_premium' => $user['status_premium'],
-                    'logged_in' => true,
-                    'status' => $status['status'],
+                    'logged_in'      => true,
+                    'status'         => $user['status'], // pakai status user sebenarnya
                 ];
                 $session->set($sessionData);
 
                 $lang = session()->get('lang') ?? 'id';
-                // Check if the user is an admin
+
+                // Arahkan sesuai role
                 if ($user['role'] === 'admin') {
-                    return redirect()->to("/{$lang}/member-beranda");  // Redirect to admin dashboard
+                    return redirect()->to("/{$lang}/member-beranda");
                 } else if ($user['role'] === 'member' || ($user['role'] === 'premium' && $user['status_premium'] !== 'verified')) {
-                    return redirect()->to("/{$lang}/member-beranda");  // Redirect to regular user page
+                    return redirect()->to("/{$lang}/member-beranda");
                 } else if ($user['role'] === 'premium') {
-                    return redirect()->to('/beranda-premium');  // Redirect to regular user page
+                    return redirect()->to('/beranda-premium');
                 }
             } else {
-                // Password incorrect
-                $session->setFlashdata('error', 'Username atau password salah. Atau belum di konfirmasi oleh Admin');
+                $session->setFlashdata('error', 'Password salah.');
                 return redirect()->back();
             }
         } else {
-            // Username not found
             $session->setFlashdata('error', 'Username tidak ditemukan.');
             return redirect()->back();
         }
     }
+
 
     public function logout()
     {
