@@ -3320,7 +3320,8 @@ class KomunitasEkspor extends BaseController
                     'username' => $user['username'],
                     'role' => $user['role'],  // Store role in session
                     'status_premium' => $user['status_premium'],
-                    'logged_in' => true
+                    'logged_in' => true,
+                    'status' => $status['status'],
                 ];
                 $session->set($sessionData);
 
