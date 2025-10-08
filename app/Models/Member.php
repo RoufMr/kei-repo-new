@@ -44,7 +44,11 @@ class Member extends Model
         'gambar_utama',
         'gambar_perusahaan',
         'alamat_perusahaan',
-        'alamat_website'
+        'alamat_website',
+        'bukti_transfer',
+        'nama_rekening',
+        'nomor_rekening',
+        'jenis_bank'
     ];
 
     protected bool $allowEmptyInserts = false;
