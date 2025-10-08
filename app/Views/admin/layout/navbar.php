@@ -24,15 +24,34 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link <?=
-                                        (current_url() == base_url('admin-member')) ? 'active' : ((current_url() == base_url('admin-search-member')) ? 'active' : ((current_url() == base_url('admin-add-member')) ? 'active' : ((strpos(current_url(), base_url('admin-edit-member')) === 0) ? 'active' : '')))
-                                        ?>" href="<?= base_url('admin-member') ?>">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle <?=
+                                                        (current_url() == base_url('admin-member') ||
+                                                            current_url() == base_url('admin-search-member') ||
+                                                            current_url() == base_url('admin-add-member') ||
+                                                            strpos(current_url(), base_url('admin-edit-member')) === 0 ||
+                                                            current_url() == base_url('admin-member-baru')) ? 'active' : ''
+                                                        ?>"
+                        href="#" id="memberDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="nav-icon">
                             <i class="fa-solid fa-user"></i>
                         </span>
                         <span class="nav-link-text">Member</span>
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                        <li>
+                            <a class="dropdown-item <?= (current_url() == base_url('admin-member')) ? 'active' : '' ?>" href="<?= base_url('admin-member') ?>"
+                                style="<?= (current_url() == base_url('admin-member')) ? 'background-color: #FFD700; color: black;' : '' ?>">
+                                Member Aktif
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item <?= (current_url() == base_url('admin-member-baru')) ? 'active' : '' ?>" href="<?= base_url('admin-member-baru') ?>"
+                                style="<?= (current_url() == base_url('admin-member-baru')) ? 'background-color: #FFD700; color: black;' : '' ?>">
+                                Member Pending
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="nav-item">
