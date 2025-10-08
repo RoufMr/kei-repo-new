@@ -683,6 +683,7 @@
     $videoTutorialLink = ($lang_segment === 'en/') ? 'tutorial-video' : 'video-tutorial';
     $memberLink = ($lang_segment === 'en/') ? 'data-member' : 'data-member';
     $buyersLink = ($lang_segment === 'en/') ? 'data-buyers' : 'data-buyers';
+    $SyaratKetentuanLink = ($lang_segment === 'en/') ? 'terms-conditions' : 'syarat-ketentuan';
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
@@ -691,6 +692,7 @@
         'materi-ekspor' => 'export-lessons',
         'kategori' => 'category',
         'video-tutorial' => 'tutorial-video',
+        'syarat-ketentuan' => 'terms-conditions',
     ];
 
     // Ambil bagian dari URL tanpa segmen bahasa

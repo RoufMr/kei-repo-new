@@ -1,9 +1,18 @@
 <?= $this->extend('layout/app'); ?>
 <?= $this->section('content'); ?>
 
+<?php
+$this->setData([
+    'meta_title' => ($lang == 'id') ? $meta['meta_title_syarat'] : $meta['meta_title_syarat_en']
+]);
+?>
+
 <div class="container my-5">
-    <h1>Syarat dan Ketentuan</h1>
-    <p>Selamat datang di website kami. Berikut adalah syarat dan ketentuan yang berlaku:</p>
+    <!-- judul -->
+    <div class="pendaftaran-section text-center">
+        <h1><?= lang('Blog.syaratketentuan'); ?></h1>
+        <p><?= lang('Blog.syaratketentuandeskripi'); ?></p>
+    </div>
 
     <h3>1. Pendaftaran</h3>
     <p>Pengguna wajib memberikan data yang benar saat melakukan pendaftaran.</p>
