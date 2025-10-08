@@ -199,11 +199,6 @@
                     </label>
                 </form>
             </div>
-
-            <div class="col-auto">
-                <a href="<?= base_url('admin-member-baru') ?>" class="btn text-white" style="background-color: #03AADE;">
-                    Member Baru</a>
-            </div>
         </div>
         <div class="tab-content" id="orders-table-tab-content">
             <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
@@ -238,6 +233,7 @@
                                         <th class="text-center align-middle">Nomor HP PIC</th>
                                         <th class="text-center align-middle">Latitude</th>
                                         <th class="text-center align-middle">Longitude</th>
+                                        <th class="text-center align-middle">Status</th>
                                         <th class="text-center align-middle">Aksi</th>
                                     </tr>
                                 </thead>
@@ -318,6 +314,7 @@
 
                                         <td class="text-center align-middle"><?= $item['latitude'] ?></td>
                                         <td class="text-center align-middle"><?= $item['longitude'] ?></td>
+                                        <td class="text-center align-middle"><?= esc($item['status_text']) ?></td>
                                         <td class="text-center align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 <a href="<?= base_url('admin-delete-member/' . $item['id_member']) ?>"

@@ -3971,18 +3971,24 @@ class KomunitasEkspor extends BaseController
         $perPage = 10;
         $page = $this->request->getVar('page') ?? 1;
 
-        $member = $model_member
+        $members = $model_member
             ->where(['role' => 'member', 'status' => '1'])
             ->orderBy('tanggal_verifikasi', 'DESC')
             ->paginate($perPage);
 
-        $data['member'] = $member;
+        // 🔹 Ubah status jadi teks
+        foreach ($members as &$m) {
+            $m['status_text'] = ($m['status'] == 1) ? 'Aktif' : 'Pending';
+        }
+
+        $data['member'] = $members;
         $data['pager'] = $model_member->pager;
         $data['page'] = $page;
         $data['perPage'] = $perPage;
 
         return view('admin/member/index', $data);
     }
+
 
     public function admin_search_member()
     {
@@ -4043,26 +4049,88 @@ class KomunitasEkspor extends BaseController
         return view('admin/member/search', $data);
     }
 
+    // public function admin_calon_member()
+    // {
+    //     $model_member = new Member();
+
+    //     $perPage = 10;
+    //     $page = $this->request->getVar('page') ?? 1;
+
+    //     // ambil data member dengan role 'member' dan status 0 (belum aktif)
+    //     $member = $model_member
+    //         ->where('role', 'member')
+    //         ->where('status', '0')
+    //         ->orderBy('tanggal_verifikasi', 'DESC')
+    //         ->paginate($perPage);
+
+    //     $data['member'] = $member;
+    //     $data['pager'] = $model_member->pager;
+    //     $data['page'] = $page;
+    //     $data['perPage'] = $perPage;
+
+    //     return view('admin/member/pendaftaran', $data);
+    // }
+
     public function admin_calon_member()
     {
         $model_member = new Member();
 
-        $perPage = 10;
-        $page = $this->request->getVar('page') ?? 1;
-
-        // ambil data member dengan role 'member' dan status 0 (belum aktif)
-        $member = $model_member
+        $data['member'] = $model_member
             ->where('role', 'member')
-            ->where('status', '0')
-            ->orderBy('tanggal_verifikasi', 'DESC')
-            ->paginate($perPage);
-
-        $data['member'] = $member;
-        $data['pager'] = $model_member->pager;
-        $data['page'] = $page;
-        $data['perPage'] = $perPage;
+            ->where('status', 0) // hanya calon member
+            ->findAll();
 
         return view('admin/member/pendaftaran', $data);
+    }
+
+    public function admin_detail_member($id_member)
+    {
+        $model_member = new Member();
+
+        // Tentukan hanya kolom yang ingin diambil
+        $fields = [
+            'id_member',
+            'username',
+            'foto_profil',
+            'kode_referral',
+            'popular_point',
+            'nama_perusahaan',
+            'deskripsi_perusahaan',
+            'status',
+            'tipe_bisnis',
+            'produk_utama',
+            'tahun_dibentuk',
+            'skala_bisnis',
+            'email',
+            'pic',
+            'pic_phone',
+            'kategori_produk',
+            'alamat_perusahaan',
+            'alamat_website'
+        ];
+
+        $data['member'] = $model_member->select($fields)->find($id_member);
+
+        if (!$data['member']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Member tidak ditemukan');
+        }
+
+        $data['member']['status_text'] = $data['member']['status'] == 1 ? 'Aktif' : 'Pending';
+
+        return view('admin/member/detail_member', $data);
+    }
+
+    public function admin_konfirmasi_member($id_member)
+    {
+        $model_member = new Member();
+        $member = $model_member->find($id_member);
+
+        if ($member) {
+            $model_member->update($id_member, ['status' => 1]);
+            return redirect()->to(base_url('admin-member'))->with('success', 'Member berhasil dikonfirmasi!');
+        } else {
+            return redirect()->back()->with('error', 'Member tidak ditemukan.');
+        }
     }
 
 

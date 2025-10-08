@@ -1,168 +1,6 @@
+```php
 <?= $this->extend('admin/template/template'); ?>
 <?= $this->section('content'); ?>
-
-<style>
-    /* Styling untuk search tampilan B */
-    .form {
-        --input-bg: #FFF;
-        --padding: 1.5em;
-        --rotate: 80deg;
-        --gap: 2em;
-        --icon-change-color: #F2BF02;
-        --height: 50px;
-        width: 600px;
-        /* Sesuaikan dengan tampilan A */
-        padding-inline-end: 1em;
-        background: var(--input-bg);
-        position: relative;
-        border-radius: 30px;
-        /* Sesuaikan border-radius dari tampilan A */
-        margin: 0 auto;
-    }
-
-    .form label {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: var(--height);
-    }
-
-    .form input {
-        width: 100%;
-        padding-inline-start: calc(var(--padding) + var(--gap));
-        outline: none;
-        background: none;
-        border: 0;
-        font-size: 0.9rem;
-    }
-
-    .form svg {
-        color: #111;
-        transition: 0.3s cubic-bezier(.4, 0, .2, 1);
-        position: absolute;
-        height: 17px;
-        /* Sesuaikan ukuran icon */
-    }
-
-    .icon {
-        position: absolute;
-        left: var(--padding);
-        transition: 0.3s cubic-bezier(.4, 0, .2, 1);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .swap-off {
-        transform: rotate(-80deg);
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .close-btn {
-        background: none;
-        border: none;
-        right: calc(var(--padding) - var(--gap));
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #111;
-        padding: 0.1em;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        transition: 0.3s;
-        opacity: 0;
-        transform: scale(0);
-        visibility: hidden;
-    }
-
-    .form input:focus~.icon {
-        transform: rotate(var(--rotate)) scale(1.3);
-    }
-
-    .form input:focus~.icon .swap-off {
-        opacity: 1;
-        transform: rotate(-80deg);
-        visibility: visible;
-        color: var(--icon-change-color);
-    }
-
-    .form input:focus~.icon .swap-on {
-        opacity: 0;
-        visibility: visible;
-    }
-
-    .form input:valid~.icon {
-        transform: scale(1.3) rotate(var(--rotate))
-    }
-
-    .form input:valid~.icon .swap-off {
-        opacity: 1;
-        visibility: visible;
-        color: var(--icon-change-color);
-    }
-
-    .form input:valid~.icon .swap-on {
-        opacity: 0;
-        visibility: visible;
-    }
-
-    .form input:valid~.close-btn {
-        opacity: 1;
-        visibility: visible;
-        transform: scale(1);
-        transition: 0s;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form {
-            width: 250px;
-            --height: 45px;
-        }
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: #f2f2f2;
-    }
-
-    .table thead th {
-        background-color: #f8f9fa;
-        font-weight: bold;
-        border-bottom: 2px solid #dee2e6;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    .table tbody td {
-        padding: 12px;
-        vertical-align: middle;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* Adding fixed width for certain columns */
-    .col-fixed {
-        width: 300px;
-    }
-
-    .btn-sm {
-        font-size: 0.8rem;
-        padding: 4px 8px;
-    }
-
-    .text-truncate-multiline {
-        display: -webkit-box;
-        -webkit-line-clamp: 5;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 1.2;
-        /* Sesuaikan jarak antar-baris */
-    }
-</style>
 
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xl">
@@ -171,153 +9,75 @@
                 <h1 class="app-page-title mb-0" style="color: #03AADE;">List Calon Member</h1>
             </div>
         </div>
-        <div class="tab-content" id="orders-table-tab-content">
-            <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-                <div class="app-card app-card-orders-table shadow-sm mb-5">
-                    <div class="app-card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center align-middle">No</th>
-                                        <th class="text-center align-middle">Role</th>
-                                        <!-- <th class="text-center align-middle">Status Premium</th> -->
-                                        <th class="text-center align-middle">Username & Kode Referral</th>
-                                        <th class="text-center align-middle">Logo Perusahaan</th>
-                                        <th class="text-center align-middle">Popular Point</th>
-                                        <th class="text-center align-middle col-fixed">Nama Perusahaan</th>
-                                        <th class="text-center align-middle col-fixed">Deskripsi Perusahaan ID</th>
-                                        <th class="text-center align-middle col-fixed">Deskripsi Perusahaan EN</th>
-                                        <th class="text-center align-middle col-fixed">Alamat Perusahaan</th>
-                                        <th class="text-center align-middle">Tahun Dibentuk</th>
-                                        <th class="text-center align-middle">Kategori Produk ID</th>
-                                        <th class="text-center align-middle">Kategori Produk EN</th>
-                                        <!-- <th class="text-center align-middle col-fixed">Tipe Bisnis</th>
-                                        <th class="text-center align-middle col-fixed">Tipe Bisnis En</th> -->
-                                        <th class="text-center align-middle col-fixed">Produk Utama ID</th>
-                                        <th class="text-center align-middle col-fixed">Produk Utama EN</th>
-                                        <th class="text-center align-middle col-fixed">Alamat Website</th>
-                                        <!-- <th class="text-center align-middle">Skala Bisnis</th>
-                                        <th class="text-center align-middle">Skala Bisnis En</th> -->
-                                        <th class="text-center align-middle">Email PIC</th>
-                                        <th class="text-center align-middle">Nama PIC</th>
-                                        <th class="text-center align-middle">Nomor HP PIC</th>
-                                        <th class="text-center align-middle">Latitude</th>
-                                        <th class="text-center align-middle">Longitude</th>
-                                        <th class="text-center align-middle">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <?php if (empty($member)): ?>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="21" class="text-center">Masih belum ada Data Member.</td>
-                                        </tr>
-                                    </tbody>
-                            </table>
-                        <?php else: ?>
-                            <tbody>
-                                <?php $start = ($page - 1) * $perPage + 1; ?>
-                                <?php foreach ($member as $item): ?>
-                                    <tr>
-                                        <td class="text-center align-middle"><?= $start++ ?></td>
-                                        <td class="text-center align-middle"><?= $item['role'] ?></td>
-                                        <!-- <td class="text-center align-middle"><?= $item['status_premium'] ?></td> -->
-                                        <td class="text-center align-middle"><?= $item['username'] ?></td>
-                                        <?php if (empty($item['foto_profil'])): ?>
-                                            <td class="align-middle"><img src="https://via.placeholder.com/100" class="img-thumbnail"></td>
-                                        <?php else: ?>
-                                            <td class="align-middle"><img src="<?= base_url('/img/' . $item['foto_profil']) ?>" class="img-thumbnail"></td>
-                                        <?php endif; ?>
-                                        <td class="text-center align-middle"><?= $item['popular_point'] ?></td>
-                                        <td class="text-center align-middle col-fixed">
-                                            <div class="text-truncate-multiline" data-bs-toggle="tooltip"
-                                                title="<?= $item['nama_perusahaan'] ?>">
-                                                <?= $item['nama_perusahaan'] ?>
-                                            </div>
-                                        </td>
-                                        <td class="text-center align-middle col-fixed">
-                                            <div class="text-truncate-multiline" data-bs-toggle="tooltip"
-                                                title="<?= $item['deskripsi_perusahaan'] ?>">
-                                                <?= $item['deskripsi_perusahaan'] ?>
-                                            </div>
-                                        </td>
-                                        <td class="text-center align-middle col-fixed">
-                                            <div class="text-truncate-multiline" data-bs-toggle="tooltip"
-                                                title="<?= $item['deskripsi_perusahaan_en'] ?>">
-                                                <?= $item['deskripsi_perusahaan_en'] ?>
-                                            </div>
-                                        </td>
-                                        <td class="text-center align-middle"><?= $item['alamat_perusahaan'] ?></td>
-                                        <td class="text-center align-middle"><?= $item['tahun_dibentuk'] ?></td>
-                                        <td class="text-center align-middle"><?= $item['kategori_produk'] ?></td>
-                                        <td class="text-center align-middle"><?= $item['kategori_produk_en'] ?></td>
-                                        <!-- <td class="text-center align-middle col-fixed">
-                                            <div class="text-truncate-multiline" data-bs-toggle="tooltip"
-                                                title="<?= $item['tipe_bisnis'] ?>">
-                                                <?= $item['tipe_bisnis'] ?>
-                                            </div>
-                                        </td>
-                                        <td class="text-center align-middle col-fixed">
-                                            <div class="text-truncate-multiline" data-bs-toggle="tooltip"
-                                                title="<?= $item['tipe_bisnis_en'] ?>">
-                                                <?= $item['tipe_bisnis_en'] ?>
-                                            </div>
-                                        </td> -->
-                                        <td class="text-center align-middle col-fixed">
-                                            <div class="text-truncate-multiline" data-bs-toggle="tooltip"
-                                                title="<?= $item['produk_utama'] ?>">
-                                                <?= $item['produk_utama'] ?>
-                                            </div>
-                                        </td>
-                                        <td class="text-center align-middle col-fixed">
-                                            <div class="text-truncate-multiline" data-bs-toggle="tooltip"
-                                                title="<?= $item['produk_utama_en'] ?>">
-                                                <?= $item['produk_utama_en'] ?>
-                                            </div>
-                                        </td>
-                                        <td class="text-center align-middle"><?= $item['alamat_website'] ?></td>
-                                        <!-- <td class="text-center align-middle"><?= $item['skala_bisnis'] ?></td>
-                                        <td class="text-center align-middle"><?= $item['skala_bisnis_en'] ?></td> -->
-                                        <td class="text-center align-middle"><?= $item['email'] ?></td>
-                                        <td class="text-center align-middle"><?= $item['pic'] ?></td>
-                                        <td class="text-center align-middle"><?= $item['pic_phone'] ?></td>
 
-                                        <td class="text-center align-middle"><?= $item['latitude'] ?></td>
-                                        <td class="text-center align-middle"><?= $item['longitude'] ?></td>
-                                        <td class="text-center align-middle">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <a href="<?= base_url('admin-delete-member/' . $item['id_member']) ?>"
-                                                    class="btn btn-sm text-white me-2"
-                                                    style="background-color: #F2BF02;">Hapus</a>
-                                                <a href="<?= base_url('admin-edit-member/' . $item['id_member']) ?>"
-                                                    class="btn btn-sm text-white"
-                                                    style="background-color: #03AADE;">Ubah</a>
+        <div class="app-card app-card-orders-table shadow-sm mb-5">
+            <div class="app-card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle">No</th>
+                                <th class="text-center align-middle">Username</th>
+                                <th class="text-center align-middle">Nama Perusahaan</th>
+                                <th class="text-center align-middle">Email</th>
+                                <th class="text-center align-middle">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($member)): ?>
+                                <tr>
+                                    <td colspan="5" class="text-center">Belum ada calon member.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php $no = 1;
+                                foreach ($member as $item): ?>
+                                    <tr>
+                                        <td class="text-center"><?= $no++ ?></td>
+                                        <td class="text-center"><?= $item['username'] ?></td>
+                                        <td class="text-center"><?= $item['nama_perusahaan'] ?></td>
+                                        <td class="text-center"><?= $item['email'] ?></td>
+                                        <td class="text-center">
+                                            <a href="<?= base_url('admin-detail-member/' . $item['id_member']) ?>"
+                                                class="btn btn-info btn-sm text-white">Detail</a>
+                                            <!-- Tombol Konfirmasi -->
+                                            <a href="#"
+                                                class="btn btn-sm text-white"
+                                                style="background-color:#03AADE;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#konfirmasiModal<?= $item['id_member'] ?>">
+                                                Konfirmasi
+                                            </a>
+
+                                            <!-- Modal Bootstrap -->
+                                            <div class="modal fade" id="konfirmasiModal<?= $item['id_member'] ?>" tabindex="-1" aria-labelledby="konfirmasiLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content" style="border-radius:10px;">
+                                                        <div class="modal-header" style="background-color:#03AADE; color:white;">
+                                                            <h5 class="modal-title" id="konfirmasiLabel">Konfirmasi Member</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                                                        </div>
+                                                        <div class="modal-body text-center" style="color:#000;">
+                                                            <p>Apakah kamu yakin ingin mengkonfirmasi member ini?</p>
+                                                        </div>
+                                                        <div class="modal-footer d-flex justify-content-center">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color:#FFD700; color:#000;">Batal</button>
+                                                            <a href="<?= base_url('admin-konfirmasi-member/' . $item['id_member']) ?>" class="btn text-white" style="background-color:#03AADE;">Ya, Konfirmasi</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
-                            </tbody>
-                            </table>
-                            <div class="mt-2">
-                                <?= $pager->links('default', 'bootstrap_pagination') ?>
-                            </div>
-                        <?php endif; ?>
-                        </div>
-                    </div>
-                </div><!--//app-card-->
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div><!--//row-->
-    </div><!--//container-fluid-->
-</div><!--//app-content-->
+        </div>
+    </div>
+</div>
 
-<script>
-    // Initialize tooltips
-    document.addEventListener("DOMContentLoaded", function() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
-            new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
-</script>
-
-<?= $this->endSection('content') ?>
+<?= $this->endSection(); ?>
+```
