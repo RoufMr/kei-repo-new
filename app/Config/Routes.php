@@ -92,9 +92,11 @@ $routes->get('/logout', 'KomunitasEkspor::logout');
 
 $routes->post('/daftar-member', 'KomunitasEkspor::registrasiMember');
 
-//---------------------------------member---------------------------------//
 
-$routes->group('id', ['filter' => 'auth','admin'], function ($routes) {
+
+
+//---------------------------------member---------------------------------//
+$routes->group('id', ['filter' => 'auth', 'admin'], function ($routes) {
 
     // Member - Daftar Premium
     $routes->get('daftar-premium', 'KomunitasEkspor::daftarMemberPremium');
@@ -285,6 +287,10 @@ $routes->group('', ['filter' => 'admin'], function ($routes) {
     $routes->post('/admin-update-member/(:num)', 'KomunitasEkspor::admin_update_member/$1');
     $routes->get('/admin-delete-member/(:num)', 'KomunitasEkspor::admin_delete_member/$1');
     $routes->get('admin-member-baru', 'KomunitasEkspor::admin_calon_member');
+    $routes->get('admin-calon-member', 'KomunitasEkspor::admin_calon_member');
+    $routes->get('admin-detail-member/(:num)', 'KomunitasEkspor::admin_detail_member/$1');
+    $routes->get('admin-konfirmasi-member/(:num)', 'KomunitasEkspor::admin_konfirmasi_member/$1');
+
 
 
     // Admin - Buyers
