@@ -30,9 +30,9 @@ $routes->group('id', function ($routes) {
     $routes->get('pendaftaran', 'KomunitasEkspor::pendaftaran');
 
     // Visitor - Data Member
-    $routes->get('data-member', function () {
-        return redirect()->to('/');
-    });
+    // $routes->get('data-member', function () {
+    //     return redirect()->to('/');
+    // });
 
     //$routes->get('data-member', 'KomunitasEkspor::visitor_data_member');
     //$routes->get('detail-member/(:any)', 'KomunitasEkspor::visitor_detail_member/$1');
@@ -85,7 +85,7 @@ $routes->get('/logout', 'KomunitasEkspor::logout');
 
 $routes->post('/daftar-member', 'KomunitasEkspor::registrasiMember');
 
-$routes->group('id', ['filter' => 'auth'], function ($routes) {
+$routes->group('id', ['filter' => 'auth','admin'], function ($routes) {
 
     // Member - Daftar Premium
     $routes->get('daftar-premium', 'KomunitasEkspor::daftarMemberPremium');

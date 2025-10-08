@@ -10,6 +10,7 @@ return [
     'headerMasuk' => 'Login',
     'headerKeluar' => 'Logout',
     'headerMember' => 'Members',
+    'headerBuyers' => 'Data Buyers',
     'headerAplikasi' => 'Application',
     'headerApp1' => 'Export Price Calculator',
     'headerApp2' => 'Marketing Progress Monitoring',
@@ -201,7 +202,7 @@ return [
     'noPIC' => 'PIC Phone Number',
     'placeholderNoPIC' => 'Enter PIC Phone Number',
     'profilpic' => 'Contact',
-    
+
     'uploadbuktitransfer' => 'Upload Proof of Transfer',
     'rekeningadmin' => 'Admin Account',
     'nomorrekeningadmin' => 'Account number',

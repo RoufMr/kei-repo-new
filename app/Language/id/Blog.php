@@ -11,6 +11,7 @@ return [
     'headerMasuk' => 'Masuk',
     'headerKeluar' => 'Keluar',
     'headerMember' => 'Data Member',
+    'headerBuyers' => 'Data Buyer',
     'headerAplikasi' => 'Aplikasi',
     'headerApp1' => 'Kalkulator Harga Ekspor',
     'headerApp2' => 'Marketing Progress Monitoring',

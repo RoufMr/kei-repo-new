@@ -164,7 +164,7 @@
     </div>
 
     <!-- Search Bar Start -->
-    <form class="form" action="<?= base_url('/data-buyers/search') ?>" method="GET">
+    <form class="form" action="<?= base_url($lang.'/data-buyers/search') ?>" method="GET">
         <button>
             <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
                 aria-labelledby="search">
