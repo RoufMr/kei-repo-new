@@ -21,7 +21,7 @@
                                 <img src="<?= base_url('img/admin.png') ?>" alt="Gambar Admin">
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
-                                <li><a class="dropdown-item" href="<?= base_url('/beranda') ?>">Tampilan Member</a></li>
+                                <li><a class="dropdown-item" href="<?= site_url(session('lang') . '/member-beranda') ?>">Tampilan Member</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url('/') ?>">Tampilan Visitor</a></li>
                                 <li><a class="dropdown-item" href="<?= site_url('logout') ?>">Log Out</a></li>
                             </ul>

@@ -3351,7 +3351,6 @@ class KomunitasEkspor extends BaseController
         }
     }
 
-
     public function logout()
     {
         $session = session();

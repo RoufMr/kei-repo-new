@@ -24,30 +24,37 @@
                     </a>
                 </li>
 
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown no-popup <?=
+                                                        (current_url() == base_url('admin-member') ||
+                                                            current_url() == base_url('admin-search-member') ||
+                                                            current_url() == base_url('admin-add-member') ||
+                                                            strpos(current_url(), base_url('admin-edit-member')) === 0 ||
+                                                            current_url() == base_url('admin-member-baru')) ? 'open' : ''
+                                                        ?>">
                     <a class="nav-link dropdown-toggle <?=
                                                         (current_url() == base_url('admin-member') ||
                                                             current_url() == base_url('admin-search-member') ||
                                                             current_url() == base_url('admin-add-member') ||
                                                             strpos(current_url(), base_url('admin-edit-member')) === 0 ||
                                                             current_url() == base_url('admin-member-baru')) ? 'active' : ''
-                                                        ?>"
-                        href="#" id="memberDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="nav-icon">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
+                                                        ?>" href="#" id="memberDropdown">
+                        <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
                         <span class="nav-link-text">Member</span>
+                        <i class="fa-solid fa-angle-down float-end"></i>
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+
+                    <ul class="dropdown-menu show-inline">
                         <li>
-                            <a class="dropdown-item <?= (current_url() == base_url('admin-member')) ? 'active' : '' ?>" href="<?= base_url('admin-member') ?>"
-                                style="<?= (current_url() == base_url('admin-member')) ? 'background-color: #FFD700; color: black;' : '' ?>">
+                            <a class="dropdown-item <?= (current_url() == base_url('admin-member')) ? 'active' : '' ?>"
+                                href="<?= base_url('admin-member') ?>"
+                                style="<?= (current_url() == base_url('admin-member')) ? 'background-color: #ffc107;' : '' ?>">
                                 Member Aktif
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item <?= (current_url() == base_url('admin-member-baru')) ? 'active' : '' ?>" href="<?= base_url('admin-member-baru') ?>"
-                                style="<?= (current_url() == base_url('admin-member-baru')) ? 'background-color: #FFD700; color: black;' : '' ?>">
+                            <a class="dropdown-item <?= (current_url() == base_url('admin-member-baru')) ? 'active' : '' ?>"
+                                href="<?= base_url('admin-member-baru') ?>"
+                                style="<?= (current_url() == base_url('admin-member-baru')) ? 'background-color: #ffc107;' : '' ?>">
                                 Member Pending
                             </a>
                         </li>

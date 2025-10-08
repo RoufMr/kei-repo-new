@@ -15368,3 +15368,44 @@ button.close:focus {
     width: 100%;
   }
 }
+
+/* Hilangkan pop-up floating Bootstrap */
+.no-popup .dropdown-menu {
+    position: static !important;
+    display: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin-left: 1.5rem;
+    padding-left: 0;
+}
+
+/* Saat terbuka */
+.no-popup.open .dropdown-menu {
+    display: block;
+}
+
+/* Style item tetap rapi */
+.no-popup .dropdown-item {
+  color: white;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.no-popup .dropdown-item:hover {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+/* Icon panah ikut berputar saat menu terbuka */
+.no-popup.open .fa-angle-down {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+}
+
+/* Hilangkan tanda panah bawaan dropdown Bootstrap */
+#memberDropdown.dropdown-toggle::after {
+    display: none !important;
+}

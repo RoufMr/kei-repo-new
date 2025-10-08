@@ -121,6 +121,29 @@
                 link.classList.add("active");
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdowns = document.querySelectorAll('.no-popup .dropdown-toggle');
+
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const parent = this.closest('.no-popup');
+
+                    document.querySelectorAll('.no-popup.open').forEach(openItem => {
+                        if (openItem !== parent) openItem.classList.remove('open');
+                    });
+
+                    parent.classList.toggle('open');
+                });
+            });
+
+            document.querySelectorAll('.no-popup .dropdown-menu a').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
     </script>
 </body>
 
