@@ -338,10 +338,16 @@ $this->setData([
                         <textarea id="alamat_perusahaan" name="alamat_perusahaan" required placeholder="<?= lang('Blog.placeholderalamatperusahaan'); ?>"><?= old('alamat_perusahaan') ?></textarea>
                     </div>
 
-                    <!-- Produk Perusahaan -->
+                    <!-- Produk Perusahaan ID -->
                     <div class="form-group">
                         <label for="produk_utama"><?= lang('Blog.produkperusahaan'); ?><span class="required">*</span></label>
                         <textarea id="produk_utama" name="produk_utama" required placeholder="<?= lang('Blog.placeholderaprodukperusahaan'); ?>"><?= old('produk_utama') ?></textarea>
+                    </div>
+
+                    <!-- Produk Perusahaan EN -->
+                    <div class="form-group">
+                        <label for="produk_utama_en"><?= lang('Blog.produkperusahaanen'); ?><span class="required">*</span></label>
+                        <textarea id="produk_utama_en" name="produk_utama_en" required placeholder="<?= lang('Blog.placeholderaprodukperusahaanen'); ?>"><?= old('produk_utama_en') ?></textarea>
                     </div>
 
                     <!-- Kategori Produk -->
@@ -398,7 +404,6 @@ $this->setData([
                         </div>
                     </div>
 
-
                     <script>
                         const selectKategori = document.getElementById('kategori_produk');
                         const dropdownInduk = document.getElementById('dropdownInduk');
@@ -426,13 +431,16 @@ $this->setData([
                         });
                     </script>
 
-
-
+                    <!-- Alamat Email Usaha -->
+                    <div class="form-group">
+                        <label for="email_usaha"><?= lang('Blog.alamatemailusaha'); ?><span class="required">*</span></label>
+                        <textarea id="email_usaha" name="email_usaha" required placeholder="<?= lang('Blog.placeholderalamatemailusaha'); ?>"><?= old('email_usaha') ?></textarea>
+                    </div>
 
                     <!-- Alamat Website Perusahaan -->
                     <div class="form-group">
-                        <label for="alamat_website"><?= lang('Blog.alamatwebperusahaan'); ?><span class="required">*</span></label>
-                        <textarea id="alamat_website" name="alamat_website" required placeholder="<?= lang('Blog.placeholderalamatwebperusahaan'); ?>"><?= old('alamat_website') ?></textarea>
+                        <label for="alamat_website"><?= lang('Blog.alamatwebperusahaan'); ?></label>
+                        <textarea id="alamat_website" name="alamat_website" placeholder="<?= lang('Blog.placeholderalamatwebperusahaan'); ?>"><?= old('alamat_website') ?></textarea>
                     </div>
 
                     <div class="textcontent mt-5">
@@ -459,6 +467,67 @@ $this->setData([
                         <input type="tel" id="nomor_pic" name="nomor_pic" required placeholder="<?= lang('Blog.placeholderNoPIC'); ?>" value="<?= old('nomor_pic') ?>">
                     </div>
 
+                    <div class="textcontent mt-5">
+                        <h5><?= lang('Blog.uploadbuktitransfer'); ?></h5>
+                        <hr class="line-separatorkecil">
+                    </div>
+
+                    <!--Rekening Admin-->
+                    <div class="textcontent mt-1">
+                        <h5 class="mb-3"><?= lang('Blog.rekeningadmin'); ?></h5>
+                        <div class="textcontent mt-2">
+                            <p><?php echo lang('Blog.nomorrekeningadmin'); ?> : 12345678</p>
+                            <p><?php echo lang('Blog.jenisbankadmin'); ?> : BCA</p>
+                            <p><?php echo lang('Blog.namarekeningadmin'); ?> : Test</p>
+                        </div>
+                    </div>
+
+                    <!--Upload Bukti Transfer-->
+                    <div class="form-group">
+                        <label for="bukti_transfer"><?= lang('Blog.buktitransfer'); ?><span class="required">*</span></label>
+                        <input type="file" id="bukti_transfer" name="bukti_transfer" accept="image/*" required>
+                    </div>
+
+                    <!--Nama Rekening-->
+                    <div class="form-group">
+                        <label for="nama_rekening"><?= lang('Blog.namarekening'); ?><span class="required">*</span></label>
+                        <input type="text" id="nama_rekening" name="nama_rekening" required placeholder="<?= lang('Blog.placeholdernamarekening'); ?>" value="<?= old('nama_rekening') ?>">
+                    </div>
+
+                    <!--Nomor Rekening-->
+                    <div class="form-group">
+                        <label for="nomor_rekening"><?= lang('Blog.nomorrekening'); ?><span class="required">*</span></label>
+                        <input type="text" id="nomor_rekening" name="nomor_rekening" required placeholder="<?= lang('Blog.placeholdernomorrekening'); ?>" value="<?= old('nomor_rekening') ?>">
+                    </div>
+
+                    <!--Jenis Bank-->
+                    <div class="form-group">
+                        <label for="jenis_bank"><?= lang('Blog.jenisbank'); ?><span class="required">*</span></label>
+                        <input type="text" id="jenis_bank" name="jenis_bank" required placeholder="<?= lang('Blog.placeholderjenisbank'); ?>" value="<?= old('jenis_bank') ?>">
+                    </div>
+
+                    <!-- Syarat dan Ketentuan -->
+                    <div class="form-group fullwidth">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="agree_terms" name="agree_terms" required>
+                            <label class="form-check-label" for="agree_terms">
+                                <?= lang('Blog.syaratketentuandeskripsi1'); ?>
+                                <a href="<?= ($lang == 'en') ? base_url('/en/terms-conditions') : base_url('/id/syarat-ketentuan') ?>" target="_blank" class="link-syarat">
+                                    <?= lang('Blog.syaratketentuanlink'); ?>
+                                </a> <?= lang('Blog.syaratketentuandeskripsi2'); ?>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group fullwidth">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="syarat2" name="syarat2" required>
+                            <label class="form-check-label" for="syarat2">
+                                <?= lang('Blog.syaratketentuandeskripsi3'); ?>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- reCAPTCHA -->
                     <div class="form-group mt-3">
                         <div class="g-recaptcha" data-sitekey="6LfFqdsrAAAAAML7-q53U81Jk7jB8GeUOqfHkCZN" required></div>
@@ -473,7 +542,7 @@ $this->setData([
                     <button type="submit" class="btn btn-custom mt-3" style="width: 100%;"><?= lang('Blog.submitButton'); ?></button>
 
                     <!-- Script Google reCAPTCHA -->
-                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <script src="https://www.google.com/recaptcha/api.js?hl=<?= $lang ?>" async defer></script>
                 </form>
             </div>
         </div>

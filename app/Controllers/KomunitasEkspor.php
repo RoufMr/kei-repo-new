@@ -1047,8 +1047,6 @@ class KomunitasEkspor extends BaseController
         // return redirect()->back()->with('success', 'Data sudah masuk');
     }
 
-
-
     public function daftarMemberPremium()
     {
         $session = session();
@@ -6874,21 +6872,18 @@ class KomunitasEkspor extends BaseController
 
     public function syarat_ketentuan()
     {
-        $lang = session()->get('lang') ?? 'id';
-        $data['lang'] = $lang;
-
-        $model_meta = new Meta();
-        $meta = $model_meta
-            ->select('meta_title_tentang, meta_title_tentang_en, meta_description_tentang, meta_description_tentang_en')
-            ->first();
-        $data['meta'] = $meta;
-
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
         $data['webprofile'] = $webprofile;
 
-        $data['meta_title'] = 'Syarat dan Ketentuan';
-        $data['meta_description'] = 'Halaman berisi syarat dan ketentuan penggunaan layanan.';
+        $model_meta = new Meta();
+        $meta = $model_meta
+            ->select('meta_title_syarat, meta_title_syarat_en')
+            ->first();
+        $data['meta'] = $meta;
+
+        $lang = session()->get('lang') ?? 'id';
+        $data['lang'] = $lang;
 
         return view('pendaftaran/syarat_ketentuan', $data);
     }

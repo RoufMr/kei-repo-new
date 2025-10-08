@@ -183,14 +183,12 @@ return [
     'placeholdertahunberdiri' => 'Select the year the business was founded',
     'alamatperusahaan' => 'Business Address',
     'placeholderalamatperusahaan' => 'Enter Business Address',
-    'produkperusahaan' => 'Main Product ID',
-    'placeholderaprodukperusahaan' => 'Enter Main Product ID',
-    'produkperusahaanen' => 'Main Product EN',
-    'placeholderaprodukperusahaanen' => 'Enter Main Product EN',
+    'produkperusahaan' => 'Main Product (Indonesia)',
+    'placeholderaprodukperusahaan' => 'Enter Main Product (Indonesia)',
+    'produkperusahaanen' => 'Main Product (English)',
+    'placeholderaprodukperusahaanen' => 'Enter Main Product (English)',
     'kategoriProduk' => 'Product Category',
     'placeholderKategoriProduk' => 'Select Product Category',
-    'kategorilainnya' => 'Other Categories',
-    'placeholderkategorilainnya' => 'Enter Other Categories',
     'alamatemailusaha' => 'Business Email Address',
     'placeholderalamatemailusaha' => 'Enter Business Email Address',
     'alamatwebperusahaan' => 'Website Address',
@@ -214,7 +212,15 @@ return [
     'placeholdernomorrekening' => 'Enter Account number',
     'jenisbank' => 'Bank Type',
     'placeholderjenisbank' => 'Enter Bank Type',
+    'syaratketentuandeskripsi1' => 'I have read, understood and agree',
+    'syaratketentuanlink' => 'terms and conditions',
+    'syaratketentuandeskripsi2' => 'use of this service.',
+    'syaratketentuandeskripsi3' => 'I am confident in the data I entered.',
     'submitButton' => 'Register Member',
+
+    // Syarat Ketentuan
+    'syaratketentuan' => 'Terms and Conditions',
+    'syaratketentuandeskripi' => 'Welcome to our website. The following are the terms and conditions that apply:',
 
     //halaman data buyers
     // Buyers Data Section
