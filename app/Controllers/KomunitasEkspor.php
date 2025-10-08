@@ -949,103 +949,97 @@ class KomunitasEkspor extends BaseController
     {
         $recaptchaResponse = $this->request->getPost('g-recaptcha-response');
         $secretKey = "6LfFqdsrAAAAANncDSHh52IX8-blFSlTsKrfVnAR"; // ambil dari Google reCAPTCHA admin
-        // Verifikasi ke Google
         $verifyResponse = file_get_contents(
             "https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaResponse}"
         );
-
         $responseData = json_decode($verifyResponse);
 
         if (! $responseData->success) {
-            return redirect()->back()->with('error', 'Captcha tidak valid, coba lagi.');
+            return redirect()->back()->with('error', 'Captcha tidak valid, coba lagi.')->withInput();
         }
 
-        $userModel = new Member();
-        $model_webprofile = new WebProfile();
-        $no_hp = $model_webprofile->select('nohp_web')->first(); //+6281229957212
-        $no_hp = $no_hp['nohp_web']; // Access the specific field from the array
-        $no_hp = str_replace('+', '', $no_hp);
+        $memberModel = new Member();
         $kategoriProdukModel = new KategoriProduk();
 
-
-
         // Ambil input dari form
-        $username = $this->request->getPost('username');
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
-        $referral = $this->request->getPost('referral');
-        $nama_perusahaan = $this->request->getPost('nama_perusahaan');
-        $deskripsi_perusahaan = $this->request->getPost('deskripsi_perusahaan');
-        $tahun_berdiri = $this->request->getPost('tahun_berdiri');
-        $alamat_perusahaan = $this->request->getPost('alamat_perusahaan');
-        $produk_utama = $this->request->getPost('produk_utama');
-        $kategori_produk = $this->request->getPost('kategori_produk');
-        $alamat_website = $this->request->getPost('alamat_website');
-        $pic = $this->request->getPost('pic');
-        $nomor_pic = $this->request->getPost('nomor_pic');
-        $pilihan = $this->request->getPost('pilihan');
+        $data = [
+            'role' => 'member',
+            'status_premium' => null,
+            'username' => $this->request->getPost('username'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'kode_referral' => $this->request->getPost('referral'),
+            'nama_perusahaan' => $this->request->getPost('nama_perusahaan'),
+            'deskripsi_perusahaan' => $this->request->getPost('deskripsi_perusahaan'),
+            'deskripsi_perusahaan_en' => $this->request->getPost('deskripsi_usaha_en'),
+            'tahun_dibentuk' => $this->request->getPost('tahun_berdiri'),
+            'alamat_perusahaan' => $this->request->getPost('alamat_perusahaan'),
+            'produk_utama' => $this->request->getPost('produk_utama'),
+            'produk_utama_en' => $this->request->getPost('produk_utama_en'),
+            'email' => $this->request->getPost('email'),
+            'pic' => $this->request->getPost('pic'),
+            'pic_phone' => $this->request->getPost('nomor_pic'),
+            'kategori_produk' => $this->request->getPost('kategori_produk'),
+            'alamat_website' => $this->request->getPost('alamat_website'),
+            'nama_rekening' => $this->request->getPost('nama_rekening'),
+            'nomor_rekening' => $this->request->getPost('nomor_rekening'),
+            'jenis_bank' => $this->request->getPost('jenis_bank'),
+            'status' => '0', // default
+            'popular_point' => 0
+        ];
 
-        // Jika pilih "other", ambil kategori induk + nama kategori baru
-        if ($kategori_produk === 'other') {
+        // === Kategori Produk Baru ===
+        if ($data['kategori_produk'] === 'other') {
             $id_induk = $this->request->getPost('id_induk');
             $kategori_baru = $this->request->getPost('kategori_baru');
-
             if ($id_induk && $kategori_baru) {
-                // Simpan ke tabel kategori_produk
-                $kategori_produk_id = $kategoriProdukModel->insert([
-                    'id_kategori_induk'    => $id_induk,
+                $kategoriProdukModel->insert([
+                    'id_kategori_induk' => $id_induk,
                     'nama_kategori_produk' => $kategori_baru,
-                    'nama_kategori_produk_en' => $kategori_baru // sementara sama
+                    'nama_kategori_produk_en' => $kategori_baru
                 ]);
-
-                // pakai kategori baru sebagai value kategori_produk
-                $kategori_produk = $kategori_baru;
+                $data['kategori_produk'] = $kategori_baru;
             }
         }
 
-        // Validasi data
-        $existingUserByUsername = $userModel->where('username', $username)->first();
-        if ($existingUserByUsername) {
+        // === Upload Foto Usaha ===
+        $foto_usaha = $this->request->getFile('foto_usaha');
+        if ($foto_usaha && $foto_usaha->isValid() && !$foto_usaha->hasMoved()) {
+            $newName = $foto_usaha->getRandomName();
+            $foto_usaha->move('uploads/foto_usaha', $newName);
+            $data['gambar_perusahaan'] = $newName;
+        }
+
+        // === Upload Bukti Transfer ===
+        $bukti_transfer = $this->request->getFile('bukti_transfer');
+        if ($bukti_transfer && $bukti_transfer->isValid() && !$bukti_transfer->hasMoved()) {
+            $newBukti = $bukti_transfer->getRandomName();
+            $bukti_transfer->move('uploads/bukti_transfer', $newBukti);
+            $data['bukti_transfer'] = $newBukti;
+        }
+
+        // === Validasi unik ===
+        if ($memberModel->where('username', $data['username'])->first()) {
             return redirect()->back()->withInput()->with('error', 'Username sudah digunakan.');
         }
 
-        $existingUserByEmail = $userModel->where('email', $email)->first();
-        if ($existingUserByEmail) {
+        if ($memberModel->where('email', $data['email'])->first()) {
             return redirect()->back()->withInput()->with('error', 'Email sudah digunakan.');
         }
 
-        if ($referral && $referral == $username) {
+        if ($data['kode_referral'] && $data['kode_referral'] == $data['username']) {
             return redirect()->back()->withInput()->with('error', 'Kode referral tidak boleh sama dengan username.');
         }
 
-        // Buat pesan WA
-        $pesan = "Pendaftaran Member Baru:\n\n" .
-            "Username: $username\n\n" .
-            "Email: $email\n\n" .
-            "Password: $password\n\n" .
-            "Nama Perusahaan: $nama_perusahaan\n\n" .
-            "Deskripsi Perusahaan: $deskripsi_perusahaan\n\n" .
-            "Tahun Didirikan: $tahun_berdiri\n\n" .
-            "Alamat Perusahaan: $alamat_perusahaan\n\n" .
-            "Produk Utama: $produk_utama\n\n" .
-            "Kategori Produk: $kategori_produk\n\n" .
-            "Alamat Website: $alamat_website\n\n" .
-            "Nama PIC: $pic\n\n" .
-            "Nomor HP PIC: $nomor_pic\n\n" .
-            ($referral ? "Kode Referral: $referral\n\n" : "") .
-            "\nCatatan:\n" .
-            "- Mohon pastikan lokasi perusahaan sudah benar.\n" .
-            ($pilihan === 'Member Premium' ? "- Mohon lengkapi data dengan versi Bahasa Inggris (EN).\n" : "") .
-            "- Mohon pastikan data perusahaan sudah benar.\n" .
-            "- Mohon juga diberikan file gambar Logo Perusahaan.\n";
+        // === Simpan ke database ===
+        $inserted = $memberModel->insert($data);
 
-        // Membuat URL WhatsApp dengan pesan
-        $whatsapp = "https://wa.me/$no_hp?text=" . urlencode($pesan);
-
-        // Redirect ke WhatsApp dengan pesan yang sudah dibuat
-        return redirect()->to($whatsapp);
-        // return redirect()->back()->with('success', 'Data sudah masuk');
+        if ($inserted) {
+            return redirect()->back()->with('success', 'Pendaftaran berhasil! Data Anda sudah disimpan, mohon tunggu verifikasi admin.');
+        } else {
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+        }
     }
+
 
     public function daftarMemberPremium()
     {

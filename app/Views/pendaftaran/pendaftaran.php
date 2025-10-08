@@ -229,6 +229,13 @@ $this->setData([
 
             <!-- Card untuk Form Pendaftaran -->
             <div class="card p-3 custom-card">
+
+                <?php if (session()->getFlashdata('success')) : ?>
+                    <div class="alert alert-success">
+                        <?= session()->getFlashdata('success'); ?>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Menampilkan pesan error jika username atau email sudah ada -->
                 <?php if (session()->getFlashdata('error')) : ?>
                     <div class="alert alert-danger">
@@ -236,7 +243,7 @@ $this->setData([
                     </div>
                 <?php endif; ?>
 
-                <form action="<?= base_url('daftar-member') ?>" method="post">
+                <form action="<?= base_url('daftar-member') ?>" method="post" enctype="multipart/form-data">
                     <?= csrf_field() ?>
 
                     <!-- Hidden field for role -->
@@ -546,7 +553,6 @@ $this->setData([
                 </form>
             </div>
         </div>
-
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -675,8 +681,6 @@ $this->setData([
                 $('#referral-status').html('');
                 isReferralValid = true;
             }
-
-
         });
     });
 
