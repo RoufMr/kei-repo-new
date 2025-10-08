@@ -705,6 +705,8 @@
         'member-materi-ekspor' => 'member-export-lessons',
         'kategori' => 'category',
         'member-video-tutorial' => 'member-tutorial-video',
+        'data-member' => 'data-member',
+        'data-buyers' => 'data-buyers',
     ];
 
     // Ambil bagian dari URL tanpa segmen bahasa
@@ -835,11 +837,11 @@
                             <?php echo lang('Blog.headerMember'); ?></a>
                         </a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('data-buyers') ?>">
-                            Data Buyers
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url($lang.'/'.$buyersLink) ?>">
+                            <?php echo lang('Blog.headerBuyers'); ?></a>
                         </a>
-                    </li> -->
+                    </li>
                     <div id="navbarNavDarkDropdown">
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">

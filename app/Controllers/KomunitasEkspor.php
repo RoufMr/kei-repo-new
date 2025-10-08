@@ -1399,8 +1399,8 @@ class KomunitasEkspor extends BaseController
         $data['member'] = $members;
         $data['pager'] = $model_member->pager; // Get the pager instance
 
-        // return view('member/data-member/index', $data);
-        return view('beranda/index', $data);
+        return view('member/data-member/index', $data);
+        // return view('beranda/index', $data);
     }
 
     public function member_detail_member($slug)
@@ -1467,8 +1467,8 @@ class KomunitasEkspor extends BaseController
         $data['sertifikat'] = $sertifikat;
         $data['produk'] = $produk;
 
-        // return view('member/data-member/detail', $data);
-        return view('beranda/index', $data);
+        return view('member/data-member/detail', $data);
+        // return view('beranda/index', $data);
     }
 
     // public function data_buyers()
@@ -1542,7 +1542,7 @@ class KomunitasEkspor extends BaseController
         $data['page'] = $page;
         $data['perPage'] = $perPage;
 
-        return view('/member/data-buyers/search', $data);
+        return view('member/data-buyers/search', $data);
     }
 
     public function data_buyers()
@@ -3333,7 +3333,7 @@ class KomunitasEkspor extends BaseController
                 $lang = session()->get('lang') ?? 'id';
                 // Check if the user is an admin
                 if ($user['role'] === 'admin') {
-                    return redirect()->to('/admin-dashboard');  // Redirect to admin dashboard
+                    return redirect()->to("/{$lang}/member-beranda");  // Redirect to admin dashboard
                 } else if ($user['role'] === 'member' || ($user['role'] === 'premium' && $user['status_premium'] !== 'verified')) {
                     return redirect()->to("/{$lang}/member-beranda");  // Redirect to regular user page
                 } else if ($user['role'] === 'premium') {
@@ -3361,6 +3361,8 @@ class KomunitasEkspor extends BaseController
 
     public function member_data_buyers()
     {
+        $lang = session()->get('lang') ?? 'id';
+
         $model_webprofile = new WebProfile();
 
         $webprofile = $model_webprofile->findAll();
@@ -3381,6 +3383,7 @@ class KomunitasEkspor extends BaseController
         $data['pager'] = $model_buyers->pager;
         $data['page'] = $page;
         $data['perPage'] = $perPage;
+        $data['lang'] = $lang;
 
         return view('member/data-buyers/index', $data);
     }
@@ -3585,6 +3588,7 @@ class KomunitasEkspor extends BaseController
 
     public function member_belajar_ekspor_detail($slug)
     {
+        $lang = session()->get('lang') ?? 'id';
         $model_webprofile = new WebProfile();
 
         $webprofile = $model_webprofile->findAll();
@@ -3612,6 +3616,7 @@ class KomunitasEkspor extends BaseController
             'kategori' => $kategori,
             'belajar_ekspor' => $related_artikel,
             'webprofile' => $webprofile,
+            'lang' => $lang,
         ];
 
         return view('member/belajar-ekspor/belajar_ekspor_detail', $data);

@@ -840,40 +840,12 @@
                     <?php endif; ?> -->
 
                     <div class="border-top" style="width: 1.5px; height: 40px; background-color: white; margin: 0 23px;"></div>
-                    <?php if (session()->get('logged_in')): ?>
-                        <div class="dropdown">
-                            <div class="dropdown-toggle nav-link" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle" style="font-size: 20px;"></i> <?= session()->get('username') ?>
-                            </div>
-                            <?php if (session()->get('role') == 'admin'): ?>
-                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="<?= base_url('/admin-dashboard') ?>">
-                                            <i class="bi bi-box-arrow-in-right" style="color: #03AADE; font-size: 20px;"></i>
-                                            <!-- <?= session()->get('username') ?> -->
-                                            Dashboard
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?= base_url('/logout') ?>">
-                                            <i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;"></i>
-                                            <?php echo lang('Blog.headerKeluar'); ?>
-                                        </a>
-                                    </li>
-                                </ul>
-                            <?php endif; ?>
-                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="<?= base_url('/logout') ?>">
-                                        <i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;">
-                                        </i><?php echo lang('Blog.headerKeluar'); ?></a></li>
-                            </ul>
-                        </div>
-                    <?php else: ?>
+                    
                         <!-- Jika belum login, tampilkan tombol Login dengan kondisi bahasa -->
                         <a href="<?= base_url('/login') ?>">
                             <button type="button" class="btn btn-outline-light"><?php echo lang('Blog.headerMasuk'); ?></button>
                         </a>
-                    <?php endif; ?>
+                    
 
                 </ul>
             </div>
