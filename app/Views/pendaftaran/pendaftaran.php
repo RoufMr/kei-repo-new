@@ -300,7 +300,6 @@ $this->setData([
                         <hr class="line-separatorkecil">
                     </div>
 
-
                     <!-- Nama Perusahaan -->
                     <div class="form-group">
                         <label for="nama_perusahaan"><?= lang('Blog.namaPerusahaan'); ?><span class="required">*</span></label>

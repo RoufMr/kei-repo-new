@@ -18,7 +18,7 @@
                             <th>Foto Profil</th>
                             <td>
                                 <?php if (!empty($member['foto_profil'])): ?>
-                                    <img src="<?= base_url('/img/' . $member['foto_profil']) ?>"
+                                    <img src="<?= base_url('uploads/foto_usaha/' . $member['foto_profil']) ?>"
                                         alt="Foto Profil"
                                         style="width:100px; height:100px; border-radius:10px; object-fit:cover;">
                                 <?php else: ?>
@@ -86,6 +86,18 @@
                         <tr>
                             <th>Alamat Web</th>
                             <td><a href="<?= esc($member['alamat_website']) ?>" target="_blank"><?= esc($member['alamat_website']) ?></a></td>
+                        </tr>
+                        <tr>
+                            <th>Bukti Transfer</th>
+                            <td>
+                                <?php if (!empty($member['bukti_transfer'])): ?>
+                                    <img src="<?= base_url('uploads/bukti_transfer/' . $member['bukti_transfer']) ?>"
+                                        alt="Bukti Transfer"
+                                        style="width:100px; height:100px; border-radius:10px; object-fit:cover;">
+                                <?php else: ?>
+                                    <span class="text-muted">Belum ada foto</span>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

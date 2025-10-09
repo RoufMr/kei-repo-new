@@ -70,7 +70,7 @@
                                 <?php if (empty($member['foto_profil'])): ?>
                                     <img id="preview" src="https://via.placeholder.com/100" alt="Foto Member" class="img-thumbnail mt-2" style="max-width: 100px;">
                                 <?php else: ?>
-                                    <img id="preview" src="<?= base_url('img/' . $member['foto_profil']) ?>" alt="Foto Member" class="img-thumbnail mt-2" style="max-width: 100px;">
+                                    <img id="preview" src="<?= base_url('uploads/foto_usaha/' . $member['foto_profil']) ?>" alt="Foto Member" class="img-thumbnail mt-2" style="max-width: 100px;">
                                 <?php endif; ?>
                             </div>
 
