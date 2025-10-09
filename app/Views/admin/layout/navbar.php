@@ -1,5 +1,48 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+<style>
+    /* Hilangkan pop-up floating Bootstrap */
+.no-popup .dropdown-menu {
+    position: static !important;
+    display: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin-left: 1.5rem;
+    padding-left: 0;
+}
+
+/* Saat terbuka */
+.no-popup.open .dropdown-menu {
+    display: block;
+}
+
+/* Style item tetap rapi */
+.no-popup .dropdown-item {
+  color: white;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.no-popup .dropdown-item:hover {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+/* Icon panah ikut berputar saat menu terbuka */
+.no-popup.open .fa-angle-down {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+}
+
+/* Hilangkan tanda panah bawaan dropdown Bootstrap */
+#memberDropdown.dropdown-toggle::after {
+    display: none !important;
+}
+</style>
+
 <div id="app-sidepanel" class="app-sidepanel">
     <div id="sidepanel-drop" class="sidepanel-drop"></div>
     <div class="sidepanel-inner d-flex flex-column">
