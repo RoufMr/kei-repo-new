@@ -233,6 +233,7 @@
                                         <th class="text-center align-middle">Nomor HP PIC</th>
                                         <th class="text-center align-middle">Latitude</th>
                                         <th class="text-center align-middle">Longitude</th>
+                                        <th class="text-center align-middle">Bukti Transfer</th>
                                         <th class="text-center align-middle">Status</th>
                                         <th class="text-center align-middle">Aksi</th>
                                     </tr>
@@ -256,7 +257,7 @@
                                         <?php if (empty($item['foto_profil'])): ?>
                                             <td class="align-middle"><img src="https://via.placeholder.com/100" class="img-thumbnail"></td>
                                         <?php else: ?>
-                                            <td class="align-middle"><img src="<?= base_url('/img/' . $item['foto_profil']) ?>" class="img-thumbnail"></td>
+                                            <td class="align-middle"><img src="<?= base_url('uploads/foto_usaha/' . $item['foto_profil']) ?>" class="img-thumbnail"></td>
                                         <?php endif; ?>
                                         <td class="text-center align-middle"><?= $item['popular_point'] ?></td>
                                         <td class="text-center align-middle col-fixed">
@@ -314,6 +315,11 @@
 
                                         <td class="text-center align-middle"><?= $item['latitude'] ?></td>
                                         <td class="text-center align-middle"><?= $item['longitude'] ?></td>
+                                        <?php if (empty($item['bukti_transfer'])): ?>
+                                            <td class="align-middle"><img src="https://via.placeholder.com/100" class="img-thumbnail"></td>
+                                        <?php else: ?>
+                                            <td class="align-middle"><img src="<?= base_url('uploads/bukti_transfer/' . $item['bukti_transfer']) ?>" class="img-thumbnail"></td>
+                                        <?php endif; ?>
                                         <td class="text-center align-middle"><?= esc($item['status_text']) ?></td>
                                         <td class="text-center align-middle">
                                             <div class="d-flex justify-content-center align-items-center">

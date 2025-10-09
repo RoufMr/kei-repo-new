@@ -1006,7 +1006,7 @@ class KomunitasEkspor extends BaseController
         if ($foto_usaha && $foto_usaha->isValid() && !$foto_usaha->hasMoved()) {
             $newName = $foto_usaha->getRandomName();
             $foto_usaha->move('uploads/foto_usaha', $newName);
-            $data['gambar_perusahaan'] = $newName;
+            $data['foto_profil'] = $newName;
         }
 
         // === Upload Bukti Transfer ===
@@ -4105,7 +4105,8 @@ class KomunitasEkspor extends BaseController
             'pic_phone',
             'kategori_produk',
             'alamat_perusahaan',
-            'alamat_website'
+            'alamat_website',
+            'bukti_transfer'
         ];
 
         $data['member'] = $model_member->select($fields)->find($id_member);
@@ -4261,12 +4262,12 @@ class KomunitasEkspor extends BaseController
                 $namaFile = uniqid() . '.' . $fotoProfil->getClientExtension();
 
                 // Remove old file if exists
-                if ($member['foto_profil'] && file_exists(ROOTPATH . 'public/img/' . $member['foto_profil'])) {
-                    unlink(ROOTPATH . 'public/img/' . $member['foto_profil']);
+                if ($member['foto_profil'] && file_exists(ROOTPATH . 'public/uploads/foto_usaha' . $member['foto_profil'])) {
+                    unlink(ROOTPATH . 'public/uploads/foto_usaha' . $member['foto_profil']);
                 }
 
                 // Move new file and update data array
-                $fotoProfil->move(ROOTPATH . 'public/img/', $namaFile);
+                $fotoProfil->move(ROOTPATH . 'public/uploads/foto_usaha', $namaFile);
                 $data['foto_profil'] = $namaFile;
             } else {
                 // Keep existing file if new file is invalid
@@ -4313,17 +4314,34 @@ class KomunitasEkspor extends BaseController
 
     public function admin_delete_member($id)
     {
-        $model_member = new Member();
+        $model_member = new \App\Models\Member();
 
         $member = $model_member->where('role', 'member')->find($id);
 
-        if ($member['foto_profil'] && file_exists(ROOTPATH . 'public/img/' . $member['foto_profil'])) {
-            unlink(ROOTPATH . 'public/img/' . $member['foto_profil']);
+        if (!$member) {
+            return redirect()->back()->with('error', 'Data member tidak ditemukan.');
         }
 
+        // === Hapus foto usaha (lokasi: public/uploads/foto_usaha/) ===
+        if (!empty($member['foto_profil'])) {
+            $fotoPath = FCPATH . 'uploads/foto_usaha/' . $member['foto_profil'];
+            if (file_exists($fotoPath)) {
+                unlink($fotoPath);
+            }
+        }
+
+        // === (Opsional) Hapus bukti transfer juga ===
+        if (!empty($member['bukti_transfer'])) {
+            $buktiPath = FCPATH . 'uploads/bukti_transfer/' . $member['bukti_transfer'];
+            if (file_exists($buktiPath)) {
+                unlink($buktiPath);
+            }
+        }
+
+        // === Hapus data dari database ===
         $model_member->delete($id);
 
-        return redirect()->to('/admin-member');
+        return redirect()->to('/admin-member')->with('success', 'Data member dan file terkait berhasil dihapus.');
     }
 
     public function admin_buyers()
