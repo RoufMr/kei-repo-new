@@ -78,7 +78,9 @@ class KomunitasEkspor extends BaseController
     {
         $session = session();
         $user_id = $session->get('user_id');
+        $lang = session()->get('lang') ?? 'id';
 
+        $data['lang'] = $lang;
         $model_webprofile    = new WebProfile();
         $model_kontenpilar   = new KontenPilar();
         $model_kontentype    = new KontenType();
@@ -96,6 +98,9 @@ class KomunitasEkspor extends BaseController
 
     public function tambah_kontenplanner()
     {
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
         $kontenplanner = new KontenPlanner();
         // Validasi form
         $validation = \Config\Services::validation();
@@ -139,7 +144,7 @@ class KomunitasEkspor extends BaseController
             'media'       => $fotoPath,
         ]);
 
-        return redirect()->to(base_url('sosmed-planner'))
+        return redirect()->to(base_url($lang.'/sosmed-planner'))
             ->with('success', 'Konten berhasil ditambahkan!');
     }
 
@@ -202,7 +207,9 @@ class KomunitasEkspor extends BaseController
     public function tambah_kontenpilar()
     {
         $kontenpilar = new KontenPilar();
+        $lang = session()->get('lang') ?? 'id';
 
+        $data['lang'] = $lang;
         $data = [
             'nama' => $this->request->getPost('nama_kontenpilar'),
             'deskripsi' => $this->request->getPost('deskripsi_kontenpilar'),
@@ -210,11 +217,14 @@ class KomunitasEkspor extends BaseController
 
         $kontenpilar->insert($data);
 
-        return redirect()->to('sosmed-planner');
+        return redirect()->to($lang.'/sosmed-planner');
     }
     public function update_kontenpilar($id)
     {
         $kontenpilarModel = new KontenPilar();
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
 
         if (!$this->validate([
             'nama'      => 'required',
@@ -228,16 +238,19 @@ class KomunitasEkspor extends BaseController
             'deskripsi' => $this->request->getPost('deskripsi')
         ]);
 
-        return redirect()->to('/sosmed-planner')->with('success', 'Content pillar berhasil diperbarui');
+        return redirect()->to($lang.'/sosmed-planner')->with('success', 'Content pillar berhasil diperbarui');
     }
 
     public function hapus_kontenpilar($id)
     {
         $model = new \App\Models\KontenPilar();
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to(base_url('sosmed-planner'))
+            return redirect()->to(base_url($lang.'/sosmed-planner'))
                 ->with('success', 'Konten pilar berhasil dihapus.');
         } else {
             return redirect()->to(base_url('sosmed-planner'))
@@ -249,6 +262,9 @@ class KomunitasEkspor extends BaseController
     public function tambah_kontentype()
     {
         $model = new \App\Models\KontenType();
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
 
         $data = [
             'nama' => $this->request->getPost('nama_kontentype'),
@@ -256,12 +272,15 @@ class KomunitasEkspor extends BaseController
 
         $model->insert($data);
 
-        return redirect()->to('sosmed-planner')->with('success', 'Content type berhasil ditambahkan');
+        return redirect()->to($lang.'/sosmed-planner')->with('success', 'Content type berhasil ditambahkan');
     }
 
     public function update_kontentype($id)
     {
         $model = new \App\Models\KontenType();
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
 
         if (!$this->validate([
             'nama' => 'required'
@@ -273,24 +292,30 @@ class KomunitasEkspor extends BaseController
             'nama' => $this->request->getPost('nama')
         ]);
 
-        return redirect()->to('/sosmed-planner')->with('success', 'Content type berhasil diperbarui');
+        return redirect()->to($lang.'/sosmed-planner')->with('success', 'Content type berhasil diperbarui');
     }
 
     public function hapus_kontentype($id)
     {
         $model = new \App\Models\KontenType();
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to('sosmed-planner')->with('success', 'Content type berhasil dihapus.');
+            return redirect()->to($lang.'/sosmed-planner')->with('success', 'Content type berhasil dihapus.');
         }
-        return redirect()->to('sosmed-planner')->with('error', 'Content type tidak ditemukan.');
+        return redirect()->to($lang.'/sosmed-planner')->with('error', 'Content type tidak ditemukan.');
     }
 
     // ================= CONTENT PLATFORM =================
     public function tambah_kontenplatform()
     {
         $model = new \App\Models\KontenPlatform();
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
 
         $data = [
             'nama' => $this->request->getPost('nama_kontenplatform'),
@@ -298,11 +323,14 @@ class KomunitasEkspor extends BaseController
 
         $model->insert($data);
 
-        return redirect()->to('sosmed-planner')->with('success', 'Content platform berhasil ditambahkan');
+        return redirect()->to($lang.'/sosmed-planner')->with('success', 'Content platform berhasil ditambahkan');
     }
 
     public function update_kontenplatform($id)
     {
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
         $model = new \App\Models\KontenPlatform();
 
         if (!$this->validate([
@@ -315,18 +343,21 @@ class KomunitasEkspor extends BaseController
             'nama' => $this->request->getPost('nama')
         ]);
 
-        return redirect()->to('/sosmed-planner')->with('success', 'Content platform berhasil diperbarui');
+        return redirect()->to($lang.'/sosmed-planner')->with('success', 'Content platform berhasil diperbarui');
     }
 
     public function hapus_kontenplatform($id)
     {
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
         $model = new \App\Models\KontenPlatform();
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to('sosmed-planner')->with('success', 'Content platform berhasil dihapus.');
+            return redirect()->to($lang.'/sosmed-planner')->with('success', 'Content platform berhasil dihapus.');
         }
-        return redirect()->to('sosmed-planner')->with('error', 'Content platform tidak ditemukan.');
+        return redirect()->to($lang.'/sosmed-planner')->with('error', 'Content platform tidak ditemukan.');
     }
 
 
@@ -2980,6 +3011,9 @@ class KomunitasEkspor extends BaseController
             }
         }
 
+        $lang = session()->get('lang') ?? 'id';
+
+        $data['lang'] = $lang;
         $data['mpmtable'] = $mpmtable;
         $data['pager'] = $model_mpm->pager;
         $data['page'] = $page;
@@ -2995,6 +3029,7 @@ class KomunitasEkspor extends BaseController
     {
         $session = session();
         $user_id = $session->get('user_id');
+
 
         $tgl_kirim_email = $this->request->getPost('tgl_kirim_email');
 
@@ -3029,8 +3064,12 @@ class KomunitasEkspor extends BaseController
 
         $model_mpm = new MPM();
         $model_mpm->insert($data);
+        $lang = session()->get('lang') ?? 'id';
 
-        return redirect()->to('/mpm');
+        $data['lang'] = $lang;
+        session()->setFlashdata('success', 'Data berhasil disimpan!');
+
+        return redirect()->to($lang . '/mpm');
     }
 
     public function edit_mpm()
@@ -3066,8 +3105,11 @@ class KomunitasEkspor extends BaseController
         ];
 
         $model_mpm->update($id_mpm, $data);
+        $lang = session()->get('lang') ?? 'id';
 
-        return redirect()->to('/mpm')->with('success', 'MPM telah berhasil diperbarui.');
+        $data['lang'] = $lang;
+
+        return redirect()->to($lang . '/mpm')->with('success', 'MPM telah berhasil diperbarui.');
     }
 
     public function getEmailsByDate($month, $year)

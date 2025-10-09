@@ -16,6 +16,7 @@ return [
     'headerApp2' => 'Marketing Progress Monitoring',
     'headerApp3' => 'Audit Website',
     'headerApp4' => 'Investment Feasibility',
+    'headerApp5' => 'Sosial Media Planner',
     'headerBuyers' => 'Buyers Data',
     'headerPengumuman' => 'Announcement',
     'headerEditProfile' => 'Edit Profile',
