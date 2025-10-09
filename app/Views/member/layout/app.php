@@ -697,6 +697,8 @@
     $memberLink = ($lang_segment === 'en/') ? 'data-member' : 'data-member';
     $buyersLink = ($lang_segment === 'en/') ? 'data-buyers' : 'data-buyers';
     $kalkulatorLink = ($lang_segment === 'en/') ? 'calculator-export' : 'kalkulator-ekspor';
+    $mpmLink = ($lang_segment === 'en/') ? 'mpm' : 'mpm';
+    $sosmedPlannerLink = ($lang_segment === 'en/') ? 'sosmed-planner' : 'sosmed-planner';
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
@@ -709,6 +711,7 @@
         'data-member' => 'data-member',
         'data-buyers' => 'data-buyers',
         'kalkulator-ekspor' => 'calculator-export',
+        'sosmed-planner' => 'sosmed-planner',
     ];
 
     // Ambil bagian dari URL tanpa segmen bahasa
@@ -743,7 +746,7 @@
     // Tautan Bahasa Indonesia
     $indonesia_url = base_url($clean_url);
     ?>
-      <!-- header -->
+    <!-- header -->
     <header class="header" style="background-color: #F2BF02;">
         <div class="container">
             <div class="head d-flex justify-content-between align-items-center" style="width: 100%; height: 40px;">
@@ -812,7 +815,7 @@
             <div class="collapse navbar-collapse line" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto d-flex align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang.'/'.$homeLink) ?>">
+                        <a class="nav-link" href="<?= base_url($lang . '/' . $homeLink) ?>">
                             <?php echo lang('Blog.headerBeranda'); ?>
                         </a>
                     </li>
@@ -840,7 +843,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang.'/'.$buyersLink) ?>">
+                        <a class="nav-link" href="<?= base_url($lang . '/' . $buyersLink) ?>">
                             <?php echo lang('Blog.headerBuyers'); ?></a>
                         </a>
                     </li>
@@ -854,17 +857,17 @@
                                 <ul class="dropdown-menu dropdown-menu-light">
                                     <li>
                                         <a class="dropdown-item nav-link" href="<?= base_url($lang .  '/' . $kalkulatorLink) ?>">
-                                            Kalkulator Harga Ekspor
+                                            <?php echo lang('Blog.headerApp1'); ?></a>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url('mpm') ?>">
-                                            Marketing Progress Monitoring
+                                        <a class="dropdown-item nav-link" href="<?= base_url($lang.'/'.$mpmLink) ?>">
+                                            <?php echo lang('Blog.headerApp2'); ?></a>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url('sosmed-planner') ?>">
-                                            Sosial Media Planner
+                                        <a class="dropdown-item nav-link" href="<?= base_url($lang.'/'.$sosmedPlannerLink) ?>">
+                                            <?php echo lang('Blog.headerApp5'); ?></a>
                                         </a>
                                     </li>
                                 </ul>
@@ -989,12 +992,12 @@
                         <h5 class="mt-4"><b>Aplikasi</b></h5>
                         <div class="list-unstyled pt-2">
                             <p>
-                                <a href="<?= base_url('kalkulator-ekspor') ?>" class="footer-link">
+                                <a href="<?= base_url($lang.'/'.$kalkulatorLink) ?>" class="footer-link">
                                     Kalkulator Harga Ekspor
                                 </a>
                             </p>
                             <p>
-                                <a href="<?= base_url('mpm') ?>" class="footer-link">
+                                <a href="<?= base_url($lang.'/'.$mpmLink) ?>" class="footer-link">
                                     Marketing Progress Monitoring
                                 </a>
                             </p>
