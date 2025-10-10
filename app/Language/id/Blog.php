@@ -134,6 +134,17 @@ return [
     'picEmail' => 'Email PIC: ',
     'picPhone' => 'Nomor HP PIC: ',
 
+    // halaman edit profile
+    'editprofiledeskripsi' => 'Anda Dapat mengubah data diri anda.',
+    'informasiakun' => 'Informasi Akun',
+    'profilperusahaan' => 'Profil Perusahaan',
+    'namaperusahaan' => 'Nama Perusahaan',
+    'deskripsiperusahaanid' => 'Deskripsi Perusahaan (Indonesia)',
+    'deskripsiperusahaanen' => 'Deskripsi Perusahaan (English)',
+    'tahundibentuk' => 'Pilih Tahun Dibentuk',
+    'editkategoriprodukid' => 'Kategori Produk (Indonesia)',
+    'editkategoriproduken' => 'Kategori Produk (English)',
+    'editpilihkategori' => 'Pilih Kategori Produk',
 
 
     //halaman pendaftaran
