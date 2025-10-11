@@ -128,6 +128,18 @@ return [
     'picEmail' => 'PIC Email: ',
     'picPhone' => 'PIC Phone Number: ',
 
+    // halaman edit profile
+    'editprofiledeskripsi' => 'You can change your personal data.',
+    'informasiakun' => 'Account Information',
+    'profilperusahaan' => 'Company Profile',
+    'namaperusahaan' => 'Company name',
+    'deskripsiperusahaanid' => 'Company Description (Indonesia)',
+    'deskripsiperusahaanen' => 'Company Description (English)',
+    'tahundibentuk' => 'Select Year Founded',
+    'editkategoriprodukid' => 'Product Category (Indonesia)',
+    'editkategoriproduken' => 'Product Category (English)',
+    'editpilihkategori' => 'Select Product Category',
+
 
     'populerMember' => 'POPULAR MEMBERS',
     'topMemberSpotlight' => 'TOP MEMBER',

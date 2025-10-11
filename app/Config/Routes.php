@@ -166,10 +166,6 @@ $routes->group('id', ['filter' => 'auth', 'admin'], function ($routes) {
 
     $routes->post('sosmed-planner/konten-planner/tambah', 'KomunitasEkspor::tambah_kontenplanner');
 
-
-
-
-
     // Member - Data Member
     $routes->get('data-member', 'KomunitasEkspor::member_data_member');
     $routes->get('detail-member/(:any)', 'KomunitasEkspor::member_detail_member/$1');
@@ -196,6 +192,15 @@ $routes->group('id', ['filter' => 'auth', 'admin'], function ($routes) {
 
     // Member - Kelayakan Investasi
     // $routes->get('kelayakan-investasi', 'KomunitasEkspor::kelayakan_investasi');
+});
+
+$routes->group('en', ['filter' => 'auth', 'admin'], function ($routes) {
+    $routes->get('edit-profile-en', 'KomunitasEkspor::edit_profile');
+    $routes->post('update-foto-profil', 'KomunitasEkspor::updateFotoProfil');
+    $routes->post('ubah-informasi-akun', 'KomunitasEkspor::ubah_informasi_akun');
+    $routes->post('ubah-profil-perusahaan', 'KomunitasEkspor::ubah_profil_perusahaan');
+
+    $routes->get('announcement', 'KomunitasEkspor::pengumuman');
 });
 
 // $routes->group('', ['filter' => 'premium'], function ($routes) {

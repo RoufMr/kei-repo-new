@@ -699,7 +699,8 @@
     $kalkulatorLink = ($lang_segment === 'en/') ? 'calculator-export' : 'kalkulator-ekspor';
     $mpmLink = ($lang_segment === 'en/') ? 'mpm' : 'mpm';
     $sosmedPlannerLink = ($lang_segment === 'en/') ? 'sosmed-planner' : 'sosmed-planner';
-    $pengumumanLink = ($lang_segment === 'en/') ? 'announcement' : 'pengumuman';
+    $editprofileLink = ($lang_segment === 'en/') ? 'edit-profile-en' : 'edit-profile';
+    $pengumumanLink = ($lang_segment === 'en/') ? 'announcement' : 'pengumunan';
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
@@ -713,7 +714,8 @@
         'data-buyers' => 'data-buyers',
         'kalkulator-ekspor' => 'calculator-export',
         'sosmed-planner' => 'sosmed-planner',
-        'pengumuman' => 'announcement',
+        'edit-profile' => 'edit-profile-en',
+        'pengumuman' => 'announcement'
     ];
 
     // Ambil bagian dari URL tanpa segmen bahasa
@@ -740,7 +742,6 @@
     if (!empty($query_string)) {
         $clean_url .= '?' . $query_string;
     }
-
 
     // Tautan Bahasa Inggris
     $english_url = base_url($clean_url);
@@ -803,7 +804,6 @@
         </div>
     </header>
     <!-- header end -->
-
 
     <!-- start navbar -->
     <nav class="navbar navbar-custom navbar-expand-lg sticky-top" style="background-color: #03AADE;">
@@ -877,13 +877,13 @@
                         </ul>
                     </div>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang . '/' . $pengumumanLink) ?>">
-                            <?php echo lang('Blog.headerPengumuman'); ?></a>
+                        <a class="nav-link" href="<?= base_url($lang. '/' . $pengumumanLink) ?>">
+                            Pengumuman
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('edit-profile') ?>">
-                            <?php echo lang('Blog.headerEditProfile'); ?></a>
+                        <a class="nav-link" href="<?= base_url($lang. '/' . $editprofileLink); ?>">
+                            Edit Profile
                         </a>
                     </li>
                     <div class="border-top" style="width: 1.5px; height: 40px; background-color: white; margin: 0 23px;"></div>
@@ -910,8 +910,6 @@
                             <button type="button" class="btn btn-outline-light">Login</button>
                         </a>
                     <?php endif; ?>
-
-
                 </ul>
             </div>
         </div>

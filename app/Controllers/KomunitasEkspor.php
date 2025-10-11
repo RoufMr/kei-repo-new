@@ -1679,7 +1679,7 @@ class KomunitasEkspor extends BaseController
         $newFileName = $file->getRandomName(); // Nama file baru
 
         if ($file->isValid() && !$file->hasMoved()) {
-            $file->move('img', $newFileName); // Simpan file baru
+            $file->move('uploads/foto_usaha/', $newFileName); // Simpan file baru
         } else {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat mengupload file.');
         }
@@ -1693,15 +1693,15 @@ class KomunitasEkspor extends BaseController
         if ($updateStatus) {
             // Hapus file lama jika ada
             $oldFileName = $member['foto_profil'];
-            if ($oldFileName && file_exists('img/' . $oldFileName)) {
-                unlink('img/' . $oldFileName);
+            if ($oldFileName && file_exists('uploads/foto_usaha/' . $oldFileName)) {
+                unlink('uploads/foto_usaha/' . $oldFileName);
             }
 
-            return redirect()->to('/edit-profile')->with('success', 'Foto profil berhasil diperbarui.');
+            return redirect()->to('id/edit-profile')->with('success', 'Foto profil berhasil diperbarui.');
         } else {
             // Jika update gagal, hapus file baru
-            if (file_exists('img/' . $newFileName)) {
-                unlink('img/' . $newFileName);
+            if (file_exists('uploads/foto_usaha/' . $newFileName)) {
+                unlink('uploads/foto_usaha/' . $newFileName);
             }
 
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
@@ -1725,7 +1725,7 @@ class KomunitasEkspor extends BaseController
             $model_member->update($user_id, $data);
         }
 
-        return redirect()->to('/edit-profile');
+        return redirect()->to('id/edit-profile');
     }
 
     public function ubah_profil_perusahaan()
@@ -1790,7 +1790,7 @@ class KomunitasEkspor extends BaseController
         // Update member's profile
         $model_member->update($user_id, $data);
 
-        return redirect()->to('/edit-profile');
+        return redirect()->to('id/edit-profile');
     }
 
 
@@ -2912,6 +2912,9 @@ class KomunitasEkspor extends BaseController
 
         $data['webprofile'] = $webprofile;
         $data['pengumuman'] = $pengumuman;
+
+        $lang = session()->get('lang') ?? 'id';
+        $data['lang'] = $lang;
 
         return view('member/pengumuman/pengumuman', $data);
     }

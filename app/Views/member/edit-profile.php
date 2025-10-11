@@ -233,7 +233,7 @@
 <div class="container mt-4">
     <div class="judul text-center mt-5">
         <h2>Edit Profile</h2>
-        <p>Anda Dapat mengubah data diri anda</p>
+        <p><?= lang('Blog.editprofiledeskripsi'); ?></p>
     </div>
     <div class="card p-4 shadow-sm mt-5">
         <?php if (session()->getFlashdata('error')): ?>
@@ -249,12 +249,12 @@
         <?php endif; ?>
 
         <!-- Form untuk upload foto -->
-        <form action="<?= base_url('/update-foto-profil'); ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= base_url('id/update-foto-profil'); ?>" method="post" enctype="multipart/form-data">
             <?= csrf_field(); ?>
 
             <div class="text-center mb-3 shadow lingkaran">
                 <!-- Image Preview -->
-                <img id="profileImage" src="<?= base_url('img/' . ($member['foto_profil'] ?? 'default.jpg')); ?>"
+                <img id="profileImage" src="<?= base_url('uploads/foto_usaha/' . ($member['foto_profil'])); ?>"
                     alt="Foto Profil">
             </div>
 
@@ -292,11 +292,11 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link active custom-tab" id="informasi-tab" data-bs-toggle="tab"
                     data-bs-target="#informasi" type="button" role="tab" aria-controls="informasi"
-                    aria-selected="true">Informasi Akun</button>
+                    aria-selected="true"><?= lang('Blog.informasiakun'); ?></button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link custom-tab" id="profil-tab" data-bs-toggle="tab" data-bs-target="#profil"
-                    type="button" role="tab" aria-controls="profil" aria-selected="false">Profil Perusahaan</button>
+                    type="button" role="tab" aria-controls="profil" aria-selected="false"><?= lang('Blog.profilperusahaan'); ?></button>
             </li>
         </ul>
 
@@ -304,13 +304,13 @@
         <div class="tab-content mt-4" id="myTabContent">
             <!-- Informasi Perusahaan -->
             <div class="tab-pane fade show active" id="informasi" role="tabpanel" aria-labelledby="informasi-tab">
-                <h5 class="mb-4">Informasi Akun</h5>
-                <form action="<?= base_url('/ubah-informasi-akun'); ?>" method="POST" enctype="multipart/form-data">
+                <h5 class="mb-4"><?= lang('Blog.informasiakun'); ?></h5>
+                <form action="<?= base_url('id/ubah-informasi-akun'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="text" class="form-control" id="password" name="password"
-                                placeholder="Masukkan Password">
+                                placeholder="<?= lang('Blog.placeholderPassword'); ?>">
                         </div>
                         <button type="submit" class="btn btn-custom" style="background-color: #03AADE;">Submit</button>
                     </div>
@@ -319,11 +319,11 @@
 
             <!-- Profil Perusahaan -->
             <div class="tab-pane fade" id="profil" role="tabpanel" aria-labelledby="profil-tab">
-                <h5 class="mb-4">Profil Perusahaan</h5>
-                <form action="<?= base_url('/ubah-profil-perusahaan'); ?>" method="POST" enctype="multipart/form-data">
+                <h5 class="mb-4"><?= lang('Blog.profilperusahaan'); ?></h5>
+                <form action="<?= base_url('id/ubah-profil-perusahaan'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
+                            <label for="nama_perusahaan" class="form-label"><?= lang('Blog.namaperusahaan'); ?></label>
                             <input type="text"
                                 class="form-control <?= isset($errors['nama_perusahaan']) ? 'is-invalid' : '' ?>"
                                 id="nama_perusahaan" name="nama_perusahaan"
@@ -334,7 +334,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="deskripsi_perusahaan" class="form-label">Deskripsi Perusahaan ID</label>
+                            <label for="deskripsi_perusahaan" class="form-label"><?= lang('Blog.deskripsiperusahaanid'); ?></label>
                             <textarea
                                 class="form-control <?= isset($errors['deskripsi_perusahaan']) ? 'is-invalid' : '' ?>"
                                 id="deskripsi_perusahaan" name="deskripsi_perusahaan"
@@ -345,7 +345,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="deskripsi_perusahaan_en" class="form-label">Deskripsi Perusahaan EN</label>
+                            <label for="deskripsi_perusahaan_en" class="form-label"><?= lang('Blog.deskripsiperusahaanen'); ?></label>
                             <textarea
                                 class="form-control <?= isset($errors['deskripsi_perusahaan_en']) ? 'is-invalid' : '' ?>"
                                 id="deskripsi_perusahaan_en" name="deskripsi_perusahaan_en"
@@ -356,7 +356,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="alamat_perusahaan" class="form-label">Alamat Perusahaan</label>
+                            <label for="alamat_perusahaan" class="form-label"><?= lang('Blog.alamatperusahaan'); ?></label>
                             <textarea
                                 class="form-control <?= isset($errors['alamat_perusahaan']) ? 'is-invalid' : '' ?>"
                                 id="alamat_perusahaan" name="alamat_perusahaan" placeholder="Masukkan Alamat Perusahaan"
@@ -366,7 +366,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="alamat_website" class="form-label">Alamat Website</label>
+                            <label for="alamat_website" class="form-label"><?= lang('Blog.alamatwebperusahaan'); ?></label>
                             <textarea class="form-control <?= isset($errors['alamat_website']) ? 'is-invalid' : '' ?>"
                                 id="alamat_website" name="alamat_website" placeholder="Masukkan Alamat Website"
                                 required><?= old('alamat_website', $member['alamat_website']) ?></textarea>
@@ -375,11 +375,11 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <label for="tahun_berdiri" class="form-label">Tahun Dibentuk</label>
+                            <label for="tahun_berdiri" class="form-label"><?= lang('Blog.tahunberdiri'); ?></label>
                             <select id="tahun_berdiri" name="tahun_dibentuk"
                                 class="form-control <?= isset($errors['tahun_dibentuk']) ? 'is-invalid' : '' ?>"
                                 required>
-                                <option value="" disabled selected>-- Pilih Tahun Dibentuk --</option>
+                                <option value="" disabled selected>-- <?= lang('Blog.tahundibentuk'); ?> --</option>
                                 <?php
                                 $currentYear = date('Y');
                                 for ($year = $currentYear; $year >= 1900; $year--) {
@@ -394,11 +394,11 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="kategori_produk" class="form-label">Kategori Produk ID</label>
+                            <label for="kategori_produk" class="form-label"><?= lang('Blog.editkategoriprodukid'); ?></label>
                             <select id="kategori_produk" name="kategori_produk"
                                 class="form-control <?= isset($errors['kategori_produk']) ? 'is-invalid' : '' ?>"
                                 required>
-                                <option value="" disabled selected>-- Pilih Kategori Produk --</option>
+                                <option value="" disabled selected>-- <?= lang('Blog.editpilihkategori'); ?> --</option>
                                 <?php foreach ($kategori_induk as $item): ?>
                                     <optgroup label='<?= $item['nama_kategori_induk'] ?>'>
                                         <?php if (!empty($kategori_produk_terkelompok[$item['id_kategori_induk']])): ?>
@@ -417,11 +417,11 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="kategori_produk_en" class="form-label">Kategori Produk EN</label>
+                            <label for="kategori_produk_en" class="form-label"><?= lang('Blog.editkategoriproduken'); ?></label>
                             <select id="kategori_produk_en" name="kategori_produk_en"
                                 class="form-control <?= isset($errors['kategori_produk_en']) ? 'is-invalid' : '' ?>"
                                 required>
-                                <option value="" disabled selected>-- Pilih Kategori Produk --</option>
+                                <option value="" disabled selected>-- <?= lang('Blog.editpilihkategori'); ?> --</option>
                                 <?php foreach ($kategori_induk as $item): ?>
                                     <optgroup label='<?= $item['nama_kategori_induk_en'] ?>'>
                                         <?php if (!empty($kategori_produk_terkelompok[$item['id_kategori_induk']])): ?>
@@ -440,7 +440,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="produk_utama" class="form-label">Produk Utama ID</label>
+                            <label for="produk_utama" class="form-label"><?= lang('Blog.produkperusahaan'); ?></label>
                             <textarea class="form-control <?= isset($errors['produk_utama']) ? 'is-invalid' : '' ?>"
                                 id="produk_utama" name="produk_utama" placeholder="Masukkan Produk Utama"
                                 required><?= old('produk_utama', $member['produk_utama']) ?></textarea>
@@ -449,7 +449,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="produk_utama_en" class="form-label">Produk Utama EN</label>
+                            <label for="produk_utama_en" class="form-label"><?= lang('Blog.produkperusahaanen'); ?></label>
                             <textarea class="form-control <?= isset($errors['produk_utama_en']) ? 'is-invalid' : '' ?>"
                                 id="produk_utama_en" name="produk_utama_en"
                                 placeholder="Masukkan Produk Utama (Inggris)"
@@ -459,7 +459,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="pic" class="form-label">Nama PIC</label>
+                            <label for="pic" class="form-label"><?= lang('Blog.pic'); ?></label>
                             <input type="text" class="form-control <?= isset($errors['pic']) ? 'is-invalid' : '' ?>"
                                 id="pic" name="pic" value="<?= old('pic', $member['pic']) ?>" placeholder="Masukkan PIC"
                                 required>
@@ -468,7 +468,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="pic_phone" class="form-label">Nomor HP PIC</label>
+                            <label for="pic_phone" class="form-label"><?= lang('Blog.noPIC'); ?></label>
                             <input type="text"
                                 class="form-control <?= isset($errors['pic_phone']) ? 'is-invalid' : '' ?>"
                                 id="pic_phone" name="pic_phone" value="<?= old('pic_phone', $member['pic_phone']) ?>"
@@ -479,7 +479,7 @@
                         </div>
 
                         <div class="col-md-12 mb-3">
-                            <label for="email" class="form-label">Email PIC</label>
+                            <label for="email" class="form-label"><?= lang('Blog.emailPendaftaran'); ?></label>
                             <input type="text" class="form-control" id="email" name="email" value="<?= $member['email'] ?>" placeholder="Masukkan Email">
                         </div>
 
