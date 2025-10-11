@@ -47,7 +47,7 @@
                         <p class="text-muted"><small><i class="far fa-calendar-alt"> </i> <?= date('d F Y', strtotime($item['created_at'])); ?></small></p>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="<?= base_url('/detail-pengumuman/' . $item['slug']); ?>" class="btn btn-custom" style="background-color: #03AADE;">Baca
+                        <a href="<?= base_url($lang.'/detail-pengumuman/' . $item['slug']); ?>" class="btn btn-custom" style="background-color: #03AADE;">Baca
                             Selengkapnya</a>
                     </div>
                 </div>

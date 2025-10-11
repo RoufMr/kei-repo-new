@@ -213,7 +213,7 @@ return [
     'noPIC' => 'Nomor HP PIC',
     'placeholderNoPIC' => 'Masukkan Nomor HP PIC',
     'profilpic' => 'Kontak',
-    
+
     'uploadbuktitransfer' => 'Upload Bukti Transfer',
     'rekeningadmin' => 'Rekening Admin',
     'nomorrekeningadmin' => 'Nomor Rekening',
@@ -269,6 +269,15 @@ return [
     'wantToOpenApp3' => 'Mau Buka Aplikasi Audit Website?',
     'wantToOpenApp4' => 'Mau Buka Aplikasi Kelayakan Investasi?',
     'wantToOpenDB' => 'Mau Buka Fitur Data Buyers?',
+    'error_validation'    => 'Input tidak valid. Mohon lengkapi semua kolom.',
+    'success_update' => 'berhasil diubah!',
+    'success_add'  => 'Berhasil ditambahkan!',
+    'success_delete' => 'Komponen berhasil dihapus!',
+    'error_update'   => 'Gagal mengubah. Silakan coba lagi.',
+    'title_success'       => 'Berhasil!',
+    'title_error'         => 'Gagal!',
+    'ok_button'           => 'OK',
+    'close_button'        => 'Tutup',
 
     'letsGoRegisterSA' => 'Yuk Daftar Member Dulu!',
     'letsGoRegisterSAPremium' => 'Yuk Daftar Member Premium Dulu!',

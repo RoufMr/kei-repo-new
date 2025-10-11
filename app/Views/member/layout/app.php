@@ -844,11 +844,11 @@
                             <?php echo lang('Blog.headerMember'); ?></a>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="<?= base_url($lang . '/' . $buyersLink) ?>">
                             <?php echo lang('Blog.headerBuyers'); ?></a>
                         </a>
-                    </li>
+                    </li> -->
                     <div id="navbarNavDarkDropdown">
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
@@ -863,12 +863,12 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url($lang.'/'.$mpmLink) ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url($lang . '/' . $mpmLink) ?>">
                                             <?php echo lang('Blog.headerApp2'); ?></a>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url($lang.'/'.$sosmedPlannerLink) ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url($lang . '/' . $sosmedPlannerLink) ?>">
                                             <?php echo lang('Blog.headerApp5'); ?></a>
                                         </a>
                                     </li>
@@ -978,26 +978,26 @@
                     <div class="col-md-2">
                         <h5 class="mt-4"><b>Menu</b></h5>
                         <div class="list-unstyled pt-2">
-                            <p><a href="<?= base_url('member-beranda') ?>" class="footer-link">Beranda</a></p>
-                            <p><a href="<?= base_url('member-tentang-kami') ?>" class="footer-link">Tentang Kami</a></p>
-                            <p><a href="<?= base_url('member-materi-ekspor') ?>" class="footer-link">Materi Ekspor</a></p>
-                            <p><a href="<?= base_url('member-video-tutorial') ?>" class="footer-link">Video Tutorial</a></p>
-                            <p><a href="<?= base_url('data-member') ?>" class="footer-link">Data Member</a></p>
-                            <p><a href="<?= base_url('data-buyers') ?>" class="footer-link">Data Buyers</a></p>
-                            <p><a href="<?= base_url('pengumuman') ?>" class="footer-link">Pengumuman</a></p>
-                            <p><a href="<?= base_url('edit-profile') ?>" class="footer-link">Edit Profile</a></p>
+                            <p><a href="<?= base_url($lang . '/member-beranda') ?>" class="footer-link"><?php echo lang('Blog.headerBeranda'); ?></a></p>
+                            <p><a href="<?= base_url($lang . '/member-tentang-kami') ?>" class="footer-link"><?php echo lang('Blog.headerTentang'); ?> </a></p>
+                            <p><a href="<?= base_url($lang . '/member-materi-ekspor') ?>" class="footer-link"><?php echo lang('Blog.headerMateri'); ?></a></p>
+                            <p><a href="<?= base_url($lang . '/member-video-tutorial') ?>" class="footer-link"><?php echo lang('Blog.headerVideo'); ?></a></p>
+                            <p><a href="<?= base_url($lang . '/data-member') ?>" class="footer-link"><?php echo lang('Blog.headerMember'); ?></a></a></p>
+                            <!-- <p><a href="<?= base_url($lang . '/data-buyers') ?>" class="footer-link"><?php echo lang('Blog.headerBuyers'); ?></a></a></p> -->
+                            <p><a href="<?= base_url($lang . '/pengumuman') ?>" class="footer-link"> <?php echo lang('Blog.headerPengumuman'); ?></a></a></p>
+                            <p><a href="<?= base_url($lang . '/edit-profile') ?>" class="footer-link"><?php echo lang('Blog.headerEditProfile'); ?></a></a></p>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <h5 class="mt-4"><b>Aplikasi</b></h5>
                         <div class="list-unstyled pt-2">
                             <p>
-                                <a href="<?= base_url($lang.'/'.$kalkulatorLink) ?>" class="footer-link">
+                                <a href="<?= base_url($lang . '/' . $kalkulatorLink) ?>" class="footer-link">
                                     Kalkulator Harga Ekspor
                                 </a>
                             </p>
                             <p>
-                                <a href="<?= base_url($lang.'/'.$mpmLink) ?>" class="footer-link">
+                                <a href="<?= base_url($lang . '/' . $mpmLink) ?>" class="footer-link">
                                     Marketing Progress Monitoring
                                 </a>
                             </p>
@@ -1031,6 +1031,32 @@
             behavior: 'smooth'
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (session()->getFlashdata('success')) : ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: '<?= lang('Blog.title_success'); ?>',
+                    text: '<?= esc(session()->getFlashdata('success')); ?>',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            <?php endif; ?>
+
+            <?php if (session()->getFlashdata('error')) : ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: '<?= lang('Blog.title_error'); ?>',
+                    text: '<?= esc(session()->getFlashdata('error')); ?>',
+                    confirmButtonText: '<?= lang('Blog.close_button'); ?>',
+                    confirmButtonColor: '#d33'
+                });
+            <?php endif; ?>
+        });
+    </script>
+
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js"></script>
