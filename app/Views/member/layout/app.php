@@ -700,7 +700,7 @@
     $mpmLink = ($lang_segment === 'en/') ? 'mpm' : 'mpm';
     $sosmedPlannerLink = ($lang_segment === 'en/') ? 'sosmed-planner' : 'sosmed-planner';
     $editprofileLink = ($lang_segment === 'en/') ? 'edit-profile-en' : 'edit-profile';
-    $pengumumanLink = ($lang_segment === 'en/') ? 'announcement' : 'pengumunan';
+    $pengumumanLink = ($lang_segment === 'en/') ? 'announcement' : 'pengumuman';
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
@@ -877,12 +877,12 @@
                         </ul>
                     </div>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang. '/' . $pengumumanLink) ?>">
+                        <a class="nav-link" href="<?= base_url($lang . '/' . $pengumumanLink) ?>">
                             Pengumuman
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang. '/' . $editprofileLink); ?>">
+                        <a class="nav-link" href="<?= base_url($lang . '/' . $editprofileLink); ?>">
                             Edit Profile
                         </a>
                     </li>
