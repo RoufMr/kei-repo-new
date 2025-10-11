@@ -700,7 +700,7 @@
     $mpmLink = ($lang_segment === 'en/') ? 'mpm' : 'mpm';
     $sosmedPlannerLink = ($lang_segment === 'en/') ? 'sosmed-planner' : 'sosmed-planner';
     $editprofileLink = ($lang_segment === 'en/') ? 'edit-profile-en' : 'edit-profile';
-    $pengumumanLink = ($lang_segment === 'en/') ? 'announcement' : 'pengumunan';
+    $pengumumanLink = ($lang_segment === 'en/') ? 'announcement' : 'pengumuman';
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
@@ -863,12 +863,12 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url($lang.'/'.$mpmLink) ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url($lang . '/' . $mpmLink) ?>">
                                             <?php echo lang('Blog.headerApp2'); ?></a>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url($lang.'/'.$sosmedPlannerLink) ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url($lang . '/' . $sosmedPlannerLink) ?>">
                                             <?php echo lang('Blog.headerApp5'); ?></a>
                                         </a>
                                     </li>
@@ -877,12 +877,12 @@
                         </ul>
                     </div>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang. '/' . $pengumumanLink) ?>">
+                        <a class="nav-link" href="<?= base_url($lang . '/' . $pengumumanLink) ?>">
                             Pengumuman
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang. '/' . $editprofileLink); ?>">
+                        <a class="nav-link" href="<?= base_url($lang . '/' . $editprofileLink); ?>">
                             Edit Profile
                         </a>
                     </li>
@@ -992,12 +992,12 @@
                         <h5 class="mt-4"><b>Aplikasi</b></h5>
                         <div class="list-unstyled pt-2">
                             <p>
-                                <a href="<?= base_url($lang.'/'.$kalkulatorLink) ?>" class="footer-link">
+                                <a href="<?= base_url($lang . '/' . $kalkulatorLink) ?>" class="footer-link">
                                     Kalkulator Harga Ekspor
                                 </a>
                             </p>
                             <p>
-                                <a href="<?= base_url($lang.'/'.$mpmLink) ?>" class="footer-link">
+                                <a href="<?= base_url($lang . '/' . $mpmLink) ?>" class="footer-link">
                                     Marketing Progress Monitoring
                                 </a>
                             </p>
