@@ -91,7 +91,7 @@
                             <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
                                 <div class="thumbnail-wrapper">
                                     <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
-                                        alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
+                                        alt="<?= esc($video['judul_video']); ?>"
                                         class="img-fluid rounded shadow-sm mb-3" />
                                     <div class="play-button"></div>
                                 </div>
@@ -117,7 +117,7 @@
 
                     <?php foreach ($related_videos as $related_video): ?>
                         <div class="card bg-white border border-top-0 p-3 rounded shadow-sm mb-3">
-                            <a href="<?= base_url($lang.'/member-video-tutorial-detail/' . esc($related_video['slug'])); ?>" class="text-decoration-none">
+                            <a href="<?= base_url('/video-tutorial-detail/' . esc($related_video['slug'])); ?>" class="text-decoration-none">
                                 <div class="d-flex align-items-center bg-white rounded border border-light overflow-hidden shadow-sm">
                                     <img class="img-fluid" style="object-fit: cover; width: 100px; height: 100px;" src="<?= base_url('/img/' . esc($related_video['thumbnail'])); ?>" alt="Thumbnail Video">
                                     <div class="w-100 h-100 px-3 d-flex flex-column justify-content-center">

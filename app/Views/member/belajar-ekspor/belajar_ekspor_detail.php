@@ -187,7 +187,7 @@
                             </div>
                             <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><?= $item['judul_belajar_ekspor']; ?></h5>
                             <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><?= $item['deskripsi_belajar_ekspor']; ?></p>
-                            <a href="<?= base_url($lang . '/member-materi-ekspor-detail/' . $item['slug']); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">Baca Selengkapnya</a>
+                            <a href="<?= base_url('/materi-ekspor-detail/' . $item['slug']); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">Baca Selengkapnya</a>
                         </div>
                     </div>
                 </div>

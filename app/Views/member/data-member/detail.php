@@ -130,7 +130,7 @@
             <!-- Badge with Code Referral -->
             <div class="text-center mb-3">
                 <span class="badge badge-lg bg-light text-dark p-2" style="font-size: 18px;">
-                    <?php echo lang('Blog.referralCode') ?><?= $member['username'] ?>
+                    <?php echo lang('Blog.referralCode') ?><?= esc($member['username']) ?>
                 </span>
             </div>
 
@@ -166,7 +166,7 @@
                                     <strong>
                                         <?php echo lang('Blog.companyName') ?>
                                     </strong>
-                                    <?= $member['nama_perusahaan'] ?>
+                                    <?=esc( $member['nama_perusahaan']) ?>
                                 </p>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                                     </strong>
                                 </label>
                                 <p class="mb-0">
-                                    <?= nl2br(htmlspecialchars(($lang == 'en') ? $member['deskripsi_perusahaan_en'] : $member['deskripsi_perusahaan'])) ?>
+                                    <?= nl2br(htmlspecialchars(esc($member['deskripsi_perusahaan']))) ?>
                                 </p>
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                                     <strong>
                                         <?php echo lang('Blog.yearEstablished') ?>
                                     </strong>
-                                    <?= $member['tahun_dibentuk'] ?>
+                                    <?= esc($member['tahun_dibentuk'] )?>
                                 </p>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
                                     <strong>
                                         <?php echo lang('Blog.companyAddress') ?>
                                     </strong>
-                                    <?= $member['alamat_perusahaan'] ?>
+                                    <?=esc( $member['alamat_perusahaan'] )?>
                                     <!-- harusnya 'alamat_perusahaan' -->
                                 </p>
                             </div>
@@ -213,7 +213,7 @@
                                     <strong>
                                         <?php echo lang('Blog.mainProduct') ?>
                                     </strong>
-                                    <?= ($lang == 'en') ? $member['produk_utama_en'] : $member['produk_utama'] ?>
+                                    <?= esc($member['produk_utama']) ?>
                                 </p>
                             </div>
                         </div>
@@ -224,7 +224,7 @@
                                     <strong>
                                         <?php echo lang('Blog.productCategory') ?>
                                     </strong>
-                                    <?= ($lang == 'en') ? $member['kategori_produk_en'] : $member['kategori_produk'] ?>
+                                    <?= esc($member['kategori_produk']) ?>
                                 </p>
                             </div>
                         </div>
@@ -235,7 +235,7 @@
                                     <strong>
                                         <?php echo lang('Blog.websiteAddress') ?>
                                     </strong>
-                                    <?= $member['alamat_website'] ?>
+                                    <?= esc($member['alamat_website'] )?>
                                     <!-- harusnya 'alamat_website' -->
                                 </p>
                             </div>
@@ -255,7 +255,7 @@
                                     <strong>
                                         <?php echo lang('Blog.picName') ?>
                                     </strong>
-                                    <?= $member['pic'] ?>
+                                    <?= esc($member['pic'] )?>
                                 </p>
                             </div>
                         </div>
@@ -266,7 +266,7 @@
                                     <strong>
                                         <?php echo lang('Blog.picEmail') ?>
                                     </strong>
-                                    <?= $member['email'] ?>
+                                    <?= esc($member['email'] )?>
                                 </p>
                             </div>
                         </div>
@@ -277,7 +277,7 @@
                                     <strong>
                                         <?php echo lang('Blog.picPhone') ?>
                                     </strong>
-                                    <?= $member['pic_phone'] ?>
+                                    <?= esc($member['pic_phone']) ?>
                                 </p>
                             </div>
                         </div>
@@ -301,7 +301,7 @@
         <?php else: ?>
             <div class="d-flex flex-wrap justify-content-center">
                 <?php foreach ($members as $item): ?>
-                    <a href=" <?= base_url($lang.'/detail-member/' . $item['slug']); ?>" class="text-decoration-none" style="color: inherit;">
+                    <a href=" <?= base_url('/detail-member/' . $item['slug']); ?>" class="text-decoration-none" style="color: inherit;">
                         <div class="card hover-card mx-4 mb-5 shadow-sm" style=" width: 18rem; cursor: pointer; transition: transform 0.2s;">
                             <?php if (empty($item['foto_profil'])): ?>
                                 <img src="https://via.placeholder.com/500" class="card-img-top img-fluid member-img" alt="Member Photo" style="height: 220px;">

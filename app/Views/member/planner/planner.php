@@ -400,7 +400,7 @@
                                             data-bs-target="#editModal<?= $kp['id'] ?>">
                                             Edit
                                         </button>
-                                        <a href="<?= base_url($lang.'/sosmed-planner/konten-pilar/hapus/' . $kp['id']) ?>"
+                                        <a href="<?= base_url('/sosmed-planner/konten-pilar/hapus/' . $kp['id']) ?>"
                                             class="btn btn-danger btn-sm"
                                             onclick="return confirm('Yakin ingin menghapus konten pilar ini?')">
                                             Hapus
@@ -414,7 +414,7 @@
                                                 <h5 class="modal-title" id="editModalLabel<?= $kp['id'] ?>">Edit Content Pillar</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                             </div>
-                                            <form action="<?= base_url($lang.'/sosmed-planner/konten-pilar/update/' . $kp['id']) ?>" method="post">
+                                            <form action="<?= base_url('/sosmed-planner/konten-pilar/update/' . $kp['id']) ?>" method="post">
                                                 <?= csrf_field() ?>
                                                 <div class="modal-body">
                                                     <div class="mb-3">
@@ -461,7 +461,7 @@
                             <h5 class="modal-title" id="tambahModalLabel">Tambah Content Pillar</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                         </div>
-                        <form action="<?= base_url($lang.'/sosmed-planner/konten-pilar/tambah') ?>" method="post" id="formTambahKonten">
+                        <form action="<?= base_url('/sosmed-planner/konten-pilar/tambah') ?>" method="post" id="formTambahKonten">
                             <?= csrf_field() ?>
                             <div class="modal-body">
                                 <div id="containerTambahKonten">
@@ -512,7 +512,7 @@
                                             data-bs-target="#editModalType<?= $kt['id'] ?>">
                                             Edit
                                         </button>
-                                        <a href="<?= base_url($lang.'/sosmed-planner/konten-type/hapus/' . $kt['id']) ?>"
+                                        <a href="<?= base_url('/sosmed-planner/konten-type/hapus/' . $kt['id']) ?>"
                                             class="btn btn-danger btn-sm"
                                             onclick="return confirm('Yakin ingin menghapus konten type ini?')">
                                             Hapus
@@ -527,7 +527,7 @@
                                                 <h5 class="modal-title" id="editModalTypeLabel<?= $kt['id'] ?>">Edit Content Type</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                             </div>
-                                            <form action="<?= base_url($lang.'/sosmed-planner/konten-type/update/' . $kt['id']) ?>" method="post">
+                                            <form action="<?= base_url('/sosmed-planner/konten-type/update/' . $kt['id']) ?>" method="post">
                                                 <?= csrf_field() ?>
                                                 <div class="modal-body">
                                                     <div class="mb-3">
@@ -570,7 +570,7 @@
                             <h5 class="modal-title" id="tambahModalTypeLabel">Tambah Content Type</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                         </div>
-                        <form action="<?= base_url($lang.'/sosmed-planner/konten-type/tambah') ?>" method="post" id="formTambahKontenType">
+                        <form action="<?= base_url('/sosmed-planner/konten-type/tambah') ?>" method="post" id="formTambahKontenType">
                             <?= csrf_field() ?>
                             <div class="modal-body">
                                 <div class="row mb-3">
@@ -616,7 +616,7 @@
                                             data-bs-target="#editModalPlatform<?= $kp['id'] ?>">
                                             Edit
                                         </button>
-                                        <a href="<?= base_url($lang.'/sosmed-planner/konten-platform/hapus/' . $kp['id']) ?>"
+                                        <a href="<?= base_url('/sosmed-planner/konten-platform/hapus/' . $kp['id']) ?>"
                                             class="btn btn-danger btn-sm"
                                             onclick="return confirm('Yakin ingin menghapus konten platform ini?')">
                                             Hapus
@@ -633,7 +633,7 @@
                                                 <h5 class="modal-title" id="editModalLabelPlatform<?= $kp['id'] ?>">Edit Content Platform</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                             </div>
-                                            <form action="<?= base_url($lang.'/sosmed-planner/konten-platform/update/' . $kp['id']) ?>" method="post">
+                                            <form action="<?= base_url('/sosmed-planner/konten-platform/update/' . $kp['id']) ?>" method="post">
                                                 <?= csrf_field() ?>
                                                 <div class="modal-body">
                                                     <div class="mb-3">
@@ -676,7 +676,7 @@
                             <h5 class="modal-title" id="tambahModalLabel">Tambah Content Platform</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                         </div>
-                        <form action="<?= base_url($lang.'/sosmed-planner/konten-platform/tambah') ?>" method="post" id="formTambahKontenPlatform">
+                        <form action="<?= base_url('/sosmed-planner/konten-platform/tambah') ?>" method="post" id="formTambahKontenPlatform">
                             <?= csrf_field() ?>
                             <div class="modal-body">
                                 <div class="row mb-3">
@@ -703,7 +703,7 @@
         <div class="card shadow p-3 m-2 col-12">
             <h3 class="text-center mb-4">Tambah Konten Baru</h3>
 
-            <form action="<?= base_url($lang.'/sosmed-planner/konten-planner/tambah') ?>" method="post" enctype="multipart/form-data">
+            <form action="<?= base_url('/sosmed-planner/konten-planner/tambah') ?>" method="post" enctype="multipart/form-data">
                 <div class="row d-flex">
                     <!-- Kolom Kiri: Preview Foto -->
                     <div class="col-6 text-center">
