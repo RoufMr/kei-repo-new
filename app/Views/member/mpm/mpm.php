@@ -144,7 +144,7 @@
                 <!-- Tambah Progres Form -->
                 <div class="tab-pane fade show active" id="tambah-progres" role="tabpanel"
                     aria-labelledby="tambah-progres-tab">
-                    <form action="<?= base_url($lang . '/mpm-add'); ?>" method="POST" enctype="multipart/form-data" class="col-md-6 mx-auto">
+                    <form action="<?= base_url( '/mpm-add'); ?>" method="POST" enctype="multipart/form-data" class="col-md-6 mx-auto">
                         <!-- Tanggal Kirim Email -->
                         <div class="mb-3">
                             <label for="tgl_kirim_email" class="form-label">Tanggal Kirim Email</label>
@@ -252,7 +252,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form id="editForm" action="<?= base_url($lang . '/mpm-edit'); ?>" method="POST" enctype="multipart/form-data">
+                            <form id="editForm" action="<?= base_url( '/mpm-edit'); ?>" method="POST" enctype="multipart/form-data">
                                 <div class="modal-body">
                                     <!-- ID MPM -->
                                     <input type="hidden" id="id_mpm" name="id_mpm">

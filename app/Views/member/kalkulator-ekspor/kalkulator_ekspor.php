@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <form action="<?= base_url($lang.'/ganti-satuan/' . $satuan[0]['id_satuan']); ?>" method="post"
+    <form action="<?= base_url('/ganti-satuan/' . $satuan[0]['id_satuan']); ?>" method="post"
         enctype="multipart/form-data">
         <div class="form-group mb-3">
             <label for="satuan">Satuan:</label>
@@ -182,7 +182,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <a href="<?= base_url($lang.'/komponen-exwork/delete/' . $item['id_exwork']) ?>"
+                                    <a href="<?= base_url('/komponen-exwork/delete/' . $item['id_exwork']) ?>"
                                         class="btn btn-outline-danger btn-sm align-center">
                                         <i class="bi bi-x-lg"></i> Hapus
                                     </a>
@@ -192,7 +192,7 @@
                     <?php endif; ?>
                     <tr>
                         <td colspan="4" class="text-center">
-                            <form action="<?= base_url($lang.'/komponen-exwork/add'); ?>" method="post"
+                            <form action="<?= base_url('/komponen-exwork/add'); ?>" method="post"
                                 enctype="multipart/form-data">
                                 <button type="button" class="btn btn-custom mb-2" style="background-color: #03AADE;"
                                     id="tambahKolomExwork">Tambah
@@ -272,7 +272,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <a href="<?= base_url($lang.'/komponen-fob/delete/' . $item['id_fob']) ?>"
+                                    <a href="<?= base_url('/komponen-fob/delete/' . $item['id_fob']) ?>"
                                         class="btn btn-outline-danger btn-sm align-center">
                                         <i class="bi bi-x-lg"></i> Hapus
                                     </a>
@@ -282,7 +282,7 @@
                     <?php endif; ?>
                     <tr>
                         <td colspan="4" class="text-center">
-                            <form action="<?= base_url($lang.'/komponen-fob/add'); ?>" method="post"
+                            <form action="<?= base_url('/komponen-fob/add'); ?>" method="post"
                                 enctype="multipart/form-data">
                                 <button type="button" class="btn btn-custom mb-2" style="background-color: #03AADE;"
                                     id="tambahKolomFOB">Tambah Komponen
@@ -362,7 +362,7 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="<?= base_url($lang.'/komponen-cfr/delete/' . $item['id_cfr']) ?>"
+                                        <a href="<?= base_url('/komponen-cfr/delete/' . $item['id_cfr']) ?>"
                                             class="btn btn-outline-danger btn-sm align-center">
                                             <i class="bi bi-x-lg"></i> Hapus
                                         </a>
@@ -372,7 +372,7 @@
                         <?php endif; ?>
                         <tr>
                             <td colspan="4" class="text-center">
-                                <form action="<?= base_url($lang.'/komponen-cfr/add'); ?>" method="post"
+                                <form action="<?= base_url('/komponen-cfr/add'); ?>" method="post"
                                     enctype="multipart/form-data">
                                     <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;"
                                         id="tambahKolomCFR">Tambah
@@ -452,7 +452,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="<?= base_url($lang.'/komponen-cif/delete/' . $item['id_cif']) ?>"
+                                        <a href="<?= base_url('/komponen-cif/delete/' . $item['id_cif']) ?>"
                                             class="btn btn-outline-danger btn-sm align-center">
                                             <i class="bi bi-x-lg"></i> Hapus
                                         </a>
@@ -462,7 +462,7 @@
                         <?php endif; ?>
                         <tr>
                             <td colspan="4" class="text-center">
-                                <form action="<?= base_url($lang.'/komponen-cif/add'); ?>" method="post"
+                                <form action="<?= base_url('/komponen-cif/add'); ?>" method="post"
                                     enctype="multipart/form-data">
                                     <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;"
                                         id="tambahKolomCIF">Tambah

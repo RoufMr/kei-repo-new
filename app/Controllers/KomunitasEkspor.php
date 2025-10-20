@@ -78,9 +78,7 @@ class KomunitasEkspor extends BaseController
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
 
-        $data['lang'] = $lang;
         $model_webprofile    = new WebProfile();
         $model_kontenpilar   = new KontenPilar();
         $model_kontentype    = new KontenType();
@@ -98,9 +96,7 @@ class KomunitasEkspor extends BaseController
 
     public function tambah_kontenplanner()
     {
-        $lang = session()->get('lang') ?? 'id';
 
-        $data['lang'] = $lang;
         $kontenplanner = new KontenPlanner();
         // Validasi form
         $validation = \Config\Services::validation();
@@ -144,7 +140,7 @@ class KomunitasEkspor extends BaseController
             'media'       => $fotoPath,
         ]);
 
-        return redirect()->to(base_url($lang . '/sosmed-planner'))
+        return redirect()->to(base_url('/sosmed-planner'))
             ->with('success', 'Konten berhasil ditambahkan!');
     }
 
@@ -207,9 +203,7 @@ class KomunitasEkspor extends BaseController
     public function tambah_kontenpilar()
     {
         $kontenpilar = new KontenPilar();
-        $lang = session()->get('lang') ?? 'id';
 
-        $data['lang'] = $lang;
         $data = [
             'nama' => $this->request->getPost('nama_kontenpilar'),
             'deskripsi' => $this->request->getPost('deskripsi_kontenpilar'),
@@ -217,14 +211,11 @@ class KomunitasEkspor extends BaseController
 
         $kontenpilar->insert($data);
 
-        return redirect()->to($lang . '/sosmed-planner');
+        return redirect()->to('/sosmed-planner');
     }
     public function update_kontenpilar($id)
     {
         $kontenpilarModel = new KontenPilar();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         if (!$this->validate([
             'nama'      => 'required',
@@ -238,19 +229,16 @@ class KomunitasEkspor extends BaseController
             'deskripsi' => $this->request->getPost('deskripsi')
         ]);
 
-        return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content pillar berhasil diperbarui');
+        return redirect()->to('/sosmed-planner')->with('success', 'Content pillar berhasil diperbarui');
     }
 
     public function hapus_kontenpilar($id)
     {
         $model = new \App\Models\KontenPilar();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to(base_url($lang . '/sosmed-planner'))
+            return redirect()->to(base_url('/sosmed-planner'))
                 ->with('success', 'Konten pilar berhasil dihapus.');
         } else {
             return redirect()->to(base_url('sosmed-planner'))
@@ -262,9 +250,6 @@ class KomunitasEkspor extends BaseController
     public function tambah_kontentype()
     {
         $model = new \App\Models\KontenType();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $data = [
             'nama' => $this->request->getPost('nama_kontentype'),
@@ -272,15 +257,12 @@ class KomunitasEkspor extends BaseController
 
         $model->insert($data);
 
-        return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content type berhasil ditambahkan');
+        return redirect()->to('/sosmed-planner')->with('success', 'Content type berhasil ditambahkan');
     }
 
     public function update_kontentype($id)
     {
         $model = new \App\Models\KontenType();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         if (!$this->validate([
             'nama' => 'required'
@@ -292,30 +274,24 @@ class KomunitasEkspor extends BaseController
             'nama' => $this->request->getPost('nama')
         ]);
 
-        return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content type berhasil diperbarui');
+        return redirect()->to('/sosmed-planner')->with('success', 'Content type berhasil diperbarui');
     }
 
     public function hapus_kontentype($id)
     {
         $model = new \App\Models\KontenType();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content type berhasil dihapus.');
+            return redirect()->to('/sosmed-planner')->with('success', 'Content type berhasil dihapus.');
         }
-        return redirect()->to($lang . '/sosmed-planner')->with('error', 'Content type tidak ditemukan.');
+        return redirect()->to('/sosmed-planner')->with('error', 'Content type tidak ditemukan.');
     }
 
     // ================= CONTENT PLATFORM =================
     public function tambah_kontenplatform()
     {
         $model = new \App\Models\KontenPlatform();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $data = [
             'nama' => $this->request->getPost('nama_kontenplatform'),
@@ -323,14 +299,11 @@ class KomunitasEkspor extends BaseController
 
         $model->insert($data);
 
-        return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content platform berhasil ditambahkan');
+        return redirect()->to('/sosmed-planner')->with('success', 'Content platform berhasil ditambahkan');
     }
 
     public function update_kontenplatform($id)
     {
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
         $model = new \App\Models\KontenPlatform();
 
         if (!$this->validate([
@@ -343,21 +316,18 @@ class KomunitasEkspor extends BaseController
             'nama' => $this->request->getPost('nama')
         ]);
 
-        return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content platform berhasil diperbarui');
+        return redirect()->to('/sosmed-planner')->with('success', 'Content platform berhasil diperbarui');
     }
 
     public function hapus_kontenplatform($id)
     {
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
         $model = new \App\Models\KontenPlatform();
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content platform berhasil dihapus.');
+            return redirect()->to('/sosmed-planner')->with('success', 'Content platform berhasil dihapus.');
         }
-        return redirect()->to($lang . '/sosmed-planner')->with('error', 'Content platform tidak ditemukan.');
+        return redirect()->to('/sosmed-planner')->with('error', 'Content platform tidak ditemukan.');
     }
 
 
@@ -560,47 +530,53 @@ class KomunitasEkspor extends BaseController
         $data['lang'] = $lang;
 
         $model_webprofile = new WebProfile();
-        $webprofile = $model_webprofile->findAll();
-        $data['webprofile'] = $webprofile;
+        $data['webprofile'] = $model_webprofile->findAll();
 
         $model_meta = new Meta();
         $meta = $model_meta
             ->select('meta_title_materi, meta_title_materi_en, meta_description_materi, meta_description_materi_en')
             ->first();
-        $data['meta'] = $meta;
+
+        // ✅ Meta global untuk halaman utama
+        $data['meta_title'] = ($lang === 'id')
+            ? ($meta['meta_title_materi'] ?? 'Belajar Ekspor')
+            : ($meta['meta_title_materi_en'] ?? 'Export Learning');
+
+        $data['meta_description'] = ($lang === 'id')
+            ? ($meta['meta_description_materi'] ?? 'Materi dan kategori belajar ekspor.')
+            : ($meta['meta_description_materi_en'] ?? 'Learning materials and export categories.');
 
         $belajarEksporModel = new BelajarEksporModel();
         $kategoriBelajarEksporModel = new KategoriBelajarEksporModel();
 
-        // Mengambil semua kategori
+        // Kategori dropdown
         $data['kategori_belajar_ekspor'] = $kategoriBelajarEksporModel->findAll();
 
-        $perPage = 9; // Number of items per page
-        $page = $this->request->getVar('page') ?? 1; // Get the current page number
+        $perPage = 9;
+        $page = $this->request->getVar('page') ?? 1;
 
         if ($slug) {
-            // Jika slug kategori dipilih, ambil data sesuai kategori
             $kategori = $kategoriBelajarEksporModel->where('slug', $slug)->first();
             if (!$kategori) {
                 return redirect()->to('/')->with('error', 'Kategori tidak ditemukan');
             }
-            // Mengambil data berdasarkan kategori dengan pagination
-            $data['belajar_ekspor'] = $belajarEksporModel->getByCategoryWithPagination($kategori['id_kategori_belajar_ekspor'], $perPage, $page);
 
-            // Mengirimkan data kategori yang dipilih ke view
+            $data['belajar_ekspor'] = $belajarEksporModel->getByCategoryWithPagination(
+                $kategori['id_kategori_belajar_ekspor'],
+                $perPage,
+                $page
+            );
             $data['active_category'] = $kategori['id_kategori_belajar_ekspor'];
         } else {
-            // Jika tidak ada slug, tampilkan semua data dengan pagination
             $data['belajar_ekspor'] = $belajarEksporModel->getAllWithCategoryAndPagination($perPage, $page);
-
-            // Tidak ada kategori yang aktif
             $data['active_category'] = null;
         }
 
-        $data['pager'] = $belajarEksporModel->pager; // Get the pager instance
+        $data['pager'] = $belajarEksporModel->pager;
 
         return view('belajar-ekspor/belajar_ekspor', $data);
     }
+
 
     public function search_belajar_ekspor()
     {
@@ -660,41 +636,49 @@ class KomunitasEkspor extends BaseController
         $data['lang'] = $lang;
 
         $model_webprofile = new WebProfile();
-        $webprofile = $model_webprofile->findAll();
-        $data['webprofile'] = $webprofile;
-
-        $model_meta = new Meta();
-        $meta = $model_meta
-            ->select('meta_title_materi, meta_title_materi_en, meta_description_materi, meta_description_materi_en')
-            ->first();
-        $data['meta'] = $meta;
+        $data['webprofile'] = $model_webprofile->findAll();
 
         $belajarEksporModel = new BelajarEksporModel();
         $kategoriBelajarEksporModel = new KategoriBelajarEksporModel();
 
-        // Mengambil kategori berdasarkan slug
-        $kategori = $kategoriBelajarEksporModel->where('slug', $slug)->orWhere('slug_en', $slug)->first();
+        // 🔹 Ambil kategori berdasarkan slug
+        $kategori = $kategoriBelajarEksporModel
+            ->where('slug', $slug)
+            ->orWhere('slug_en', $slug)
+            ->first();
+
         if (!$kategori) {
-            // Jika kategori tidak ditemukan, redirect atau tampilkan error
             return redirect()->to('/')->with('error', 'Kategori tidak ditemukan');
         }
 
-        $perPage = 9; // Number of items per page
-        $page = $this->request->getVar('page') ?? 1; // Get the current page number
+        // ✅ Meta dari kategori (langsung dari tabel kategori_belajar_ekspor)
+        $data['meta_title'] = ($lang === 'id')
+            ? ($kategori['meta_title'] ?: $kategori['nama_kategori'])
+            : ($kategori['meta_title_en'] ?: $kategori['nama_kategori_en']);
 
-        // Mengambil data belajar ekspor yang terkait dengan kategori yang dipilih
-        $data['belajar_ekspor'] = $belajarEksporModel->getSpecificByCategoryWithPagination($kategori['id_kategori_belajar_ekspor'], $perPage, $page);
+        $data['meta_description'] = ($lang === 'id')
+            ? ($kategori['meta_description'] ?: $kategori['nama_kategori'])
+            : ($kategori['meta_description_en'] ?: $kategori['nama_kategori_en']);
 
-        // Mengambil semua kategori untuk menu dropdown
+        $perPage = 9;
+        $page = $this->request->getVar('page') ?? 1;
+
+        // 🔹 Data belajar ekspor berdasarkan kategori
+        $data['belajar_ekspor'] = $belajarEksporModel->getSpecificByCategoryWithPagination(
+            $kategori['id_kategori_belajar_ekspor'],
+            $perPage,
+            $page
+        );
+
+        // 🔹 Semua kategori (dropdown)
         $data['kategori_belajar_ekspor'] = $kategoriBelajarEksporModel->findAll();
 
-        // Mengirim data kategori yang dipilih untuk ditampilkan di view
         $data['active_category'] = $kategori['id_kategori_belajar_ekspor'];
-
-        $data['pager'] = $belajarEksporModel->pager; // Get the pager instance
+        $data['pager'] = $belajarEksporModel->pager;
 
         return view('belajar-ekspor/belajar_ekspor', $data);
     }
+
 
     public function belajar_ekspor_detail($slug)
     {
@@ -1401,9 +1385,6 @@ class KomunitasEkspor extends BaseController
 
         $data['webprofile'] = $webprofile;
 
-        $lang = session()->get('lang') ?? 'id';
-        $data['lang'] = $lang;
-
         $model_member = new Member();
 
         // Set pagination
@@ -1435,9 +1416,6 @@ class KomunitasEkspor extends BaseController
         $webprofile = $model_webprofile->findAll();
 
         $data['webprofile'] = $webprofile;
-
-        $lang = session()->get('lang') ?? 'id';
-        $data['lang'] = $lang;
 
         $model_member = new Member();
         $model_sertifikat = new Sertifikat();
@@ -2357,9 +2335,6 @@ class KomunitasEkspor extends BaseController
         $webprofile = $model_webprofile->findAll();
 
         $data['webprofile'] = $webprofile;
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $model_exwork = new Exwork();
         $model_fob = new FOB();
@@ -2386,9 +2361,6 @@ class KomunitasEkspor extends BaseController
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $model_satuan = new Satuan();
 
@@ -2407,10 +2379,10 @@ class KomunitasEkspor extends BaseController
             $model_satuan->update($id, $data);
 
             // Redirect setelah update berhasil
-            return redirect()->to($lang . '/kalkulator-ekspor');
+            return redirect()->to('/kalkulator-ekspor')->with('success', 'Satuan berhasil diganti!');
         } else {
             // Jika data tidak ditemukan, bisa diarahkan ke halaman error
-            return redirect()->to($lang . '/kalkulator-ekspor')->with('error', 'Data satuan tidak ditemukan.');
+            return redirect()->to('/kalkulator-ekspor')->with('error', 'Data satuan tidak ditemukan.');
         }
     }
 
@@ -2443,20 +2415,14 @@ class KomunitasEkspor extends BaseController
             ];
             $model_exwork->insert($data);
         }
-        $lang = session()->get('lang') ?? 'id';
 
-        $data['lang'] = $lang;
-
-        return redirect()->to($lang . '/kalkulator-ekspor#exwork')->with('success', 'Komponen Exwork berhasil ditambahkan!');
+        return redirect()->to('/kalkulator-ekspor#exwork')->with('success', 'Komponen Exwork berhasil ditambahkan!');
     }
 
     public function delete_exwork($id)
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $model_exwork = new Exwork();
 
@@ -2464,9 +2430,9 @@ class KomunitasEkspor extends BaseController
 
         if ($exwork && $exwork['id_member'] == $user_id) {
             $model_exwork->delete($id);
-            return redirect()->to($lang . '/kalkulator-ekspor#exwork')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#exwork')->with('success', 'Produk berhasil dihapus');
         } else {
-            return redirect()->to($lang . '/kalkulator-ekspor#exwork')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
+            return redirect()->to('/kalkulator-ekspor#exwork')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
     }
 
@@ -2474,9 +2440,6 @@ class KomunitasEkspor extends BaseController
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         // Validate input
         $validation = \Config\Services::validation();
@@ -2503,16 +2466,13 @@ class KomunitasEkspor extends BaseController
             $model_fob->insert($data);
         }
 
-        return redirect()->to($lang . '/kalkulator-ekspor#fob')->with('success', 'Komponen FOB berhasil ditambahkan!');
+        return redirect()->to('/kalkulator-ekspor#fob')->with('success', 'Komponen FOB berhasil ditambahkan!');
     }
 
     public function delete_fob($id)
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $model_fob = new FOB();
 
@@ -2520,9 +2480,9 @@ class KomunitasEkspor extends BaseController
 
         if ($fob && $fob['id_member'] == $user_id) {
             $model_fob->delete($id);
-            return redirect()->to($lang . '/kalkulator-ekspor#fob')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#fob')->with('success', 'Produk berhasil dihapus');
         } else {
-            return redirect()->to($lang . '/kalkulator-ekspor#fob')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
+            return redirect()->to('/kalkulator-ekspor#fob')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
     }
 
@@ -2530,9 +2490,6 @@ class KomunitasEkspor extends BaseController
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         // Validate input
         $validation = \Config\Services::validation();
@@ -2559,16 +2516,13 @@ class KomunitasEkspor extends BaseController
             $model_cfr->insert($data);
         }
 
-        return redirect()->to($lang . '/kalkulator-ekspor#cfr')->with('success', 'Komponen CFR berhasil ditambahkan!');
+        return redirect()->to('/kalkulator-ekspor#cfr')->with('success', 'Komponen CFR berhasil ditambahkan!');
     }
 
     public function delete_cfr($id)
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $model_cfr = new CFR();
 
@@ -2576,9 +2530,9 @@ class KomunitasEkspor extends BaseController
 
         if ($cfr && $cfr['id_member'] == $user_id) {
             $model_cfr->delete($id);
-            return redirect()->to($lang . '/kalkulator-ekspor#cfr')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#cfr')->with('success', 'Produk berhasil dihapus');
         } else {
-            return redirect()->to($lang . '/kalkulator-ekspor#cfr')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
+            return redirect()->to('/kalkulator-ekspor#cfr')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
     }
 
@@ -2586,9 +2540,6 @@ class KomunitasEkspor extends BaseController
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         // Validate input
         $validation = \Config\Services::validation();
@@ -2615,16 +2566,13 @@ class KomunitasEkspor extends BaseController
             $model_cif->insert($data);
         }
 
-        return redirect()->to($lang . '/kalkulator-ekspor#cif')->with('success', 'Komponen CIF berhasil ditambahkan!');
+        return redirect()->to('/kalkulator-ekspor#cif')->with('success', 'Komponen CIF berhasil ditambahkan!');
     }
 
     public function delete_cif($id)
     {
         $session = session();
         $user_id = $session->get('user_id');
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $model_cif = new CIF();
 
@@ -2632,9 +2580,9 @@ class KomunitasEkspor extends BaseController
 
         if ($cif && $cif['id_member'] == $user_id) {
             $model_cif->delete($id);
-            return redirect()->to($lang . '/kalkulator-ekspor#cif')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#cif')->with('success', 'Produk berhasil dihapus');
         } else {
-            return redirect()->to($lang . '/kalkulator-ekspor#cif')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
+            return redirect()->to('/kalkulator-ekspor#cif')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
     }
 
@@ -2903,9 +2851,6 @@ class KomunitasEkspor extends BaseController
     {
         $model_webprofile = new WebProfile();
         $model_pengumuman = new Pengumuman();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $pengumuman = $model_pengumuman->get_active_pengumuman();
         $webprofile = $model_webprofile->findAll();
@@ -2939,9 +2884,6 @@ class KomunitasEkspor extends BaseController
         $model_pengumuman = new Pengumuman();
 
         $webprofile = $model_webprofile->findAll();
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
 
         $data['webprofile'] = $webprofile;
         $data['pengumuman'] = $model_pengumuman->where('slug', $slug)->first();
@@ -3050,9 +2992,6 @@ class KomunitasEkspor extends BaseController
             }
         }
 
-        $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
         $data['mpmtable'] = $mpmtable;
         $data['pager'] = $model_mpm->pager;
         $data['page'] = $page;
@@ -3103,12 +3042,10 @@ class KomunitasEkspor extends BaseController
 
         $model_mpm = new MPM();
         $model_mpm->insert($data);
-        $lang = session()->get('lang') ?? 'id';
 
-        $data['lang'] = $lang;
         session()->setFlashdata('success', 'Data berhasil disimpan!');
 
-        return redirect()->to($lang . '/mpm');
+        return redirect()->to('/mpm');
     }
 
     public function edit_mpm()
@@ -3144,11 +3081,8 @@ class KomunitasEkspor extends BaseController
         ];
 
         $model_mpm->update($id_mpm, $data);
-        $lang = session()->get('lang') ?? 'id';
 
-        $data['lang'] = $lang;
-
-        return redirect()->to($lang . '/mpm')->with('success', 'MPM telah berhasil diperbarui.');
+        return redirect()->to('/mpms')->with('success', 'MPM telah berhasil diperbarui.');
     }
 
     public function getEmailsByDate($month, $year)
@@ -3410,13 +3344,13 @@ class KomunitasEkspor extends BaseController
                 ];
                 $session->set($sessionData);
 
-                $lang = session()->get('lang') ?? 'id';
+                // $lang = session()->get('lang') ?? 'id';
 
                 // Arahkan sesuai role
                 if ($user['role'] === 'admin') {
-                    return redirect()->to("/{$lang}/member-beranda");
+                    return redirect()->to("/beranda");
                 } else if ($user['role'] === 'member' || ($user['role'] === 'premium' && $user['status_premium'] !== 'verified')) {
-                    return redirect()->to("/{$lang}/member-beranda");
+                    return redirect()->to("/beranda");
                 } else if ($user['role'] === 'premium') {
                     return redirect()->to('/beranda-premium');
                 }
@@ -3469,8 +3403,6 @@ class KomunitasEkspor extends BaseController
 
     public function member_belajar_ekspor($slug = null)
     {
-        $lang = session()->get('lang') ?? 'id';
-        $data['lang'] = $lang;
 
         $model_webprofile = new WebProfile();
         $model_kategori = new KategoriBelajarEksporModel();
@@ -3517,8 +3449,6 @@ class KomunitasEkspor extends BaseController
 
     public function member_kategori_belajar_ekspor($slug)
     {
-        $lang = session()->get('lang') ?? 'id';
-        $data['lang'] = $lang;
 
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
@@ -3667,7 +3597,7 @@ class KomunitasEkspor extends BaseController
 
     public function member_belajar_ekspor_detail($slug)
     {
-        $lang = session()->get('lang') ?? 'id';
+
         $model_webprofile = new WebProfile();
 
         $webprofile = $model_webprofile->findAll();
@@ -3695,7 +3625,6 @@ class KomunitasEkspor extends BaseController
             'kategori' => $kategori,
             'belajar_ekspor' => $related_artikel,
             'webprofile' => $webprofile,
-            'lang' => $lang,
         ];
 
         return view('member/belajar-ekspor/belajar_ekspor_detail', $data);
@@ -3771,8 +3700,6 @@ class KomunitasEkspor extends BaseController
 
     public function member_video_tutorial($slug = null)
     {
-        $lang = session()->get('lang') ?? 'id';
-
 
         $model_webprofile = new WebProfile();
 
@@ -3802,7 +3729,6 @@ class KomunitasEkspor extends BaseController
         $data['video_tutorial'] = $vidio;
         $data['kategori_vidio'] = $kategori;
         $data['selected_category'] = $slug;
-        $data['lang'] = $lang;
 
         return view('member/video-tutorial/video_tutorial', $data);
     }
@@ -3821,7 +3747,6 @@ class KomunitasEkspor extends BaseController
 
         $perPage = 9; // Number of items per page
         $page = $this->request->getVar('page') ?? 1; // Get the current page number
-        $lang = session()->get('lang') ?? 'id';
 
         // Jika kategori ditemukan, ambil video yang sesuai
         if ($kategori) {
@@ -3835,7 +3760,6 @@ class KomunitasEkspor extends BaseController
             'kategori' => $kategori,
             'video_tutorial' => $videos,
             'webprofile' => $webprofile,
-            'lang' => $lang,
         ];
 
         $data['pager'] = $vidioModel->pager; // Get the pager instance
@@ -3845,7 +3769,6 @@ class KomunitasEkspor extends BaseController
 
     public function member_video_tutorial_detail($slug)
     {
-        $lang = session()->get('lang') ?? 'id';
 
         $model_webprofile = new WebProfile();
 
@@ -3876,7 +3799,6 @@ class KomunitasEkspor extends BaseController
 
         // Menyiapkan data untuk dikirimkan ke view
         $data = [
-            'lang' => $lang,
             'video' => $video,
             'related_videos' => $related_videos,
             'kategori' => $kategori,
