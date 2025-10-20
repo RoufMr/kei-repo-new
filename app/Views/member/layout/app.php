@@ -689,11 +689,11 @@
     $lang_segment = substr($current_url, 0, strpos($current_url, '/') + 1); // Menyimpan 'id/' atau 'en/'
 
     // Definisikan tautan untuk setiap halaman berdasarkan bahasa
-    $homeLink = ($lang_segment === 'en/') ? 'member-beranda' : 'member-beranda';
-    $aboutLink = ($lang_segment === 'en/') ? 'member-about-us' : 'member-tentang-kami';
-    $belajarEksporLink = ($lang_segment === 'en/') ? 'member-export-lessons' : 'member-materi-ekspor';
+    $homeLink = ($lang_segment === 'en/') ? 'beranda' : 'beranda';
+    $aboutLink = ($lang_segment === 'en/') ? 'about-us' : 'tentang-kami';
+    $belajarEksporLink = ($lang_segment === 'en/') ? 'export-lessons' : 'materi-ekspor';
     $pendaftaranLink = ($lang_segment === 'en/') ? 'registration' : 'pendaftaran';
-    $videoTutorialLink = ($lang_segment === 'en/') ? 'member-tutorial-video' : 'member-video-tutorial';
+    $videoTutorialLink = ($lang_segment === 'en/') ? 'tutorial-video' : 'video-tutorial';
     $memberLink = ($lang_segment === 'en/') ? 'data-member' : 'data-member';
     $buyersLink = ($lang_segment === 'en/') ? 'data-buyers' : 'data-buyers';
     $kalkulatorLink = ($lang_segment === 'en/') ? 'calculator-export' : 'kalkulator-ekspor';
@@ -704,12 +704,12 @@
 
     // Buat array untuk menggantikan segmen berdasarkan bahasa
     $replace_map = [
-        'member-beranda' => 'member-beranda',
-        'member-tentang-kami' => 'member-about-us',
+        'beranda' => 'beranda',
+        'tentang-kami' => 'about-us',
         'pendaftaran' => 'registration',
-        'member-materi-ekspor' => 'member-export-lessons',
+        'materi-ekspor' => 'export-lessons',
         'kategori' => 'category',
-        'member-video-tutorial' => 'member-tutorial-video',
+        'video-tutorial' => 'tutorial-video',
         'data-member' => 'data-member',
         'data-buyers' => 'data-buyers',
         'kalkulator-ekspor' => 'calculator-export',
@@ -755,7 +755,7 @@
             <div class="head d-flex justify-content-between align-items-center" style="width: 100%; height: 40px;">
                 <!-- Alamat dan Email -->
                 <div class="icon d-flex justify-content-start">
-                    <div class=" d-flex align-items-center gap-2 icon-text text-light">
+                    <div class=" d-flex align-items-center gap-2 icon-text text-light me-4">
                         <i class="fas fa-phone" style="color: white;"></i>
                         <a href="https://wa.me/<?= $webprofile[0]['nohp_web'] ?>" target="_blank" style="color: white; text-decoration: none;">
                             <p class="mb-0"><?= $webprofile[0]['nohp_web'] ?></p>
@@ -768,7 +768,7 @@
                 </div>
                 <!-- Ikon Sosial Media dan Garis -->
                 <div class="d-flex align-items-center">
-                    <div class="sosmed d-flex gap-2 me-4">
+                    <div class="sosmed d-flex gap-2">
                         <a href="<?= $webprofile[0]['link_ig_web'] ?>" target="_blank" class="social-link">
                             <i class="fab fa-instagram"></i>
                         </a>
@@ -779,18 +779,25 @@
                             <i class="fab fa-facebook"></i>
                         </a>
                     </div>
-                    <div class="border-top2" style="width: 1.5px; height: 20px; background-color: white; margin-right: 20px;"></div>
-                    <?php if (empty($hideLangSwitcher)): ?>
-                        <div class="dropdown">
-                            <button class="btn text-light language-btn" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="/img/flag-<?= $lang === 'id' ? 'id' : 'en'; ?>.png" alt="<?= $lang === 'id' ? 'Indonesian' : 'English'; ?>" class="flag-icon mb-1">
-                                <i class="bi bi-chevron-down ms-1"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
-                                ...
-                            </ul>
-                        </div>
-                    <?php endif; ?>
+                    <!-- <div class="border-top2" style="width: 1.5px; height: 20px; background-color: white; margin-right: 20px;"></div> -->
+                    <!-- <div class="dropdown">
+                        <button class="btn text-light language-btn" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="/img/flag-<?= $lang === 'id' ? 'id' : 'en'; ?>.png" alt="<?= $lang === 'id' ? 'Indonesian' : 'English'; ?>" class="flag-icon mb-1">
+                            <i class="bi bi-chevron-down ms-1"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li>
+                                <a class="dropdown-item <?= $lang == 'id' ? 'disabled' : '' ?>" href="<?= $english_url ?>" <?= $lang == 'id' ? 'style="pointer-events: none; opacity: 0.5;"' : '' ?>>
+                                    <img src="/img/flag-id.png" alt="Indonesian" class="flag-icon" <?= $lang == 'id' ? 'style="filter: grayscale(100%);"' : '' ?>> Indonesian
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item <?= $lang == 'en' ? 'disabled' : '' ?>" href="<?= $indonesia_url ?>" <?= $lang == 'en' ? 'style="pointer-events: none; opacity: 0.5;"' : '' ?>>
+                                    <img src="/img/flag-en.png" alt="English" class="flag-icon" <?= $lang == 'en' ? 'style="filter: grayscale(100%);"' : '' ?>> English
+                                </a>
+                            </li>
+                        </ul>
+                    </div> -->
                 </div>
                 <!-- Language Dropdown -->
             </div>
@@ -808,14 +815,14 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse line" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto d-flex align-items-center">
+                <ul class="navbar-nav ms-auto d-flex align-items-center ">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang . '/' . $homeLink) ?>">
+                        <a class="nav-link" href="<?= base_url('/' . $homeLink) ?>">
                             <?php echo lang('Blog.headerBeranda'); ?>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang .  '/' . $aboutLink) ?>">
+                        <a class="nav-link" href="<?= base_url('/' . $aboutLink) ?>">
                             <?php echo lang('Blog.headerTentang'); ?>
                         </a>
                     </li>
@@ -826,19 +833,19 @@
                                     <?php echo lang('Blog.headerArtikel'); ?>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-light">
-                                    <li><a class="dropdown-item nav-link" href="<?= base_url($lang .  '/' . $belajarEksporLink) ?>"><?php echo lang('Blog.headerMateri'); ?></a></li>
-                                    <li><a class="dropdown-item nav-link" href="<?= base_url($lang .  '/' . $videoTutorialLink) ?>"><?php echo lang('Blog.headerVideo'); ?></a></li>
+                                    <li><a class="dropdown-item nav-link" href="<?= base_url('/' . $belajarEksporLink) ?>"><?php echo lang('Blog.headerMateri'); ?></a></li>
+                                    <li><a class="dropdown-item nav-link" href="<?= base_url('/' . $videoTutorialLink) ?>"><?php echo lang('Blog.headerVideo'); ?></a></li>
                                 </ul>
                             </li>
                         </ul>
                     </div>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang .  '/' . $memberLink) ?>">
+                        <a class="nav-link" href="<?= base_url('/' . $memberLink) ?>">
                             <?php echo lang('Blog.headerMember'); ?></a>
                         </a>
                     </li>
                     <!-- <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang . '/' . $buyersLink) ?>">
+                        <a class="nav-link" href="<?= base_url('/' . $buyersLink) ?>">
                             <?php echo lang('Blog.headerBuyers'); ?></a>
                         </a>
                     </li> -->
@@ -851,17 +858,17 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-light">
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url($lang .  '/' . $kalkulatorLink) ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url('/' . $kalkulatorLink) ?>">
                                             <?php echo lang('Blog.headerApp1'); ?></a>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url($lang . '/' . $mpmLink) ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url('/' . $mpmLink) ?>">
                                             <?php echo lang('Blog.headerApp2'); ?></a>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item nav-link" href="<?= base_url($lang . '/' . $sosmedPlannerLink) ?>">
+                                        <a class="dropdown-item nav-link" href="<?= base_url('/' . $sosmedPlannerLink) ?>">
                                             <?php echo lang('Blog.headerApp5'); ?></a>
                                         </a>
                                     </li>
@@ -870,40 +877,42 @@
                         </ul>
                     </div>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang . '/' . $pengumumanLink) ?>">
+                        <a class="nav-link" href="<?= base_url('/' . $pengumumanLink) ?>">
                             Pengumuman
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url($lang . '/' . $editprofileLink); ?>">
+                        <a class="nav-link" href="<?= base_url('/' . $editprofileLink); ?>">
                             Edit Profile
                         </a>
                     </li>
                     <div class="border-top" style="width: 1.5px; height: 40px; background-color: white; margin: 0 23px;"></div>
-                    <?php if (session()->get('logged_in')): ?>
-                        <div class="dropdown">
-                            <div class="dropdown-toggle nav-link" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle" style="font-size: 20px;"></i> <?= session()->get('username') ?>
-                            </div>
-                            <?php if (session()->get('role') == 'admin'): ?>
-                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" href="<?= base_url('/admin-dashboard') ?>"><i class="bi bi-box-arrow-in-left" style="color: #03AADE; font-size: 20px;"></i> <?= session()->get('username') ?></a></li>
-                                    <li><a class="dropdown-item" href="<?= base_url('/logout') ?>"><i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;"></i> Logout</a></li>
-                                </ul>
-                            <?php endif; ?>
-                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="<?= base_url('/logout') ?>">
-                                        <i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;">
-                                        </i> Logout</a></li>
-                            </ul>
-                        </div>
-                    <?php else: ?>
-                        <!-- Jika belum login, tampilkan tombol Login dengan kondisi bahasa -->
-                        <a href="<?= base_url('/id/login') ?>">
-                            <button type="button" class="btn btn-outline-light">Login</button>
-                        </a>
-                    <?php endif; ?>
+
                 </ul>
+
+                <?php if (session()->get('logged_in')): ?>
+                    <div class="dropdown navbar-nav">
+                        <div class="dropdown-toggle nav-link" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle" style="font-size: 20px;"></i> <?= session()->get('username') ?>
+                        </div>
+                        <?php if (session()->get('role') == 'admin'): ?>
+                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="<?= base_url('/admin-dashboard') ?>"><i class="bi bi-box-arrow-in-left" style="color: #03AADE; font-size: 20px;"></i> <?= session()->get('username') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= base_url('/logout') ?>"><i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;"></i> Logout</a></li>
+                            </ul>
+                        <?php endif; ?>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="<?= base_url('/logout') ?>">
+                                    <i class="bi bi-box-arrow-in-left" style="color: red; font-size: 20px;">
+                                    </i> Logout</a></li>
+                        </ul>
+                    </div>
+                <?php else: ?>
+                    <!-- Jika belum login, tampilkan tombol Login dengan kondisi bahasa -->
+                    <a href="<?= base_url('/id/login') ?>">
+                        <button type="button" class="btn btn-outline-light">Login</button>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
@@ -971,26 +980,26 @@
                     <div class="col-md-2">
                         <h5 class="mt-4"><b>Menu</b></h5>
                         <div class="list-unstyled pt-2">
-                            <p><a href="<?= base_url($lang . '/member-beranda') ?>" class="footer-link"><?php echo lang('Blog.headerBeranda'); ?></a></p>
-                            <p><a href="<?= base_url($lang . '/member-tentang-kami') ?>" class="footer-link"><?php echo lang('Blog.headerTentang'); ?> </a></p>
-                            <p><a href="<?= base_url($lang . '/member-materi-ekspor') ?>" class="footer-link"><?php echo lang('Blog.headerMateri'); ?></a></p>
-                            <p><a href="<?= base_url($lang . '/member-video-tutorial') ?>" class="footer-link"><?php echo lang('Blog.headerVideo'); ?></a></p>
-                            <p><a href="<?= base_url($lang . '/data-member') ?>" class="footer-link"><?php echo lang('Blog.headerMember'); ?></a></a></p>
-                            <!-- <p><a href="<?= base_url($lang . '/data-buyers') ?>" class="footer-link"><?php echo lang('Blog.headerBuyers'); ?></a></a></p> -->
-                            <p><a href="<?= base_url($lang . '/pengumuman') ?>" class="footer-link"> <?php echo lang('Blog.headerPengumuman'); ?></a></a></p>
-                            <p><a href="<?= base_url($lang . '/edit-profile') ?>" class="footer-link"><?php echo lang('Blog.headerEditProfile'); ?></a></a></p>
+                            <p><a href="<?= base_url('/beranda') ?>" class="footer-link"><?php echo lang('Blog.headerBeranda'); ?></a></p>
+                            <p><a href="<?= base_url('/tentang-kami') ?>" class="footer-link"><?php echo lang('Blog.headerTentang'); ?> </a></p>
+                            <p><a href="<?= base_url('/materi-ekspor') ?>" class="footer-link"><?php echo lang('Blog.headerMateri'); ?></a></p>
+                            <p><a href="<?= base_url('/video-tutorial') ?>" class="footer-link"><?php echo lang('Blog.headerVideo'); ?></a></p>
+                            <p><a href="<?= base_url('/data-member') ?>" class="footer-link"><?php echo lang('Blog.headerMember'); ?></a></a></p>
+                            <!-- <p><a href="<?= base_url('/data-buyers') ?>" class="footer-link"><?php echo lang('Blog.headerBuyers'); ?></a></a></p> -->
+                            <p><a href="<?= base_url('/pengumuman') ?>" class="footer-link"> <?php echo lang('Blog.headerPengumuman'); ?></a></a></p>
+                            <p><a href="<?= base_url('/edit-profile') ?>" class="footer-link"><?php echo lang('Blog.headerEditProfile'); ?></a></a></p>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <h5 class="mt-4"><b>Aplikasi</b></h5>
                         <div class="list-unstyled pt-2">
                             <p>
-                                <a href="<?= base_url($lang . '/' . $kalkulatorLink) ?>" class="footer-link">
+                                <a href="<?= base_url('/' . $kalkulatorLink) ?>" class="footer-link">
                                     Kalkulator Harga Ekspor
                                 </a>
                             </p>
                             <p>
-                                <a href="<?= base_url($lang . '/' . $mpmLink) ?>" class="footer-link">
+                                <a href="<?= base_url('/' . $mpmLink) ?>" class="footer-link">
                                     Marketing Progress Monitoring
                                 </a>
                             </p>
