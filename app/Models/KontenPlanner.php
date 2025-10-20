@@ -15,9 +15,9 @@ class KontenPlanner extends Model
     protected $allowedFields    = [
         'judul',
         'caption',
-        'conten_type_id',
-        'conten_pillar_id',
-        'conten_platform_id',
+        'content_type_id',
+        'content_pillar_id',
+        'content_platform_id',
         'status',
         'tanggal_posting',
         'jam_posting',

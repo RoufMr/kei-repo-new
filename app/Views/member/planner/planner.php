@@ -347,6 +347,7 @@
         background: white;
         border: 1px solid #e2e8f0;
     }
+    
 
     @media (max-width: 768px) {
         .calendar-grid {
@@ -700,7 +701,7 @@
         </div>
 
         <!-- Add New Content Section -->
-        <div class="card shadow p-3 m-2 col-12">
+        <div class="card shadow p-3 m-2 col-12" id="add-content-card">
             <h3 class="text-center mb-4">Tambah Konten Baru</h3>
 
             <form action="<?= base_url('/sosmed-planner/konten-planner/tambah') ?>" method="post" enctype="multipart/form-data">
@@ -708,7 +709,7 @@
                     <!-- Kolom Kiri: Preview Foto -->
                     <div class="col-6 text-center">
                         <label for="uploadFoto" class="form-label fw-bold">Upload Foto</label>
-                        <input type="file" class="form-control mb-3" id="uploadFoto" accept="image/*">
+                        <input type="file" class="form-control mb-3" id="uploadFoto" name="uploadFoto" accept="image/*">
 
                         <!-- Preview Gambar -->
                         <div class="border p-3" style="min-height:250px;">
@@ -911,73 +912,31 @@
 
 <!-- Script Preview Foto -->
 <script>
+    // === Preview Foto ===
     const uploadFoto = document.getElementById('uploadFoto');
     const previewFoto = document.getElementById('previewFoto');
 
-    uploadFoto.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            previewFoto.style.display = "block";
-            reader.addEventListener("load", function() {
-                previewFoto.setAttribute("src", this.result);
-            });
-            reader.readAsDataURL(file);
-        } else {
-            previewFoto.style.display = "none";
-        }
-    });
-
-    // Calendar JavaScript
-    // Sample data - In real application, this would come from your PHP backend
-    const contentData = {
-        <?php
-        // This is where you would fetch data from your database
-        // For now, using sample data - replace this with actual PHP database query
-        ?> '<?= date('Y-m-d') ?>': [{
-            id: 1,
-            title: 'Tips Belajar Efektif',
-            type: 'REELS',
-            platform: ['Instagram', 'TikTok'],
-            pillar: 'Artikel Edukasi',
-            status: 'Draft',
-            time: '09:00',
-            caption: 'Bagikan tips belajar yang efektif untuk siswa...'
-        }],
-        '<?= date('Y-m-d', strtotime('+3 days')) ?>': [{
-            id: 2,
-            title: 'Video Tutorial Coding',
-            type: 'CAROUSEL',
-            platform: ['Instagram', 'YouTube'],
-            pillar: 'Video Pembelajaran',
-            status: 'Ready',
-            time: '10:30',
-            caption: 'Tutorial step by step belajar coding untuk pemula...'
-        }],
-        '<?= date('Y-m-d', strtotime('+7 days')) ?>': [{
-                id: 3,
-                title: 'Motivasi Hari Senin',
-                type: 'REELS',
-                platform: ['Instagram', 'TikTok', 'YouTube'],
-                pillar: 'Artikel Edukasi',
-                status: 'Scheduled',
-                time: '08:00',
-                caption: 'Semangat memulai minggu dengan energi positif...'
-            },
-            {
-                id: 4,
-                title: 'Behind The Scenes',
-                type: 'SINGLE POST',
-                platform: ['Instagram'],
-                pillar: 'Video Pembelajaran',
-                status: 'Draft',
-                time: '14:00',
-                caption: 'Proses pembuatan konten edukasi di studio...'
+    if (uploadFoto) {
+        uploadFoto.addEventListener('change', function() {
+            const file = this.files?.[0];
+            if (file) {
+                const reader = new FileReader();
+                previewFoto.style.display = "block";
+                reader.addEventListener("load", function() {
+                    previewFoto.setAttribute("src", this.result);
+                });
+                reader.readAsDataURL(file);
+            } else {
+                previewFoto.style.display = "none";
+                previewFoto.removeAttribute('src');
             }
-        ]
-    };
+        });
+    }
 
+    // === Calendar ===
     let currentDate = new Date();
+    let contentData = {};
+
     const monthNames = [
         'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
@@ -985,112 +944,114 @@
     const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
     function formatDateKey(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
     }
 
-    function generateCalendar() {
+    async function loadCalendarData(year, monthIndex) {
+        const y = year;
+        const m = String(monthIndex + 1).padStart(2, '0');
+        const url = '<?= base_url(($lang ?? "id") . "/sosmed-planner/calendar-data") ?>?year=' + y + '&month=' + m;
+
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        if (!res.ok) {
+            console.error('Gagal load calendar-data:', res.status, url);
+            return {};
+        }
+        return await res.json();
+    }
+
+    async function generateCalendar() {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
 
-        // Update month display
-        document.getElementById('currentMonth').textContent =
-            `${monthNames[month]} ${year}`;
+        // 1) fetch data bulan aktif
+        contentData = await loadCalendarData(year, month);
 
-        // Clear calendar grid
+        // 2) render header
+        const currentMonthEl = document.getElementById('currentMonth');
+        if (currentMonthEl) currentMonthEl.textContent = `${monthNames[month]} ${year}`;
+
         const calendarGrid = document.getElementById('calendarGrid');
+        if (!calendarGrid) return;
         calendarGrid.innerHTML = '';
 
-        // Add day headers
+        // headers (7)
         dayNames.forEach(day => {
-            const dayHeader = document.createElement('div');
-            dayHeader.className = 'calendar-day-header';
-            dayHeader.textContent = day;
-            calendarGrid.appendChild(dayHeader);
+            const h = document.createElement('div');
+            h.className = 'calendar-day-header';
+            h.textContent = day;
+            calendarGrid.appendChild(h);
         });
 
-        // Get first day of month and number of days
+        // tanggal
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
         const startingDayOfWeek = firstDay.getDay();
 
-        // Add empty cells for previous month
+        // cell kosong untuk akhir bulan sebelumnya
         const prevMonth = new Date(year, month, 0);
         const daysInPrevMonth = prevMonth.getDate();
-
         for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-            const dayElement = createDayElement(
-                daysInPrevMonth - i,
-                new Date(year, month - 1, daysInPrevMonth - i),
-                true
-            );
-            calendarGrid.appendChild(dayElement);
+            const el = createDayElement(daysInPrevMonth - i, new Date(year, month - 1, daysInPrevMonth - i), true);
+            calendarGrid.appendChild(el);
         }
 
-        // Add days of current month
+        // hari bulan ini
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month, day);
-            const dayElement = createDayElement(day, date, false);
-            calendarGrid.appendChild(dayElement);
+            const el = createDayElement(day, date, false);
+            calendarGrid.appendChild(el);
         }
 
-        // Add days of next month to fill the grid
-        const totalCells = calendarGrid.children.length;
-        const remainingCells = 42 - totalCells + 7; // 6 weeks * 7 days + headers
-
+        // genapkan jadi 6 minggu x 7 hari (tanpa header)
+        const headers = 7;
+        const cellsSoFar = calendarGrid.children.length - headers;
+        const totalCellsNeeded = 6 * 7;
+        const remainingCells = totalCellsNeeded - cellsSoFar;
         for (let day = 1; day <= remainingCells; day++) {
-            const dayElement = createDayElement(
-                day,
-                new Date(year, month + 1, day),
-                true
-            );
-            calendarGrid.appendChild(dayElement);
+            const el = createDayElement(day, new Date(year, month + 1, day), true);
+            calendarGrid.appendChild(el);
         }
     }
 
     function createDayElement(dayNumber, date, isOtherMonth) {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day';
+        const el = document.createElement('div');
+        el.className = 'calendar-day';
+        if (isOtherMonth) el.classList.add('other-month');
 
-        if (isOtherMonth) {
-            dayElement.classList.add('other-month');
-        }
-
-        // Check if it's today
         const today = new Date();
         if (date.toDateString() === today.toDateString()) {
-            dayElement.classList.add('today');
+            el.classList.add('today');
         }
 
-        // Check if there's content for this day
         const dateKey = formatDateKey(date);
-        const dayContent = contentData[dateKey] || [];
+        const dayContent = contentData[dateKey] || []; // array
 
         if (dayContent.length > 0 && !isOtherMonth) {
-            dayElement.classList.add('has-content');
+            el.classList.add('has-content');
         }
 
-        // Create day structure
-        dayElement.innerHTML = `
-            <div class="day-number">${dayNumber}</div>
-            ${dayContent.length > 0 ? `<div class="content-count">${dayContent.length}</div>` : ''}
-            <div class="content-indicator">
-                ${dayContent.slice(0, 3).map(content => 
-                    `<span class="content-badge">${content.type}</span>`
-                ).join('')}
-                ${dayContent.length > 3 ? `<span class="content-badge">+${dayContent.length - 3}</span>` : ''}
-            </div>
-        `;
+        el.innerHTML = `
+    <div class="day-number">${dayNumber}</div>
+    ${dayContent.length > 0 ? `<div class="content-count">${dayContent.length}</div>` : ''}
+    <div class="content-indicator">
+      ${dayContent.slice(0,3).map(c => `<span class="content-badge">${c.type ?? ''}</span>`).join('')}
+      ${dayContent.length > 3 ? `<span class="content-badge">+${dayContent.length - 3}</span>` : ''}
+    </div>
+  `;
 
-        // Add click event
         if (!isOtherMonth) {
-            dayElement.addEventListener('click', () => showDayContent(date, dayContent));
+            el.addEventListener('click', () => showDayContent(date, dayContent));
         }
-
-        return dayElement;
+        return el;
     }
 
     function showDayContent(date, content) {
@@ -1098,187 +1059,132 @@
         const modalTitle = document.getElementById('modalTitle');
         const modalContent = document.getElementById('modalContent');
 
-        // Format date for title
         const dateStr = date.toLocaleDateString('id-ID', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
+        modalTitle.innerHTML = `<i class="fas fa-calendar-day me-2"></i>${dateStr}`;
 
-        modalTitle.innerHTML = `
-            <i class="fas fa-calendar-day me-2"></i>
-            ${dateStr}
-        `;
-
-        if (content.length === 0) {
+        if (!content || content.length === 0) {
             modalContent.innerHTML = `
-                <div class="no-content">
-                    <i class="fas fa-calendar-times fa-3x mb-3" style="color: #cbd5e0;"></i>
-                    <h5>Belum Ada Konten</h5>
-                    <p>Tidak ada konten yang dijadwalkan untuk hari ini.</p>
-                </div>
-            `;
+      <div class="no-content">
+        <i class="fas fa-calendar-times fa-3x mb-3" style="color:#cbd5e0;"></i>
+        <h5>Belum Ada Konten</h5>
+        <p>Tidak ada konten yang dijadwalkan untuk hari ini.</p>
+      </div>`;
         } else {
             modalContent.innerHTML = content.map(item => `
-                <div class="content-item">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="mb-1">${item.title}</h6>
-                        <small class="text-muted">${item.time}</small>
-                    </div>
-                    
-                    <div class="mb-2">
-                        <span class="content-type-badge type-${item.type.toLowerCase().replace(' ', '')}">${item.type}</span>
-                        ${item.platform.map(platform => 
-                            `<span class="platform-badge platform-${platform.toLowerCase()}">${platform}</span>`
-                        ).join('')}
-                    </div>
-                    
-                    <div class="mb-2">
-                        <small class="text-muted">
-                            <strong>Pilar:</strong> ${item.pillar} | 
-                            <strong>Status:</strong> <span class="badge bg-${getStatusColor(item.status)}">${item.status}</span>
-                        </small>
-                    </div>
-                    
-                    <p class="mb-0 text-muted" style="font-size: 13px;">
-                        ${item.caption}
-                    </p>
-                    
-                    <div class="mt-2">
-                        <button class="btn btn-sm btn-outline-primary me-2" onclick="editContent(${item.id})">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-sm btn-outline-success me-2" onclick="previewContent(${item.id})">
-                            <i class="fas fa-eye"></i> Preview
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteContent(${item.id})">
-                            <i class="fas fa-trash"></i> Hapus
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+      <div class="content-item">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h6 class="mb-1">${item.title ?? ''}</h6>
+          <small class="text-muted">${item.time ?? ''}</small>
+        </div>
+        <div class="mb-2">
+          <span class="content-type-badge type-${String(item.type ?? '').toLowerCase().replace(/\s+/g,'')}">${item.type ?? ''}</span>
+          ${(item.platform ?? []).map(p =>
+            `<span class="platform-badge platform-${String(p).toLowerCase().replace(/\s+/g,'')}">${p}</span>`
+          ).join('')}
+        </div>
+        <div class="mb-2">
+          <small class="text-muted">
+            <strong>Pilar:</strong> ${item.pillar ?? '-'} |
+            <strong>Status:</strong> <span class="badge bg-${getStatusColor(item.status)}">${item.status ?? '-'}</span>
+          </small>
+        </div>
+        <p class="mb-0 text-muted" style="font-size:13px;">${item.caption ?? ''}</p>
+        <div class="mt-2">
+            <button type="button" class="btn btn-sm btn-outline-primary me-2" onclick="editContent(${item.id})">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-success me-2" onclick="previewContent(${item.id})">
+                <i class="fas fa-eye"></i> Preview
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteContent(${item.id})">
+                <i class="fas fa-trash"></i> Hapus
+            </button>
+        </div>
+      </div>
+    `).join('');
         }
-
         modal.show();
     }
 
     function getStatusColor(status) {
         const colors = {
-            'Draft': 'secondary',
-            'Ready': 'warning',
-            'Scheduled': 'info',
-            'Published': 'success'
+            Draft: 'secondary',
+            Ready: 'warning',
+            Scheduled: 'info',
+            Published: 'success'
         };
         return colors[status] || 'secondary';
     }
 
+    // === Scroll ke form tambah konten (pakai ID, bukan :contains) ===
     function scrollToAddContent() {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('contentModal'));
-        modal.hide();
+        const modalEl = document.getElementById('contentModal');
+        const modal = modalEl ? bootstrap.Modal.getInstance(modalEl) : null;
+        if (modal) modal.hide();
 
-        // Scroll to add content form
-        document.querySelector('.card:has(h3:contains("Tambah Konten Baru"))').scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
-
-    function editContent(contentId) {
-        // Implement edit functionality
-        alert(`Edit konten dengan ID: ${contentId}`);
-        // In real app: window.location.href = `<?= base_url('konten/edit/') ?>${contentId}`;
-    }
-
-    function previewContent(contentId) {
-        // Implement preview functionality
-        alert(`Preview konten dengan ID: ${contentId}`);
-        // In real app: window.open(`<?= base_url('konten/preview/') ?>${contentId}`, '_blank');
-    }
-
-    function deleteContent(contentId) {
-        if (confirm('Apakah Anda yakin ingin menghapus konten ini?')) {
-            // Implement delete functionality
-            alert(`Menghapus konten dengan ID: ${contentId}`);
-            // In real app: 
-            // fetch(`<?= base_url('konten/delete/') ?>${contentId}`, {method: 'DELETE'})
-            //     .then(() => location.reload());
+        const target = document.getElementById('add-content-card');
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        } else {
+            console.warn('Elemen form tambah konten (#add-content-card) tidak ditemukan');
         }
     }
 
-    // Event listeners for calendar navigation
-    document.getElementById('prevMonth').addEventListener('click', () => {
+    // === Listener navigasi ===
+    const prevBtn = document.getElementById('prevMonth');
+    if (prevBtn) prevBtn.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         generateCalendar();
     });
-
-    document.getElementById('nextMonth').addEventListener('click', () => {
+    const nextBtn = document.getElementById('nextMonth');
+    if (nextBtn) nextBtn.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         generateCalendar();
     });
 
-    // Initialize calendar when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        generateCalendar();
+    // === Optional listeners (aman kalau tombolnya tidak ada) ===
+    const btnEx = document.getElementById('tambahKolomExwork');
+    if (btnEx) {
+        btnEx.addEventListener('click', function() {
+            // ... isi logika kamu di sini kalau memang dipakai ...
+        });
+    }
 
-        // Auto-update calendar every minute to keep "today" accurate
+    // === Init ===
+    document.addEventListener('DOMContentLoaded', () => {
+        generateCalendar();
+        // refresh "today" badge tiap menit
         setInterval(() => {
             const now = new Date();
-            if (now.getDate() !== currentDate.getDate()) {
-                generateCalendar();
-            }
+            if (now.getDate() !== currentDate.getDate()) generateCalendar();
         }, 60000);
     });
 
-    // Dynamic form functionality for adding components
-    let komponenCount = {
-        exwork: 0,
-        contentType: 0,
-        platform: 0
+    // === FUNGSI GLOBAL UNTUK TOMBOL MODAL ===
+    window.editContent = function(id) {
+        window.location.href = "<?= base_url('/sosmed-planner/konten-planner/edit/') ?>" + id;
     };
 
-    // Content Pillar dynamic form
-    document.getElementById('tambahKolomExwork').addEventListener('click', function() {
-        komponenCount.exwork++;
-        const container = document.getElementById('komponenExworkContainer');
-        const submitButton = document.getElementById('submitKomponenExworkButton');
+    window.previewContent = function(id) {
+        window.location.href = "<?= base_url('/sosmed-planner/konten-planner/preview/') ?>" + id;
+    };
 
-        const newField = document.createElement('div');
-        newField.className = 'mb-3';
-        newField.innerHTML = `
-            <div class="row">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" name="nama_komponen[]" placeholder="Nama Komponen" required>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" name="deskripsi_komponen[]" placeholder="Deskripsi Komponen" required>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger" onclick="removeKomponen(this, 'exwork')">Hapus</button>
-                </div>
-            </div>
-        `;
-
-        container.appendChild(newField);
-        container.style.display = 'block';
-        submitButton.style.display = 'block';
-        submitButton.textContent = `Simpan Komponen (${komponenCount.exwork})`;
-    });
-
-    function removeKomponen(button, type) {
-        button.closest('.mb-3').remove();
-        komponenCount[type]--;
-
-        const container = document.getElementById(`komponen${type === 'exwork' ? 'Exwork' : type === 'contentType' ? 'ContentType' : 'Platform'}Container`);
-        const submitButton = document.getElementById(`submitKomponen${type === 'exwork' ? 'Exwork' : type === 'contentType' ? 'ContentType' : 'Platform'}Button`);
-
-        if (komponenCount[type] === 0) {
-            container.style.display = 'none';
-            submitButton.style.display = 'none';
-        } else {
-            submitButton.textContent = `Simpan Komponen (${komponenCount[type]})`;
+    window.deleteContent = function(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus konten ini?')) {
+            window.location.href = "<?= base_url('/sosmed-planner/konten-planner/delete/') ?>" + id;
         }
-    }
+    };
+
+    // optional: pastikan tombol "Tambah Konten Baru" juga bisa dipanggil global
+    window.scrollToAddContent = scrollToAddContent;
 </script>
 
 <!-- Add FontAwesome for icons -->
