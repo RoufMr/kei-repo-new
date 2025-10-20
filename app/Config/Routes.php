@@ -93,8 +93,6 @@ $routes->get('/logout', 'KomunitasEkspor::logout');
 $routes->post('/daftar-member', 'KomunitasEkspor::registrasiMember');
 
 
-
-
 //---------------------------------member---------------------------------//
 $routes->group('id', ['filter' => 'auth', 'admin'], function ($routes) {
 
@@ -193,6 +191,13 @@ $routes->group('id', ['filter' => 'auth', 'admin'], function ($routes) {
     // Member - Kelayakan Investasi
     // $routes->get('kelayakan-investasi', 'KomunitasEkspor::kelayakan_investasi');
 });
+
+// Mirrors tanpa prefix bahasa, agar /sosmed-planner/... juga jalan
+$routes->get('sosmed-planner/konten-planner/edit/(:num)',    'KomunitasEkspor::edit_kontenplanner/$1');
+$routes->get('sosmed-planner/konten-planner/preview/(:num)', 'KomunitasEkspor::preview_kontenplanner/$1');
+$routes->get('sosmed-planner/konten-planner/delete/(:num)',  'KomunitasEkspor::hapus_kontenplanner/$1');
+$routes->post('sosmed-planner/konten-planner/update/(:num)', 'KomunitasEkspor::update_kontenplanner/$1');
+
 
 $routes->group('en', ['filter' => 'auth', 'admin'], function ($routes) {
     $routes->get('edit-profile-en', 'KomunitasEkspor::edit_profile');

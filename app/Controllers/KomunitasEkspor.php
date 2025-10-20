@@ -99,31 +99,29 @@ class KomunitasEkspor extends BaseController
     public function tambah_kontenplanner()
     {
         $lang = session()->get('lang') ?? 'id';
-
-        $data['lang'] = $lang;
         $kontenplanner = new KontenPlanner();
+
         // Validasi form
         $validation = \Config\Services::validation();
         $rules = [
-            'title'            => 'required|min_length[3]|max_length[255]',
-            'content_type_id'  => 'required|integer',
+            'title'             => 'required|min_length[3]|max_length[255]',
+            'content_type_id'   => 'required|integer',
             'content_pillar_id' => 'required|integer',
-            'caption'          => 'permit_empty|max_length[2200]',
-            'status'           => 'required|in_list[Draft,Ready,Scheduled,Published]',
-            'posting_date'     => 'required|valid_date',
-            'posting_time'     => 'required',
-            'platforms'        => 'required',
-            'uploadFoto'       => 'if_exist|is_image[uploadFoto]|max_size[uploadFoto,2048]|mime_in[uploadFoto,image/jpg,image/jpeg,image/png]'
+            'caption'           => 'permit_empty|max_length[2200]',
+            'status'            => 'required|in_list[Draft,Ready,Scheduled,Published]',
+            'posting_date'      => 'required|valid_date',
+            'posting_time'      => 'required',
+            'platforms'         => 'required',
+            'uploadFoto'        => 'if_exist|is_image[uploadFoto]|max_size[uploadFoto,2048]|mime_in[uploadFoto,image/jpg,image/jpeg,image/png]'
         ];
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('validation', $validation);
         }
 
-        // Handle upload foto
-        $fotoPath = '';
-        $fileFoto = $this->request->getFile('uploadFoto');
+        // --- Upload Foto ---
         $fotoPath = null;
+        $fileFoto = $this->request->getFile('uploadFoto');
 
         if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
             $newName = $fileFoto->getRandomName();
@@ -131,17 +129,21 @@ class KomunitasEkspor extends BaseController
             $fotoPath = 'uploads/konten/' . $newName;
         }
 
-        // Simpan data konten
+        // --- Tangani Platforms (array) ---
+        $platforms = $this->request->getPost('platforms'); // array dari checkbox
+        $platformCsv = is_array($platforms) ? implode(',', $platforms) : (string)$platforms;
+
+        // --- Simpan data ke DB ---
         $kontenplanner->insert([
-            'judul'            => $this->request->getPost('title'),
-            'content_type_id'  => $this->request->getPost('content_type_id'),
-            'content_pillar_id' => $this->request->getPost('content_pillar_id'),
-            'content_platform_id' => $this->request->getPost('platforms'),
-            'caption'          => $this->request->getPost('caption'),
-            'status'           => $this->request->getPost('status'),
-            'tanggal_posting'  => $this->request->getPost('posting_date'),
-            'jam_posting'     => $this->request->getPost('posting_time'),
-            'media'       => $fotoPath,
+            'judul'               => $this->request->getPost('title'),
+            'content_type_id'     => (int) $this->request->getPost('content_type_id'),
+            'content_pillar_id'   => (int) $this->request->getPost('content_pillar_id'),
+            'content_platform_id' => $platformCsv, // ubah ke VARCHAR di DB
+            'caption'             => $this->request->getPost('caption'),
+            'status'              => $this->request->getPost('status'),
+            'tanggal_posting'     => $this->request->getPost('posting_date'),
+            'jam_posting'         => $this->request->getPost('posting_time'),
+            'media'               => $fotoPath,
         ]);
 
         return redirect()->to(base_url($lang . '/sosmed-planner'))
@@ -150,54 +152,51 @@ class KomunitasEkspor extends BaseController
 
     public function getCalendarData()
     {
-        $year = $this->request->getGet('year') ?? date('Y');
+        $year  = $this->request->getGet('year') ?? date('Y');
         $month = $this->request->getGet('month') ?? date('m');
 
-        // Get all contents for the specified month with relationships
-        $contents = $this->contentModel->select('
-            contents.*,
-            content_types.nama as content_type_name,
-            content_pillars.nama as content_pillar_name
-        ')
-            ->join('content_types', 'content_types.id = contents.content_type_id')
-            ->join('content_pillars', 'content_pillars.id = contents.content_pillar_id')
-            ->where('YEAR(posting_date)', $year)
-            ->where('MONTH(posting_date)', $month)
-            ->orderBy('posting_date', 'ASC')
-            ->orderBy('posting_time', 'ASC')
+        $planner = new \App\Models\KontenPlanner();
+
+        $rows = $planner
+            ->select('content_planner.*,
+                  konten_type.nama  AS type_name,
+                  konten_pilar.nama AS pillar_name')
+            ->join('konten_type',  'konten_type.id = content_planner.content_type_id', 'left')
+            ->join('konten_pilar', 'konten_pilar.id = content_planner.content_pillar_id', 'left')
+            ->where('YEAR(tanggal_posting)', $year)
+            ->where('MONTH(tanggal_posting)', $month)
+            ->orderBy('tanggal_posting', 'ASC')
+            ->orderBy('jam_posting', 'ASC')
             ->findAll();
 
+        // Kalau platform disimpan sebagai CSV id (mis. "1,2"), map ke nama:
+        $platformModel = new \App\Models\KontenPlatform();
+        $platformRef = [];
+        foreach ($platformModel->findAll() as $p) {
+            $platformRef[(string)$p['id']] = $p['nama']; // id → nama
+        }
+
         $calendarData = [];
+        foreach ($rows as $r) {
+            $dateKey = $r['tanggal_posting'];
 
-        foreach ($contents as $content) {
-            $date = $content['posting_date'];
+            $platformIds = array_filter(explode(',', (string)$r['content_platform_id']));
+            $platformNames = array_map(function ($id) use ($platformRef) {
+                return $platformRef[(string)$id] ?? $id;
+            }, $platformIds);
 
-            // Get platforms for this content
-            $platforms = $this->contentPlatformModel->select('platforms.nama, platforms.icon, platforms.color')
-                ->join('platforms', 'platforms.id = content_platforms.platform_id')
-                ->where('content_id', $content['id'])
-                ->findAll();
+            if (!isset($calendarData[$dateKey])) $calendarData[$dateKey] = [];
 
-            if (!isset($calendarData[$date])) {
-                $calendarData[$date] = [];
-            }
-
-            $calendarData[$date][] = [
-                'id' => $content['id'],
-                'title' => $content['title'],
-                'type' => $content['content_type_name'],
-                'platform' => array_column($platforms, 'nama'),
-                'platform_colors' => array_column($platforms, 'color'),
-                'pillar' => $content['content_pillar_name'],
-                'status' => $content['status'],
-                'time' => date('H:i', strtotime($content['posting_time'])),
-                'caption' => substr($content['caption'], 0, 150) . (strlen($content['caption']) > 150 ? '...' : ''),
-                'media_path' => $content['media_path'],
-                'media_type' => $content['media_type'],
-                'views' => $content['views'],
-                'likes' => $content['likes'],
-                'comments' => $content['comments'],
-                'shares' => $content['shares']
+            $calendarData[$dateKey][] = [
+                'id'       => $r['id'],
+                'title'    => $r['judul'],
+                'type'     => $r['type_name'] ?? '-',
+                'platform' => $platformNames,
+                'pillar'   => $r['pillar_name'] ?? '-',
+                'status'   => $r['status'],
+                'time'     => date('H:i', strtotime($r['jam_posting'])),
+                'caption'  => $r['caption'],
+                'media'    => $r['media'],
             ];
         }
 
@@ -358,6 +357,141 @@ class KomunitasEkspor extends BaseController
             return redirect()->to($lang . '/sosmed-planner')->with('success', 'Content platform berhasil dihapus.');
         }
         return redirect()->to($lang . '/sosmed-planner')->with('error', 'Content platform tidak ditemukan.');
+    }
+
+    public function edit_kontenplanner($id)
+    {
+        session()->set('lang', 'id'); // Paksa bahasa Indonesia
+
+        $m = new \App\Models\KontenPlanner();
+        $data['konten'] = $m->find($id);
+        if (!$data['konten']) {
+            return redirect()->to(base_url('sosmed-planner'))
+                ->with('error', 'Konten tidak ditemukan.');
+        }
+
+        // === Tambahkan ini ===
+        $data['hideLangSwitcher'] = true; // agar dropdown bahasa disembunyikan
+
+        // Data lainnya
+        $data['kontentype']     = (new \App\Models\KontenType())->findAll();
+        $data['kontenpilar']    = (new \App\Models\KontenPilar())->findAll();
+        $data['kontenplatform'] = (new \App\Models\KontenPlatform())->findAll();
+        $data['webprofile']     = (new \App\Models\WebProfile())->findAll() ?? [];
+
+        return view('member/planner/edit_konten', $data);
+    }
+
+    public function preview_kontenplanner($id)
+    {
+        session()->set('lang', 'id');
+
+        $m = new \App\Models\KontenPlanner();
+        $data['konten'] = $m->find($id);
+        if (!$data['konten']) {
+            return redirect()->to(base_url('sosmed-planner'))
+                ->with('error', 'Konten tidak ditemukan.');
+        }
+
+        $data['hideLangSwitcher'] = true; // Sembunyikan dropdown bahasa
+        $data['webprofile'] = (new \App\Models\WebProfile())->findAll() ?? [];
+
+        $type   = (new \App\Models\KontenType())->find($data['konten']['content_type_id'] ?? 0);
+        $pillar = (new \App\Models\KontenPilar())->find($data['konten']['content_pillar_id'] ?? 0);
+        $data['kontenplatform']   = (new \App\Models\KontenPlatform())->findAll();
+        $data['kontenTypeName']   = $type['nama'] ?? '-';
+        $data['kontenPillarName'] = $pillar['nama'] ?? '-';
+
+        return view('member/planner/preview_konten', $data);
+    }
+
+    public function update_kontenplanner($id)
+    {
+        // VALIDASI INPUT
+        $rules = [
+            'title'             => 'required|min_length[3]|max_length[255]',
+            'content_type_id'   => 'required|integer',
+            'content_pillar_id' => 'required|integer',
+            'caption'           => 'permit_empty|max_length[2200]',
+            'status'            => 'required|in_list[Draft,Ready,Scheduled,Published]',
+            'posting_date'      => 'required|valid_date',
+            'posting_time'      => 'required',
+            // jika platform opsional pakai "permit_empty"; kalau wajib pilih, gunakan "required"
+            'platforms'         => 'permit_empty',
+            'uploadFoto'        => 'if_exist|is_image[uploadFoto]|max_size[uploadFoto,2048]|mime_in[uploadFoto,image/jpg,image/jpeg,image/png]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Validasi gagal.')
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $m   = new \App\Models\KontenPlanner();
+        $row = $m->find($id);
+        if (!$row) {
+            return redirect()->to(base_url('id/sosmed-planner'))
+                ->with('error', 'Konten tidak ditemukan.');
+        }
+
+        // HANDLE FILE (opsional)
+        $fotoPath = $row['media'] ?? null;
+        $fileFoto = $this->request->getFile('uploadFoto');
+        if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
+            // Pastikan folder writable
+            $newName  = $fileFoto->getRandomName();
+            $fileFoto->move('uploads/konten', $newName);
+            $fotoPath = 'uploads/konten/' . $newName;
+        }
+
+        // AMBIL CHECKBOX PLATFORMS DALAM BENTUK ARRAY (TANPA FILTER)
+        $platforms = $this->request->getPost('platforms');
+        if (!is_array($platforms)) {
+            $platforms = [];
+        }
+        $platformCsv = implode(',', $platforms);
+
+        // SUSUN PAYLOAD
+        $payload = [
+            'judul'               => $this->request->getPost('title'),
+            'content_type_id'     => (int)$this->request->getPost('content_type_id'),
+            'content_pillar_id'   => (int)$this->request->getPost('content_pillar_id'),
+            'content_platform_id' => $platformCsv,                 // simpan CSV di kolom ini
+            'caption'             => $this->request->getPost('caption'),
+            'status'              => $this->request->getPost('status'),
+            'tanggal_posting'     => $this->request->getPost('posting_date'),
+            'jam_posting'         => $this->request->getPost('posting_time'),
+            'media'               => $fotoPath,
+        ];
+
+        // SIMPAN KE DB
+        $ok = $m->update($id, $payload);
+
+        if (!$ok) {
+            // kalau gagal, tampilkan error dari model/db agar tahu penyebabnya
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Update gagal.')
+                ->with('errors', $m->errors() ?: ['DB error']);
+        }
+
+        return redirect()->to(base_url('id/sosmed-planner'))
+            ->with('success', 'Konten diperbarui.');
+    }
+
+    public function hapus_kontenplanner($id)
+    {
+        $model = new \App\Models\KontenPlanner();
+
+        if ($model->find($id)) {
+            $model->delete($id);
+            return redirect()->to(base_url('id/sosmed-planner'))
+                ->with('success', 'Konten berhasil dihapus.');
+        } else {
+            return redirect()->to(base_url('id/sosmed-planner'))
+                ->with('error', 'Konten tidak ditemukan.');
+        }
     }
 
 
