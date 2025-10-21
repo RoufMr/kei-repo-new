@@ -199,11 +199,11 @@ $routes->get('sosmed-planner/konten-planner/delete/(:num)',  'KomunitasEkspor::h
 $routes->post('sosmed-planner/konten-planner/update/(:num)', 'KomunitasEkspor::update_kontenplanner/$1');
 
 
-$routes->group('en', ['filter' => 'auth', 'admin'], function ($routes) {
-    $routes->get('edit-profile-en', 'KomunitasEkspor::edit_profile');
-    $routes->post('update-foto-profil', 'KomunitasEkspor::updateFotoProfil');
-    $routes->post('ubah-informasi-akun', 'KomunitasEkspor::ubah_informasi_akun');
-    $routes->post('ubah-profil-perusahaan', 'KomunitasEkspor::ubah_profil_perusahaan');
+// $routes->group('en', ['filter' => 'auth', 'admin'], function ($routes) {
+//     $routes->get('edit-profile-en', 'KomunitasEkspor::edit_profile');
+//     $routes->post('update-foto-profil', 'KomunitasEkspor::updateFotoProfil');
+//     $routes->post('ubah-informasi-akun', 'KomunitasEkspor::ubah_informasi_akun');
+//     $routes->post('ubah-profil-perusahaan', 'KomunitasEkspor::ubah_profil_perusahaan');
 
 //     $routes->get('announcement', 'KomunitasEkspor::pengumuman');
 // });

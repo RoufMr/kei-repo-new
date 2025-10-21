@@ -9,7 +9,7 @@
          href="<?= base_url('/sosmed-planner/konten-planner/edit/'.$konten['id']); ?>">
         Edit
       </a>
-      <a href="<?= base_url('id/sosmed-planner') ?>" class="btn btn-secondary">Kembali</a>
+      <a href="<?= base_url('sosmed-planner') ?>" class="btn btn-secondary">Kembali</a>
     </div>
   </div>
 
