@@ -105,7 +105,7 @@
 
         <div class="col-12 d-flex gap-2">
             <button type="submit" class="btn btn-success">Simpan Perubahan</button>
-            <a href="<?= base_url('id/sosmed-planner'); ?>" class="btn btn-secondary">Batal</a>
+            <a href="<?= base_url('sosmed-planner'); ?>" class="btn btn-secondary">Batal</a>
             <a href="<?= base_url('sosmed-planner/konten-planner/delete/' . $konten['id']); ?>"
                 class="btn btn-outline-danger"
                 onclick="return confirm('Hapus konten ini?');">Hapus

@@ -953,7 +953,7 @@
     async function loadCalendarData(year, monthIndex) {
         const y = year;
         const m = String(monthIndex + 1).padStart(2, '0');
-        const url = '<?= base_url(($lang ?? "id") . "/sosmed-planner/calendar-data") ?>?year=' + y + '&month=' + m;
+        const url = '<?= base_url("/sosmed-planner/calendar-data") ?>?year=' + y + '&month=' + m;
 
         const res = await fetch(url, {
             headers: {
@@ -1127,9 +1127,9 @@
         const modal = modalEl ? bootstrap.Modal.getInstance(modalEl) : null;
         if (modal) modal.hide();
 
-        const target = document.getElementById('add-content-card');
-        if (target) {
-            target.scrollIntoView({
+        const targetElement = document.getElementById('add-content-card');
+        if (targetElement) {
+            targetElement.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });

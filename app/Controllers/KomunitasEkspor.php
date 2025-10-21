@@ -96,7 +96,6 @@ class KomunitasEkspor extends BaseController
 
     public function tambah_kontenplanner()
     {
-        $lang = session()->get('lang') ?? 'id';
         $kontenplanner = new KontenPlanner();
 
         // Validasi form
@@ -239,7 +238,7 @@ class KomunitasEkspor extends BaseController
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to(base_url('/sosmed-planner'))
+            return redirect()->to(base_url('sosmed-planner'))
                 ->with('success', 'Konten pilar berhasil dihapus.');
         } else {
             return redirect()->to(base_url('sosmed-planner'))
@@ -333,8 +332,6 @@ class KomunitasEkspor extends BaseController
 
     public function edit_kontenplanner($id)
     {
-        session()->set('lang', 'id'); // Paksa bahasa Indonesia
-
         $m = new \App\Models\KontenPlanner();
         $data['konten'] = $m->find($id);
         if (!$data['konten']) {
@@ -356,8 +353,6 @@ class KomunitasEkspor extends BaseController
 
     public function preview_kontenplanner($id)
     {
-        session()->set('lang', 'id');
-
         $m = new \App\Models\KontenPlanner();
         $data['konten'] = $m->find($id);
         if (!$data['konten']) {
@@ -403,7 +398,7 @@ class KomunitasEkspor extends BaseController
         $m   = new \App\Models\KontenPlanner();
         $row = $m->find($id);
         if (!$row) {
-            return redirect()->to(base_url('id/sosmed-planner'))
+            return redirect()->to(base_url('sosmed-planner'))
                 ->with('error', 'Konten tidak ditemukan.');
         }
 
@@ -448,7 +443,7 @@ class KomunitasEkspor extends BaseController
                 ->with('errors', $m->errors() ?: ['DB error']);
         }
 
-        return redirect()->to(base_url('id/sosmed-planner'))
+        return redirect()->to(base_url('sosmed-planner'))
             ->with('success', 'Konten diperbarui.');
     }
 
@@ -458,10 +453,10 @@ class KomunitasEkspor extends BaseController
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to(base_url('id/sosmed-planner'))
+            return redirect()->to(base_url('sosmed-planner'))
                 ->with('success', 'Konten berhasil dihapus.');
         } else {
-            return redirect()->to(base_url('id/sosmed-planner'))
+            return redirect()->to(base_url('sosmed-planner'))
                 ->with('error', 'Konten tidak ditemukan.');
         }
     }
