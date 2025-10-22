@@ -347,7 +347,7 @@
         background: white;
         border: 1px solid #e2e8f0;
     }
-    
+
 
     @media (max-width: 768px) {
         .calendar-grid {
@@ -708,6 +708,8 @@
                 <div class="row d-flex">
                     <!-- Kolom Kiri: Preview Foto -->
                     <div class="col-6 text-center">
+                        <label for="link_canva" class="form-label fw-bold">Link Canva</label>
+                        <input type="text" class="form-control mb-3" id="link_canva" name="link_canva" placeholder="Masukan Link Canva">
                         <label for="uploadFoto" class="form-label fw-bold">Upload Foto</label>
                         <input type="file" class="form-control mb-3" id="uploadFoto" name="uploadFoto" accept="image/*">
 
@@ -953,7 +955,7 @@
     async function loadCalendarData(year, monthIndex) {
         const y = year;
         const m = String(monthIndex + 1).padStart(2, '0');
-        const url = '<?= base_url(($lang ?? "id") . "/sosmed-planner/calendar-data") ?>?year=' + y + '&month=' + m;
+        const url = '<?= base_url("/sosmed-planner/calendar-data") ?>?year=' + y + '&month=' + m;
 
         const res = await fetch(url, {
             headers: {
@@ -1076,37 +1078,50 @@
       </div>`;
         } else {
             modalContent.innerHTML = content.map(item => `
-      <div class="content-item">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <h6 class="mb-1">${item.title ?? ''}</h6>
-          <small class="text-muted">${item.time ?? ''}</small>
+        <div class="content-item d-flex align-items-start mb-3 p-2 border rounded">
+            <!-- Gambar di kiri -->
+            <img src="${item.media ?? ''}" alt="${item.title ?? ''}" 
+                class="content-image me-3"
+                style="width:170px; height:auto; border-radius:8px; object-fit:cover;">
+
+            <!-- Teks di kanan -->
+            <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-1">${item.title ?? ''}</h6>
+                <small class="text-muted">${item.time ?? ''}</small>
+            </div>
+
+            <div class="mb-2">
+                <span class="content-type-badge type-${String(item.type ?? '').toLowerCase().replace(/\s+/g,'')}">${item.type ?? ''}</span>
+                ${(item.platform ?? []).map(p =>
+                `<span class="platform-badge platform-${String(p).toLowerCase().replace(/\s+/g,'')}">${p}</span>`
+                ).join('')}
+            </div>
+
+            <div class="mb-2">
+                <small class="text-muted">
+                <strong>Pilar:</strong> ${item.pillar ?? '-'} |
+                <strong>Status:</strong> <span class="badge bg-${getStatusColor(item.status)}">${item.status ?? '-'}</span>
+                </small>
+            </div>
+
+            <p class="mb-0 text-muted" style="font-size:13px;">${item.caption ?? ''}</p>
+
+            <div class="mt-2">
+                <button type="button" class="btn btn-sm btn-outline-primary me-2" onclick="editContent(${item.id})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-success me-2" onclick="previewContent(${item.id})">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteContent(${item.id})">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+            </div>
+            </div>
         </div>
-        <div class="mb-2">
-          <span class="content-type-badge type-${String(item.type ?? '').toLowerCase().replace(/\s+/g,'')}">${item.type ?? ''}</span>
-          ${(item.platform ?? []).map(p =>
-            `<span class="platform-badge platform-${String(p).toLowerCase().replace(/\s+/g,'')}">${p}</span>`
-          ).join('')}
-        </div>
-        <div class="mb-2">
-          <small class="text-muted">
-            <strong>Pilar:</strong> ${item.pillar ?? '-'} |
-            <strong>Status:</strong> <span class="badge bg-${getStatusColor(item.status)}">${item.status ?? '-'}</span>
-          </small>
-        </div>
-        <p class="mb-0 text-muted" style="font-size:13px;">${item.caption ?? ''}</p>
-        <div class="mt-2">
-            <button type="button" class="btn btn-sm btn-outline-primary me-2" onclick="editContent(${item.id})">
-                <i class="fas fa-edit"></i> Edit
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-success me-2" onclick="previewContent(${item.id})">
-                <i class="fas fa-eye"></i> Preview
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteContent(${item.id})">
-                <i class="fas fa-trash"></i> Hapus
-            </button>
-        </div>
-      </div>
-    `).join('');
+        `).join('');
+
         }
         modal.show();
     }
@@ -1127,9 +1142,9 @@
         const modal = modalEl ? bootstrap.Modal.getInstance(modalEl) : null;
         if (modal) modal.hide();
 
-        const target = document.getElementById('add-content-card');
-        if (target) {
-            target.scrollIntoView({
+        const targetElement = document.getElementById('add-content-card');
+        if (targetElement) {
+            targetElement.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });

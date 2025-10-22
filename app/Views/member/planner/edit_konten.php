@@ -86,6 +86,11 @@
                 <?php endforeach; ?>
             </div>
         </div>
+        <div class="col-lg-6">
+            <label class="form-label fw-semibold">Link Canva</label>
+            <input type="text" name="link_canva" class="form-control"
+                value="<?= esc($konten['link_canva']); ?>">
+        </div>
 
         <div class="col-lg-6">
             <label class="form-label fw-semibold">Upload Media (opsional)</label>
@@ -105,7 +110,7 @@
 
         <div class="col-12 d-flex gap-2">
             <button type="submit" class="btn btn-success">Simpan Perubahan</button>
-            <a href="<?= base_url('id/sosmed-planner'); ?>" class="btn btn-secondary">Batal</a>
+            <a href="<?= base_url('/sosmed-planner'); ?>" class="btn btn-secondary">Batal</a>
             <a href="<?= base_url('sosmed-planner/konten-planner/delete/' . $konten['id']); ?>"
                 class="btn btn-outline-danger"
                 onclick="return confirm('Hapus konten ini?');">Hapus

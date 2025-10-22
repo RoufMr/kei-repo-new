@@ -110,7 +110,7 @@ class KomunitasEkspor extends BaseController
             'posting_date'      => 'required|valid_date',
             'posting_time'      => 'required',
             'platforms'         => 'required',
-            'uploadFoto'        => 'if_exist|is_image[uploadFoto]|max_size[uploadFoto,2048]|mime_in[uploadFoto,image/jpg,image/jpeg,image/png]'
+            'uploadFoto'        => 'if_exist|is_image[uploadFoto]|max_size[uploadFoto,2048]|mime_in[uploadFoto,image/jpg,image/jpeg,image/png]',
         ];
 
         if (!$this->validate($rules)) {
@@ -142,6 +142,8 @@ class KomunitasEkspor extends BaseController
             'tanggal_posting'     => $this->request->getPost('posting_date'),
             'jam_posting'         => $this->request->getPost('posting_time'),
             'media'               => $fotoPath,
+            'link_canva'          => $this->request->getPost('link_canva'),
+            'slug'                => url_title($this->request->getPost('title'), '-', true),
         ]);
 
         return redirect()->to(base_url('/sosmed-planner'))
@@ -403,7 +405,7 @@ class KomunitasEkspor extends BaseController
         $m   = new \App\Models\KontenPlanner();
         $row = $m->find($id);
         if (!$row) {
-            return redirect()->to(base_url('id/sosmed-planner'))
+            return redirect()->to(base_url('/sosmed-planner'))
                 ->with('error', 'Konten tidak ditemukan.');
         }
 
@@ -435,6 +437,8 @@ class KomunitasEkspor extends BaseController
             'tanggal_posting'     => $this->request->getPost('posting_date'),
             'jam_posting'         => $this->request->getPost('posting_time'),
             'media'               => $fotoPath,
+            'link_canva'          => $this->request->getPost('link_canva'),
+            'slug'                => url_title($this->request->getPost('title'), '-', true),
         ];
 
         // SIMPAN KE DB
@@ -448,7 +452,7 @@ class KomunitasEkspor extends BaseController
                 ->with('errors', $m->errors() ?: ['DB error']);
         }
 
-        return redirect()->to(base_url('id/sosmed-planner'))
+        return redirect()->to(base_url('/sosmed-planner'))
             ->with('success', 'Konten diperbarui.');
     }
 
@@ -458,10 +462,10 @@ class KomunitasEkspor extends BaseController
 
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->to(base_url('id/sosmed-planner'))
+            return redirect()->to(base_url('/sosmed-planner'))
                 ->with('success', 'Konten berhasil dihapus.');
         } else {
-            return redirect()->to(base_url('id/sosmed-planner'))
+            return redirect()->to(base_url('/sosmed-planner'))
                 ->with('error', 'Konten tidak ditemukan.');
         }
     }
@@ -948,25 +952,6 @@ class KomunitasEkspor extends BaseController
     {
         $this->videoModel = new VidioTutorialModel();
     }
-
-    public function watch($slug)
-    {
-        $video = $this->videoModel->getVideoBySlug($slug);
-
-        if (!$video) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Video tidak ditemukan");
-        }
-
-        // cek login
-        if (!session()->get('isLoggedIn')) {
-            // redirect ke halaman login dengan redirect back
-            return redirect()->to('/login')->with('error', 'Silakan login untuk menonton video.');
-        }
-
-        // kalau sudah login → redirect ke Google Drive
-        return redirect()->to($video['video_url']);
-    }
-
 
     public function video_selengkapnya($slug)
     {
