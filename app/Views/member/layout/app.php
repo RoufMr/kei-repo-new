@@ -1028,9 +1028,27 @@
             }
         });
 
-        window.scrollTo({
-            top: targetElement.offsetTop - navbarHeight,
-            behavior: 'smooth'
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!location.hash) return;
+            
+            var targetElement = null;
+            try {
+                targetElement = document.querySelector(decodeURIComponent(location.hash));
+            } catch (err) {
+                console.warn('Hash bukan selector valid:', err);
+                return;
+            }
+            if (!targetElement) return;
+
+            var navbar = document.querySelector('.navbar-custom');
+            var navbarHeight = navbar ? navbar.offsetHeight : 0;
+
+            var y = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 10;
+
+            window.scrollTo({
+                top: y,
+                behavior: 'smooth'
+            });
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

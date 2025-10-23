@@ -12,7 +12,7 @@ class CFR extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_member', 'komponen_cfr'];
+    protected $allowedFields    = ['id_member', 'komponen_cfr', 'biaya'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

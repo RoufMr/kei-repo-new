@@ -33,6 +33,7 @@ use App\Models\KontenPilar;
 use App\Models\KontenPlanner;
 use App\Models\KontenPlatform;
 use App\Models\KontenType;
+use App\Models\KalkulatorState;
 use CodeIgniter\I18n\Time;
 use DateTime;
 use Exception;
@@ -2455,36 +2456,39 @@ class KomunitasEkspor extends BaseController
         }
     }
 
-
     public function index_kalkulator()
     {
         $session = session();
         $user_id = $session->get('user_id');
 
+        // --- MODEL UTAMA ---
         $model_webprofile = new WebProfile();
+        $model_exwork     = new Exwork();
+        $model_fob        = new FOB();
+        $model_cfr        = new CFR();
+        $model_cif        = new CIF();
+        $model_satuan     = new Satuan();
+        $model_state      = new \App\Models\KalkulatorState(); // Tambahan
 
-        $webprofile = $model_webprofile->findAll();
+        // --- DATA WEB PROFILE ---
+        $data['webprofile'] = $model_webprofile->findAll();
 
-        $data['webprofile'] = $webprofile;
+        // --- DATA KOMPONEN PER USER ---
+        $data['exwork'] = $model_exwork->where('id_member', $user_id)->findAll();
+        $data['fob']    = $model_fob->where('id_member', $user_id)->findAll();
+        $data['cfr']    = $model_cfr->where('id_member', $user_id)->findAll();
+        $data['cif']    = $model_cif->where('id_member', $user_id)->findAll();
+        $data['satuan'] = $model_satuan->where('id_member', $user_id)->findAll();
 
-        $model_exwork = new Exwork();
-        $model_fob = new FOB();
-        $model_cfr = new CFR();
-        $model_cif = new CIF();
-        $model_satuan = new Satuan();
+        // --- DATA STATE (auto-save) ---
+        $state = $model_state->where('id_member', $user_id)->first();
+        $data['state'] = $state ?: [
+            'jumlah_barang' => 0,
+            'hpp'           => 0,
+            'keuntungan'    => 0,
+        ];
 
-        $exwork = $model_exwork->where('id_member', $user_id)->findAll();
-        $fob = $model_fob->where('id_member', $user_id)->findAll();
-        $cfr = $model_cfr->where('id_member', $user_id)->findAll();
-        $cif = $model_cif->where('id_member', $user_id)->findAll();
-        $satuan = $model_satuan->where('id_member', $user_id)->findAll();
-
-        $data['exwork'] = $exwork;
-        $data['fob'] = $fob;
-        $data['cfr'] = $cfr;
-        $data['cif'] = $cif;
-        $data['satuan'] = $satuan;
-
+        // --- LOAD VIEW ---
         return view('member/kalkulator-ekspor/kalkulator_ekspor', $data);
     }
 
@@ -2550,6 +2554,61 @@ class KomunitasEkspor extends BaseController
         return redirect()->to('/kalkulator-ekspor#exwork')->with('success', 'Komponen Exwork berhasil ditambahkan!');
     }
 
+    public function save_all_exwork()
+    {
+        $session = session();
+        $user_id = $session->get('user_id');
+
+        $request = $this->request;
+
+        $model = new \App\Models\Exwork();
+
+        // --- 1) UPDATE biaya EXISTING ---
+        // Cari semua field yang namanya exwork_{id}
+        $post = $request->getPost();
+        $updated = 0;
+
+        foreach ($post as $key => $val) {
+            if (preg_match('/^exwork_(\d+)$/', $key, $m)) {
+                $id = (int) $m[1];
+                $biaya = (int) preg_replace('/[^\d]/', '', (string) $val);
+
+                // Validasi kepemilikan
+                $row = $model->find($id);
+                if ($row && (int)$row['id_member'] === (int)$user_id) {
+                    // Update kolom biaya
+                    $model->update($id, ['biaya' => $biaya]);
+                    $updated++;
+                }
+            }
+        }
+
+        // --- 2) INSERT komponen BARU (jika ada) ---
+        $kompBaru = (array) $request->getPost('komponenExwork');
+        $biayaBaru = (array) $request->getPost('biayaExwork');
+
+        $inserted = 0;
+        if (!empty($kompBaru) && !empty($biayaBaru)) {
+            $len = min(count($kompBaru), count($biayaBaru));
+            for ($i = 0; $i < $len; $i++) {
+                $nama  = trim((string) ($kompBaru[$i] ?? ''));
+                $biaya = (int) preg_replace('/[^\d]/', '', (string) ($biayaBaru[$i] ?? ''));
+
+                if ($nama !== '' && $biaya >= 0) {
+                    $model->insert([
+                        'id_member'       => $user_id,
+                        'komponen_exwork' => esc($nama),
+                        'biaya'           => $biaya,
+                    ]);
+                    $inserted++;
+                }
+            }
+        }
+
+        return redirect()->to('/kalkulator-ekspor#exwork')
+            ->with('success', "Perubahan tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
+    }
+
     public function delete_exwork($id)
     {
         $session = session();
@@ -2598,6 +2657,57 @@ class KomunitasEkspor extends BaseController
         }
 
         return redirect()->to('/kalkulator-ekspor#fob')->with('success', 'Komponen FOB berhasil ditambahkan!');
+    }
+
+    public function save_all_fob()
+    {
+        $session = session();
+        $user_id = $session->get('user_id');
+
+        $request = $this->request;
+        $model   = new FOB();
+        $post    = $request->getPost();
+
+        $updated = 0;
+
+        // Update biaya existing (tanpa cast int)
+        foreach ($post as $key => $val) {
+            if (preg_match('/^fob_(\d+)$/', $key, $m)) {
+                $id    = (int) $m[1];
+                $biaya = preg_replace('/[^\d]/', '', (string) $val);
+
+                $row = $model->find($id);
+                if ($row && (int)$row['id_member'] === (int)$user_id) {
+                    $model->update($id, ['biaya' => $biaya]);
+                    $updated++;
+                }
+            }
+        }
+
+        // Insert komponen baru (tanpa cast int)
+        $kompBaru  = (array) $request->getPost('komponenFOB');
+        $biayaBaru = (array) $request->getPost('biayaFOB');
+
+        $inserted = 0;
+        if (!empty($kompBaru) && !empty($biayaBaru)) {
+            $len = min(count($kompBaru), count($biayaBaru));
+            for ($i = 0; $i < $len; $i++) {
+                $nama  = trim((string) ($kompBaru[$i] ?? ''));
+                $biaya = preg_replace('/[^\d]/', '', (string) ($biayaBaru[$i] ?? ''));
+
+                if ($nama !== '' && $biaya !== '') {
+                    $model->insert([
+                        'id_member'    => $user_id,
+                        'komponen_fob' => esc($nama),
+                        'biaya'        => $biaya,
+                    ]);
+                    $inserted++;
+                }
+            }
+        }
+
+        return redirect()->to('/kalkulator-ekspor#fob')
+            ->with('success', "Perubahan FOB tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
     }
 
     public function delete_fob($id)
@@ -2650,6 +2760,57 @@ class KomunitasEkspor extends BaseController
         return redirect()->to('/kalkulator-ekspor#cfr')->with('success', 'Komponen CFR berhasil ditambahkan!');
     }
 
+    public function save_all_cfr()
+    {
+        $session = session();
+        $user_id = $session->get('user_id');
+
+        $request = $this->request;
+        $model   = new CFR();
+        $post    = $request->getPost();
+
+        $updated = 0;
+
+        // Update biaya existing (tanpa cast int)
+        foreach ($post as $key => $val) {
+            if (preg_match('/^cfr_(\d+)$/', $key, $m)) {
+                $id    = (int) $m[1];
+                $biaya = preg_replace('/[^\d]/', '', (string) $val);
+
+                $row = $model->find($id);
+                if ($row && (int)$row['id_member'] === (int)$user_id) {
+                    $model->update($id, ['biaya' => $biaya]);
+                    $updated++;
+                }
+            }
+        }
+
+        // Insert komponen baru (tanpa cast int)
+        $kompBaru  = (array) $request->getPost('komponenCFR');
+        $biayaBaru = (array) $request->getPost('biayaCFR');
+
+        $inserted = 0;
+        if (!empty($kompBaru) && !empty($biayaBaru)) {
+            $len = min(count($kompBaru), count($biayaBaru));
+            for ($i = 0; $i < $len; $i++) {
+                $nama  = trim((string) ($kompBaru[$i] ?? ''));
+                $biaya = preg_replace('/[^\d]/', '', (string) ($biayaBaru[$i] ?? ''));
+
+                if ($nama !== '' && $biaya !== '') {
+                    $model->insert([
+                        'id_member'    => $user_id,
+                        'komponen_cfr' => esc($nama),
+                        'biaya'        => $biaya,
+                    ]);
+                    $inserted++;
+                }
+            }
+        }
+
+        return redirect()->to('/kalkulator-ekspor#cfr')
+            ->with('success', "Perubahan CFR tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
+    }
+
     public function delete_cfr($id)
     {
         $session = session();
@@ -2700,6 +2861,57 @@ class KomunitasEkspor extends BaseController
         return redirect()->to('/kalkulator-ekspor#cif')->with('success', 'Komponen CIF berhasil ditambahkan!');
     }
 
+    public function save_all_cif()
+    {
+        $session = session();
+        $user_id = $session->get('user_id');
+
+        $request = $this->request;
+        $model   = new CIF();
+        $post    = $request->getPost();
+
+        $updated = 0;
+
+        // Update biaya existing (tanpa cast int)
+        foreach ($post as $key => $val) {
+            if (preg_match('/^cif_(\d+)$/', $key, $m)) {
+                $id    = (int) $m[1];
+                $biaya = preg_replace('/[^\d]/', '', (string) $val);
+
+                $row = $model->find($id);
+                if ($row && (int)$row['id_member'] === (int)$user_id) {
+                    $model->update($id, ['biaya' => $biaya]);
+                    $updated++;
+                }
+            }
+        }
+
+        // Insert komponen baru (tanpa cast int)
+        $kompBaru  = (array) $request->getPost('komponenCIF');
+        $biayaBaru = (array) $request->getPost('biayaCIF');
+
+        $inserted = 0;
+        if (!empty($kompBaru) && !empty($biayaBaru)) {
+            $len = min(count($kompBaru), count($biayaBaru));
+            for ($i = 0; $i < $len; $i++) {
+                $nama  = trim((string) ($kompBaru[$i] ?? ''));
+                $biaya = preg_replace('/[^\d]/', '', (string) ($biayaBaru[$i] ?? ''));
+
+                if ($nama !== '' && $biaya !== '') {
+                    $model->insert([
+                        'id_member'    => $user_id,
+                        'komponen_cif' => esc($nama),
+                        'biaya'        => $biaya,
+                    ]);
+                    $inserted++;
+                }
+            }
+        }
+
+        return redirect()->to('/kalkulator-ekspor#cif')
+            ->with('success', "Perubahan CIF tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
+    }
+
     public function delete_cif($id)
     {
         $session = session();
@@ -2715,6 +2927,80 @@ class KomunitasEkspor extends BaseController
         } else {
             return redirect()->to('/kalkulator-ekspor#cif')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
+    }
+
+    public function kalkulator_state_json()
+    {
+        $session = session();
+        $user_id = $session->get('user_id');
+
+        // Jika belum login / tak ada user id, balas kosong
+        if (!$user_id) {
+            return $this->response->setJSON([
+                'jumlah_barang' => null,
+                'hpp'           => null,
+                'keuntungan'    => null,
+                'csrf_token'    => csrf_hash(),
+            ]);
+        }
+
+        $model = new \App\Models\KalkulatorState();
+        $row   = $model->where('id_member', $user_id)->first();
+
+        return $this->response->setJSON([
+            'jumlah_barang' => $row['jumlah_barang'] ?? null,
+            'hpp'           => $row['hpp'] ?? null,
+            'keuntungan'    => $row['keuntungan'] ?? null,
+            'csrf_token'    => csrf_hash(),
+        ]);
+    }
+
+    // POST: simpan/update state (upsert)
+    public function kalkulator_state_upsert()
+    {
+        $session = session();
+        $user_id = $session->get('user_id');
+
+        if (!$user_id) {
+            return $this->response->setStatusCode(401)
+                ->setJSON(['message' => 'Unauthorized', 'csrf_token' => csrf_hash()]);
+        }
+
+        // ambil raw nilai; biarkan kosong jadi null
+        $jumlah = $this->request->getPost('jumlah_barang');
+        $hpp    = $this->request->getPost('hpp');
+        $untung = $this->request->getPost('keuntungan');
+
+        // sanit angka: buang non-digit; kosong -> null
+        $clean = function ($v) {
+            if ($v === null || $v === '') return null;
+            $v = preg_replace('/[^\d]/', '', (string)$v);
+            return $v === '' ? null : (int)$v;
+        };
+
+        $jumlah = $clean($jumlah);
+        $hpp    = $clean($hpp);
+        $untung = $clean($untung);
+
+        $model = new \App\Models\KalkulatorState();
+        $row   = $model->where('id_member', $user_id)->first();
+
+        $data = [
+            'id_member'     => $user_id,
+            'jumlah_barang' => $jumlah,
+            'hpp'           => $hpp,
+            'keuntungan'    => $untung,
+            'updated_at'    => date('Y-m-d H:i:s'),
+        ];
+
+        if ($row) {
+            // pk kamu: id_state
+            $model->update($row['id_state'], $data);
+        } else {
+            $model->insert($data);
+        }
+
+        return $this->response->setJSON(['ok' => true, 'csrf_token' => csrf_hash()]);
     }
 
     public function index_kalkulator_premium()
