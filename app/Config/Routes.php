@@ -116,21 +116,37 @@ $routes->group('', ['filter' => 'auth', 'admin'], function ($routes) {
     $routes->get('delete-produk/(:num)', 'KomunitasEkspor::delete_produk/$1');
 
     // Visitor - Aplikasi Kalkulator Ekspor
+    // halaman kalkulator
     $routes->get('kalkulator-ekspor', 'KomunitasEkspor::index_kalkulator');
 
+    // Ganti satuan
     $routes->post('ganti-satuan/(:num)', 'KomunitasEkspor::ganti_satuan/$1');
 
+    // EXWORK (lama + save-all)
     $routes->post('komponen-exwork/add', 'KomunitasEkspor::add_exwork');
     $routes->get('komponen-exwork/delete/(:num)', 'KomunitasEkspor::delete_exwork/$1');
+    $routes->post('komponen-exwork/save-all', 'KomunitasEkspor::save_all_exwork');
 
+    // FOB (lama + save-all BARU)
     $routes->post('komponen-fob/add', 'KomunitasEkspor::add_fob');
     $routes->get('komponen-fob/delete/(:num)', 'KomunitasEkspor::delete_fob/$1');
+    $routes->post('komponen-fob/save-all', 'KomunitasEkspor::save_all_fob');
 
+    // CFR (lama + save-all BARU)
     $routes->post('komponen-cfr/add', 'KomunitasEkspor::add_cfr');
     $routes->get('komponen-cfr/delete/(:num)', 'KomunitasEkspor::delete_cfr/$1');
+    $routes->post('komponen-cfr/save-all', 'KomunitasEkspor::save_all_cfr');
 
+    // CIF (lama + save-all BARU)
     $routes->post('komponen-cif/add', 'KomunitasEkspor::add_cif');
     $routes->get('komponen-cif/delete/(:num)', 'KomunitasEkspor::delete_cif/$1');
+    $routes->post('komponen-cif/save-all', 'KomunitasEkspor::save_all_cif');
+
+    // Autosave (jumlahBarang, hpp, keuntungan)
+    $routes->post('kalkulator-state/save', 'KomunitasEkspor::save_kalkulator_state');
+    $routes->get('kalkulator-state/json',   'KomunitasEkspor::kalkulator_state_json');
+    $routes->post('kalkulator-state/upsert', 'KomunitasEkspor::kalkulator_state_upsert');
+
 
     // Member - Pengumuman
     $routes->get('pengumuman', 'KomunitasEkspor::pengumuman');
