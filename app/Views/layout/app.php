@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= isset($meta_title) ? $meta_title : 'Default Title'; ?></title>
-    <meta name="title" content="<?= isset($meta_title) ? $meta_title : 'Default Title for the website.'; ?>">
+    <title><?= isset($title) ? $title : 'Default Title'; ?></title>
     <meta name="description" content="<?= isset($meta_description) ? $meta_description : 'Default description for the website.'; ?>">
 
     <?= $this->renderSection('meta'); ?>

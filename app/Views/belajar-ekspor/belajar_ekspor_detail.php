@@ -3,7 +3,7 @@
 
 <?php
 $this->setData([
-    'meta_title' => ($lang == 'id') ? $artikel['meta_title'] : $artikel['meta_title_en'],
+    'title' => ($lang == 'id') ? $artikel['title_belajar_ekspor'] : $artikel['title_belajar_ekspor_en'],
     'meta_description' => ($lang == 'id') ? $artikel['meta_deskripsi'] : $artikel['meta_deskripsi_en']
 ]);
 
