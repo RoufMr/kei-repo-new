@@ -23,7 +23,9 @@ $routes->group('id', function ($routes) {
 
     // Visitior - Video Tutorial
     $routes->get('video-tutorial', 'KomunitasEkspor::video_tutorial');
-    $routes->get('video-tutorial/kategori/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    // $routes->get('video-tutorial/kategori/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    $routes->get('video-tutorial/search', 'KomunitasEkspor::search_video_tutorial');
+    $routes->get('kategori-video/(:any)', 'KomunitasEkspor::video_selengkapnya/$1');
     $routes->get('video-tutorial/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
     $routes->get('watch/(:segment)', 'KomunitasEkspor::watch/$1');
 
@@ -65,7 +67,8 @@ $routes->group('en', function ($routes) {
 
     // Visitior - Video Tutorial
     $routes->get('tutorial-video', 'KomunitasEkspor::video_tutorial');
-    $routes->get('tutorial-video/category/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    // $routes->get('tutorial-video/category/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    $routes->get('category-video/(:any)', 'KomunitasEkspor::video_selengkapnya/$1');
     $routes->get('tutorial-video/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
 
     $routes->get('registration', 'KomunitasEkspor::pendaftaran');
@@ -221,7 +224,7 @@ $routes->post('sosmed-planner/konten-planner/update/(:num)', 'KomunitasEkspor::u
 //     $routes->post('ubah-informasi-akun', 'KomunitasEkspor::ubah_informasi_akun');
 //     $routes->post('ubah-profil-perusahaan', 'KomunitasEkspor::ubah_profil_perusahaan');
 
-//     $routes->get('announcement', 'KomunitasEkspor::pengumuman');
+// //     $routes->get('announcement', 'KomunitasEkspor::pengumuman');
 // });
 
 // $routes->group('', ['filter' => 'premium'], function ($routes) {

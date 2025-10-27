@@ -4,27 +4,27 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class KategoriVidioModel extends Model
+class KategoriVideoModel extends Model
 {
-    protected $table            = 'kategori_video';
-    protected $primaryKey       = 'id_kategori_video';
+    protected $table = 'kategori_video';
+    protected $primaryKey = 'id_kategori_video';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    protected $returnType = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['nama_kategori_video', 'slug', 'nama_kategori_video_en', 'slug_en'];
-
-    // Method untuk mengambil semua kategori video
-    public function getAllKategori()
-    {
-        return $this->findAll();
-    }
-
-    // Method untuk mengambil kategori berdasarkan slug
-    public function getKategoriBySlug($slug)
-    {
-        return $this->where('slug', $slug)->first();
-    }
+    protected $allowedFields = [
+        'id_kategori_video',
+        'nama_kategori_video',
+        'nama_kategori_video_en',
+        'slug',
+        'slug_en',
+        'title_kategori_video', 
+        'title_kategori_video_en', 
+        'meta_description_kategori_video', 
+        'meta_description_kategori_video_en',
+        'created_at', 
+        'updated_at'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -33,7 +33,7 @@ class KategoriVidioModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';

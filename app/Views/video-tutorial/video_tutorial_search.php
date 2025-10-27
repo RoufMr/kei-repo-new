@@ -171,13 +171,13 @@ $this->setData([
 
 <!-- judul -->
 <div class="artikel-detail-section py-5" style="text-align: center;">
-    <h2 class="artikel-detail-section text-custom-title"><?= lang('Blog.headerMateri') ?></h2>
+    <h2 class="artikel-detail-section text-custom-title"><?= lang('Blog.videoTutorialTitle') ?></h2>
     <?php if (!empty($keyword)): ?>
         <p class="text-custom-paragraph mt-2"><?= lang('Blog.searchResults') ?> <strong><?= esc($keyword) ?></strong></p>
     <?php endif; ?>
 
     <!-- Search Bar Start -->
-    <form class="form mt-4" action="<?= base_url(($lang == 'en') ? 'en/export-lessons/search' : 'id/materi-ekspor/search') ?>" method="GET">
+    <form class="form mt-4" action="<?= base_url(($lang == 'en') ? 'en/tutorial-video/search' : 'id/video-tutorial/search') ?>" method="GET">
         <button>
             <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
                 <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -197,28 +197,30 @@ $this->setData([
     <div class="filter-container">
         <div class="row g-4 mb-5">
             <?php if (!empty($hasilPencarian)): ?>
-                <?php foreach ($hasilPencarian as $item): ?>
+                <?php foreach ($hasilPencarian as $video): ?>
                     <!-- Card -->
                     <div class="col-md-4">
-                        <div class="card h-100">
-                            <img src="<?= base_url('/img/' . $item['foto_belajar_ekspor']); ?>" class="card-img-top img-fluid" alt="<?= ($lang == 'en') ? $item['judul_belajar_ekspor_en'] : $item['judul_belajar_ekspor']; ?>" style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
-                            <div class="card-body d-flex flex-column">
-                                <div class="mb-3 d-flex justify-content-between align-items-center">
-                                    <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($item['created_at'])); ?></p>
-                                    <span class="badge">#<?= $item['nama_kategori']; ?></span>
-                                </div>
-                                <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <?= ($lang == 'en') ? $item['judul_belajar_ekspor_en'] : $item['judul_belajar_ekspor']; ?>
-                                </h5>
-                                <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <?= ($lang == 'en') ? $item['deskripsi_belajar_ekspor_en'] : $item['deskripsi_belajar_ekspor']; ?>
-                                </p>
-                                <a href="<?= base_url(($lang == 'en' ? 'en/export-lessons/' : 'id/materi-ekspor/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
-                                    <?= lang('Blog.readMore') ?>
-                                </a>
+                    <div class="card h-100 shadow-sm">
+                        <img src="<?= base_url('/img/' . $video['thumbnail']); ?>" class="card-img-top img-fluid"
+                            alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
+                            style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                                <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($video['created_at'])); ?></p>
+                                <span class="badge"><?= ($lang === 'en') ? $video['nama_kategori_video_en'] : $video['nama_kategori_video']; ?></span>
                             </div>
+                            <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                <?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>
+                            </h5>
+                            <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                <?= ($lang === 'en') ? $video['deskripsi_video_en'] : $video['deskripsi_video']; ?>
+                            </p>
+                            <a href="<?= base_url(($lang === 'en' ? 'en/tutorial-video/' : 'id/video-tutorial/') . ($lang === 'en' ? $video['slug_en'] : $video['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; text-align: center;">
+                                <?= lang('Blog.watchNow') ?>
+                            </a>
                         </div>
                     </div>
+                </div>
                 <?php endforeach; ?>
                 <div class="mt-5">
                     <?= $pager->links('default', 'bootstrap_pagination') ?>

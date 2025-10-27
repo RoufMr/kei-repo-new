@@ -3,7 +3,7 @@
 
 <?php
 $this->setData([
-    'meta_title' => $meta_title,
+    'title' => $title,
     'meta_description' => $meta_description,
 ]);
 ?>
