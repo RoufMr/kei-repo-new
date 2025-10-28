@@ -8,7 +8,7 @@
         <div class="alert alert-danger"><?= session()->getFlashdata('error'); ?></div>
     <?php endif; ?>
 
-    <form action="<?= base_url('sosmed-planner/konten-planner/update/' . $konten['id']) ?>" method="post" enctype="multipart/form-data" class="row g-4">
+    <form action="<?= base_url('sosmed-planner/konten-planner/update/' . $konten['slug']) ?>" method="post" enctype="multipart/form-data" class="row g-4">
         <?= csrf_field(); ?>
 
         <div class="col-lg-6">
@@ -29,8 +29,8 @@
             <label class="form-label fw-semibold">Konten Tipe</label>
             <select name="content_type_id" class="form-select" required>
                 <option value="">-- Pilih --</option>
-                <?php foreach ($kontentype as $t): ?>
-                    <option value="<?= $t['id']; ?>" <?= (int)$konten['content_type_id'] === (int)$t['id'] ? 'selected' : ''; ?>>
+                <?php foreach (($kontentype ?? []) as $t): ?>
+                    <option value="<?= $t['id']; ?>" <?= (int)($konten['content_type_id'] ?? 0) === (int)$t['id'] ? 'selected' : ''; ?>>
                         <?= esc($t['nama']); ?>
                     </option>
                 <?php endforeach; ?>
@@ -41,12 +41,13 @@
             <label class="form-label fw-semibold">Konten Pilar</label>
             <select name="content_pillar_id" class="form-select" required>
                 <option value="">-- Pilih --</option>
-                <?php foreach ($kontenpilar as $p): ?>
-                    <option value="<?= $p['id']; ?>" <?= (int)$konten['content_pillar_id'] === (int)$p['id'] ? 'selected' : ''; ?>>
+                <?php foreach (($kontenpilar ?? []) as $p): ?>
+                    <option value="<?= $p['id']; ?>" <?= (int)($konten['content_pillar_id'] ?? 0) === (int)$p['id'] ? 'selected' : ''; ?>>
                         <?= esc($p['nama']); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
+
         </div>
 
         <div class="col-12">

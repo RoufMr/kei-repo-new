@@ -6,7 +6,7 @@
     <h3 class="mb-0">Preview Konten</h3>
     <div class="d-flex gap-2">
       <a class="btn btn-primary"
-        href="<?= base_url('/sosmed-planner/konten-planner/edit/' . $konten['id']); ?>">
+        href="<?= base_url('/sosmed-planner/konten-planner/edit/' . $konten['slug']); ?>">
         Edit
       </a>
       <a href="<?= base_url('/sosmed-planner') ?>" class="btn btn-secondary">Kembali</a>

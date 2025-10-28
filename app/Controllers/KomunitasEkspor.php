@@ -152,6 +152,8 @@ class KomunitasEkspor extends BaseController
 
     public function getCalendarData()
     {
+        helper('url');
+
         $year  = $this->request->getGet('year') ?? date('Y');
         $month = $this->request->getGet('month') ?? date('m');
 
@@ -173,25 +175,32 @@ class KomunitasEkspor extends BaseController
         $platformModel = new \App\Models\KontenPlatform();
         $platformRef = [];
         foreach ($platformModel->findAll() as $p) {
-            $platformRef[(string)$p['id']] = $p['nama']; // id → nama
+            $platformRef[(string)$p['id']] = [
+                'name' => $p['nama'],
+                // kirim absolute URL biar aman dipakai di <img>
+                'logo' => !empty($p['logo']) ? base_url($p['logo']) : null,
+            ];
         }
 
         $calendarData = [];
         foreach ($rows as $r) {
             $dateKey = $r['tanggal_posting'];
 
+            // content_platform_id disimpan comma-separated ID (mis. "1,2")
             $platformIds = array_filter(explode(',', (string)$r['content_platform_id']));
-            $platformNames = array_map(function ($id) use ($platformRef) {
-                return $platformRef[(string)$id] ?? $id;
+            $platforms = array_map(function ($id) use ($platformRef) {
+                return $platformRef[(string)$id] ?? ['name' => (string)$id, 'logo' => null];
             }, $platformIds);
 
             if (!isset($calendarData[$dateKey])) $calendarData[$dateKey] = [];
 
             $calendarData[$dateKey][] = [
                 'id'       => $r['id'],
+                'slug'     => $r['slug'],
                 'title'    => $r['judul'],
                 'type'     => $r['type_name'] ?? '-',
-                'platform' => $platformNames,
+                'platforms' => $platforms,
+                'platform' => array_map(fn($x) => $x['name'], $platforms),
                 'pillar'   => $r['pillar_name'] ?? '-',
                 'status'   => $r['status'],
                 'time'     => date('H:i', strtotime($r['jam_posting'])),
@@ -296,8 +305,29 @@ class KomunitasEkspor extends BaseController
     {
         $model = new \App\Models\KontenPlatform();
 
+        // Ambil data input
+        $nama = $this->request->getPost('nama_kontenplatform');
+        $logoFile = $this->request->getFile('logo');
+
+        // Validasi input
+        if (!$nama || !$logoFile->isValid()) {
+            return redirect()->back()->with('error', 'Nama dan logo wajib diisi!');
+        }
+
+        // Pastikan folder upload ada
+        $uploadPath = FCPATH . 'uploads/logo_platform/';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        // Simpan file logo
+        $newName = $logoFile->getRandomName();
+        $logoFile->move($uploadPath, $newName);
+
+        // Simpan ke database
         $data = [
-            'nama' => $this->request->getPost('nama_kontenplatform'),
+            'nama' => $nama,
+            'logo' => 'uploads/logo_platform/' . $newName
         ];
 
         $model->insert($data);
@@ -305,22 +335,91 @@ class KomunitasEkspor extends BaseController
         return redirect()->to('/sosmed-planner')->with('success', 'Content platform berhasil ditambahkan');
     }
 
+
     public function update_kontenplatform($id)
     {
         $model = new \App\Models\KontenPlatform();
 
+        // Validasi minimal: nama wajib
         if (!$this->validate([
             'nama' => 'required'
         ])) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $model->update($id, [
-            'nama' => $this->request->getPost('nama')
-        ]);
+        // Ambil data lama (perlu untuk hapus file lama jika diganti / dihapus)
+        $existing = $model->find($id);
+        if (!$existing) {
+            return redirect()->to('/sosmed-planner')->with('error', 'Data tidak ditemukan.');
+        }
+
+        $nama        = $this->request->getPost('nama');
+        $removeLogo  = $this->request->getPost('remove_logo'); // '1' jika dicentang
+        $logoFile    = $this->request->getFile('logo');
+
+        // Siapkan payload update
+        $updateData = ['nama' => $nama];
+
+        // 1) Jika user minta hapus logo
+        if ($removeLogo === '1') {
+            // Hapus file lama (jika ada dan ada di disk)
+            if (!empty($existing['logo'])) {
+                $oldPath = FCPATH . $existing['logo'];
+                if (is_file($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+            $updateData['logo'] = null;
+        }
+
+        // 2) Jika user upload file logo baru (opsional)
+        if ($logoFile && $logoFile->getError() !== UPLOAD_ERR_NO_FILE) {
+            // Validasi file gambar
+            $valid = $this->validate([
+                'logo' => [
+                    'rules'  => 'uploaded[logo]|is_image[logo]|mime_in[logo,image/jpg,image/jpeg,image/png,image/webp]|max_size[logo,2048]',
+                    'errors' => [
+                        'uploaded' => 'Pilih file logo.',
+                        'is_image' => 'File logo harus berupa gambar.',
+                        'mime_in'  => 'Format logo harus jpg, jpeg, png, atau webp.',
+                        'max_size' => 'Ukuran logo maksimal 2MB.'
+                    ]
+                ]
+            ]);
+
+            if (!$valid) {
+                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            }
+
+            // Pastikan folder upload tersedia
+            $uploadDir = FCPATH . 'uploads/logo_platform/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            // Pindahkan file baru
+            $newName = $logoFile->getRandomName();
+            $logoFile->move($uploadDir, $newName);
+            $relativePath = 'uploads/logo_platform/' . $newName;
+
+            // Hapus file lama (jika ada), untuk menghindari sampah file
+            if (!empty($existing['logo'])) {
+                $oldPath = FCPATH . $existing['logo'];
+                if (is_file($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+
+            // Simpan path baru
+            $updateData['logo'] = $relativePath;
+        }
+
+        // Lakukan update
+        $model->update($id, $updateData);
 
         return redirect()->to('/sosmed-planner')->with('success', 'Content platform berhasil diperbarui');
     }
+
 
     public function hapus_kontenplatform($id)
     {
@@ -333,45 +432,60 @@ class KomunitasEkspor extends BaseController
         return redirect()->to('/sosmed-planner')->with('error', 'Content platform tidak ditemukan.');
     }
 
-    public function edit_kontenplanner($id)
-    {
-        session()->set('lang', 'id'); // Paksa bahasa Indonesia
-
-        $m = new \App\Models\KontenPlanner();
-        $data['konten'] = $m->find($id);
-        if (!$data['konten']) {
-            return redirect()->to(base_url('sosmed-planner'))
-                ->with('error', 'Konten tidak ditemukan.');
-        }
-
-        // === Tambahkan ini ===
-        $data['hideLangSwitcher'] = true; // agar dropdown bahasa disembunyikan
-
-        // Data lainnya
-        $data['kontentype']     = (new \App\Models\KontenType())->findAll();
-        $data['kontenpilar']    = (new \App\Models\KontenPilar())->findAll();
-        $data['kontenplatform'] = (new \App\Models\KontenPlatform())->findAll();
-        $data['webprofile']     = (new \App\Models\WebProfile())->findAll() ?? [];
-
-        return view('member/planner/edit_konten', $data);
-    }
-
-    public function preview_kontenplanner($id)
+    public function edit_kontenplanner($slug)
     {
         session()->set('lang', 'id');
 
         $m = new \App\Models\KontenPlanner();
-        $data['konten'] = $m->find($id);
-        if (!$data['konten']) {
+        $row = $m->where('slug', $slug)->first();  // lookup by slug
+        if (!$row) {
             return redirect()->to(base_url('sosmed-planner'))
                 ->with('error', 'Konten tidak ditemukan.');
         }
 
-        $data['hideLangSwitcher'] = true; // Sembunyikan dropdown bahasa
-        $data['webprofile'] = (new \App\Models\WebProfile())->findAll() ?? [];
+        // Ambil master data untuk dropdown
+        $kontenTypeModel   = new \App\Models\KontenType();
+        $kontenPilarModel  = new \App\Models\KontenPilar();
+        $kontenPlatModel   = new \App\Models\KontenPlatform();
 
-        $type   = (new \App\Models\KontenType())->find($data['konten']['content_type_id'] ?? 0);
-        $pillar = (new \App\Models\KontenPilar())->find($data['konten']['content_pillar_id'] ?? 0);
+        $data = [];
+        $data['konten']          = $row;
+        $data['webprofile']      = (new \App\Models\WebProfile())->findAll() ?? [];
+
+        // === KIRIM VARIABEL YANG DIPAKAI DI VIEW ===
+        $data['kontentype']      = $kontenTypeModel->findAll();     // <-- untuk select Konten Tipe
+        $data['kontenpilar']     = $kontenPilarModel->findAll();    // <-- untuk select Konten Pilar
+        $data['kontenplatform']  = $kontenPlatModel->findAll();     // <-- untuk checkbox/option platform
+
+        // Platform terpilih (CSV → array)
+        $data['selectedPlatforms'] = array_filter(array_map('trim', explode(',', (string)($row['content_platform_id'] ?? ''))));
+
+        // (opsional) nama ringkas untuk header/subtitle
+        $type   = $kontenTypeModel->find($row['content_type_id'] ?? 0);
+        $pillar = $kontenPilarModel->find($row['content_pillar_id'] ?? 0);
+        $data['kontenTypeName']   = $type['nama'] ?? '-';
+        $data['kontenPillarName'] = $pillar['nama'] ?? '-';
+
+        return view('member/planner/edit_konten', $data);
+    }
+
+
+
+    public function preview_kontenplanner($slug)
+    {
+        session()->set('lang', 'id');
+
+        $m = new \App\Models\KontenPlanner();
+        $data['konten'] = $m->where('slug', $slug)->first();
+        if (!$data['konten']) {
+            return redirect()->to(base_url('sosmed-planner'))->with('error', 'Konten tidak ditemukan.');
+        }
+
+        $data['hideLangSwitcher'] = true;
+        $data['webprofile']       = (new \App\Models\WebProfile())->findAll() ?? [];
+
+        $type                     = (new \App\Models\KontenType())->find($data['konten']['content_type_id'] ?? 0);
+        $pillar                   = (new \App\Models\KontenPilar())->find($data['konten']['content_pillar_id'] ?? 0);
         $data['kontenplatform']   = (new \App\Models\KontenPlatform())->findAll();
         $data['kontenTypeName']   = $type['nama'] ?? '-';
         $data['kontenPillarName'] = $pillar['nama'] ?? '-';
@@ -379,9 +493,8 @@ class KomunitasEkspor extends BaseController
         return view('member/planner/preview_konten', $data);
     }
 
-    public function update_kontenplanner($id)
+    public function update_kontenplanner($slug)
     {
-        // VALIDASI INPUT
         $rules = [
             'title'             => 'required|min_length[3]|max_length[255]',
             'content_type_id'   => 'required|integer',
@@ -390,85 +503,95 @@ class KomunitasEkspor extends BaseController
             'status'            => 'required|in_list[Draft,Ready,Scheduled,Published]',
             'posting_date'      => 'required|valid_date',
             'posting_time'      => 'required',
-            // jika platform opsional pakai "permit_empty"; kalau wajib pilih, gunakan "required"
             'platforms'         => 'permit_empty',
             'uploadFoto'        => 'if_exist|is_image[uploadFoto]|max_size[uploadFoto,2048]|mime_in[uploadFoto,image/jpg,image/jpeg,image/png]',
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Validasi gagal.')
+            return redirect()->back()->withInput()->with('error', 'Validasi gagal.')
                 ->with('errors', $this->validator->getErrors());
         }
 
         $m   = new \App\Models\KontenPlanner();
-        $row = $m->find($id);
+        $row = $m->where('slug', $slug)->first();
         if (!$row) {
-            return redirect()->to(base_url('/sosmed-planner'))
-                ->with('error', 'Konten tidak ditemukan.');
+            return redirect()->to(base_url('/sosmed-planner'))->with('error', 'Konten tidak ditemukan.');
         }
 
         // HANDLE FILE (opsional)
         $fotoPath = $row['media'] ?? null;
         $fileFoto = $this->request->getFile('uploadFoto');
         if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
-            // Pastikan folder writable
             $newName  = $fileFoto->getRandomName();
             $fileFoto->move('uploads/konten', $newName);
             $fotoPath = 'uploads/konten/' . $newName;
         }
 
-        // AMBIL CHECKBOX PLATFORMS DALAM BENTUK ARRAY (TANPA FILTER)
-        $platforms = $this->request->getPost('platforms');
-        if (!is_array($platforms)) {
-            $platforms = [];
-        }
+        // Platforms
+        $platforms  = $this->request->getPost('platforms');
+        if (!is_array($platforms)) $platforms = [];
         $platformCsv = implode(',', $platforms);
 
-        // SUSUN PAYLOAD
+        $title = $this->request->getPost('title');
+        $newSlug = $this->makeUniqueSlug($title, $row['id']); // pastikan unik, lihat helper di bawah
+
         $payload = [
-            'judul'               => $this->request->getPost('title'),
+            'judul'               => $title,
             'content_type_id'     => (int)$this->request->getPost('content_type_id'),
             'content_pillar_id'   => (int)$this->request->getPost('content_pillar_id'),
-            'content_platform_id' => $platformCsv,                 // simpan CSV di kolom ini
+            'content_platform_id' => $platformCsv,
             'caption'             => $this->request->getPost('caption'),
             'status'              => $this->request->getPost('status'),
             'tanggal_posting'     => $this->request->getPost('posting_date'),
             'jam_posting'         => $this->request->getPost('posting_time'),
             'media'               => $fotoPath,
             'link_canva'          => $this->request->getPost('link_canva'),
-            'slug'                => url_title($this->request->getPost('title'), '-', true),
+            'slug'                => $newSlug,
         ];
 
-        // SIMPAN KE DB
-        $ok = $m->update($id, $payload);
-
+        $ok = $m->update($row['id'], $payload);
         if (!$ok) {
-            // kalau gagal, tampilkan error dari model/db agar tahu penyebabnya
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Update gagal.')
+            return redirect()->back()->withInput()->with('error', 'Update gagal.')
                 ->with('errors', $m->errors() ?: ['DB error']);
         }
 
-        return redirect()->to(base_url('/sosmed-planner'))
-            ->with('success', 'Konten diperbarui.');
+        // redirect pakai slug baru (jika judul diganti)
+        return redirect()->to(base_url('/sosmed-planner'))->with('success', 'Konten diperbarui.');
     }
 
-    public function hapus_kontenplanner($id)
+    public function hapus_kontenplanner($slug)
     {
-        $model = new \App\Models\KontenPlanner();
+        $m   = new \App\Models\KontenPlanner();
+        $row = $m->where('slug', $slug)->first();
 
-        if ($model->find($id)) {
-            $model->delete($id);
-            return redirect()->to(base_url('/sosmed-planner'))
-                ->with('success', 'Konten berhasil dihapus.');
-        } else {
-            return redirect()->to(base_url('/sosmed-planner'))
-                ->with('error', 'Konten tidak ditemukan.');
+        if ($row) {
+            $m->delete($row['id']);
+            return redirect()->to(base_url('/sosmed-planner'))->with('success', 'Konten berhasil dihapus.');
+        }
+        return redirect()->to(base_url('/sosmed-planner'))->with('error', 'Konten tidak ditemukan.');
+    }
+
+    /**
+     * Pastikan slug unik. Jika bentrok, tambahkan -2, -3, dst.
+     */
+    private function makeUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $base = url_title($title, '-', true);
+        $slug = $base;
+        $m = new \App\Models\KontenPlanner();
+
+        $i = 2;
+        while (true) {
+            $builder = $m->where('slug', $slug);
+            if ($ignoreId) $builder->where('id !=', $ignoreId);
+            $exists = $builder->first();
+
+            if (!$exists) return $slug;
+            $slug = $base . '-' . $i;
+            $i++;
         }
     }
+
 
 
     public function index()
@@ -1514,7 +1637,7 @@ class KomunitasEkspor extends BaseController
 
         // Fetch members with pagination
         $members = $model_member
-            ->where('role', 'member')
+            ->where(['role' => 'member', 'status' => '1'])
             ->orderBy('popular_point', 'DESC')
             ->paginate($perPage);
 
