@@ -1,12 +1,7 @@
 <?= $this->extend('layout/app'); ?>
 <?= $this->section('content'); ?>
 
-<?php
-$this->setData([
-    'title' => $title,
-    'meta_description' => $meta_description,
-]);
-?>
+
 <style>
     /* Artikel Detail Section */
     .artikel-detail-section {
@@ -338,25 +333,47 @@ $this->setData([
 
 <!-- judul -->
 <div class="artikel-detail-section py-5" style="text-align: center;">
-    <h2 class="text-custom-title"><?= lang('Blog.headerMateri') ?></h2>
+    <h2 class="text-custom-title">
+        <?= !empty($current_category_name)
+            ? esc($current_category_name)
+            : lang('Blog.headerMateri') ?>
+    </h2>
+    <!-- <h2 class="text-custom-title">
+        <?= esc($title ?? lang('Blog.headerMateri')) ?>
+    </h2> -->
+
     <p class="text-custom-paragraph mt-2">
         <?= lang('Blog.belajarEksporSubtitle') ?>
     </p>
+
     <!-- Search Bar Start -->
-    <form class="form mt-4" action="<?= base_url(($lang === 'en' ? 'en/export-lessons/search' : '/id/materi-ekspor/search')); ?>" method="GET">
-        <button type="submit">
+    <form class="form mt-4" action="#" method="GET" onsubmit="
+    event.preventDefault();
+    const lang = '<?= $lang === 'en' ? 'en' : 'id' ?>';
+    const base = lang === 'en' ? 'en/lessons/keyword=' : 'id/materi/keyword=';
+    const input = this.querySelector('input[name=keyword]');
+    let kw = (input.value || '').trim();
+    if (!kw) { input.focus(); return false; }
+    // Encode: spasi -> + (agar sesuai contoh URL), karakter lain tetap aman
+    kw = encodeURIComponent(kw).replace(/%20/g, '+');
+    window.location.href = '<?= base_url() ?>' + base + kw;
+    return false;
+">
+        <button type="submit" aria-label="Search">
             <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
                 <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
         </button>
-        <input class="input" name="keyword" placeholder="<?= lang('Blog.belajarEksporCTA') ?>" required="" type="text" autocomplete="off">
+        <input class="input" name="keyword" placeholder="<?= lang('Blog.belajarEksporCTA') ?>" required type="text" autocomplete="off">
+        <button class="reset" type="button" aria-label="Clear"
+            onclick="this.previousElementSibling.value=''; this.previousElementSibling.focus();">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
     </form>
-    <button class="reset" type="reset">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-    </button>
     <!-- Search Bar End -->
+
 </div>
 
 <section class="container">
@@ -379,14 +396,15 @@ $this->setData([
                     <?php if (!empty($kategori_belajar_ekspor)): ?>
                         <!-- Tampilkan link ke semua kategori -->
                         <div class="submenu-item">
-                            <a href="<?= base_url(($lang === 'en' ? 'en/export-lessons' : '/id/materi-ekspor')); ?>" class="submenu-link <?= empty($active_category) ? 'active' : ''; ?>">
+                            <a href="<?= base_url(($lang === 'en' ? 'en/lessons' : 'id/materi')); ?>" class="submenu-link <?= empty($active_category) ? 'active' : ''; ?>">
                                 <?= lang('Blog.filterAllPlaceholder') ?>
                             </a>
                         </div>
                         <!-- Loop kategori -->
                         <?php foreach ($kategori_belajar_ekspor as $item): ?>
                             <div class="submenu-item">
-                                <a href="<?= base_url(($lang === 'en' ? 'en/category' : 'id/kategori') . '/' . ($lang === 'en' ? $item['slug_en'] : $item['slug'])); ?>" class="submenu-link <?= $active_category == $item['id_kategori_belajar_ekspor'] ? 'active' : ''; ?>">
+                                <!-- dropdown kategori -->
+                                <a href="<?= base_url(($lang === 'en' ? 'en/lessons/' : 'id/materi/') . ($lang === 'en' ? $item['slug_en'] : $item['slug'])); ?>" class="submenu-link <?= $active_category == $item['id_kategori_belajar_ekspor'] ? 'active' : ''; ?>">
                                     <?= $lang === 'en' ? $item['nama_kategori_en'] : $item['nama_kategori']; ?>
                                 </a>
                             </div>
@@ -421,7 +439,8 @@ $this->setData([
                             <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
                                 <?= ($lang == 'en') ? $item['deskripsi_belajar_ekspor_en'] : $item['deskripsi_belajar_ekspor']; ?>
                             </p>
-                            <a href="<?= base_url(($lang == 'en' ? 'en/export-lessons/' : 'id/materi-ekspor/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
+                            <!-- tombol read more -->
+                            <a href="<?= base_url(($lang == 'en' ? 'en/lessons/' : 'id/materi/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto">
                                 <?= lang('Blog.readMore') ?>
                             </a>
 
