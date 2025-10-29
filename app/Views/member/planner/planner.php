@@ -347,7 +347,7 @@
         background: white;
         border: 1px solid #e2e8f0;
     }
-    
+
 
     @media (max-width: 768px) {
         .calendar-grid {
@@ -634,15 +634,47 @@
                                                 <h5 class="modal-title" id="editModalLabelPlatform<?= $kp['id'] ?>">Edit Content Platform</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                             </div>
-                                            <form action="<?= base_url('/sosmed-planner/konten-platform/update/' . $kp['id']) ?>" method="post">
+
+                                            <!-- enctype WAJIB untuk upload file -->
+                                            <form action="<?= base_url('/sosmed-planner/konten-platform/update/' . $kp['id']) ?>"
+                                                method="post" enctype="multipart/form-data">
                                                 <?= csrf_field() ?>
+
                                                 <div class="modal-body">
+                                                    <!-- Nama -->
                                                     <div class="mb-3">
                                                         <label for="nama<?= $kp['id'] ?>" class="form-label">Nama</label>
                                                         <input type="text" id="nama<?= $kp['id'] ?>" name="nama"
                                                             class="form-control" value="<?= esc($kp['nama']) ?>" required>
                                                     </div>
+
+                                                    <!-- Logo saat ini -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label d-block">Logo Saat Ini</label>
+                                                        <?php if (!empty($kp['logo'])): ?>
+                                                            <img src="<?= base_url($kp['logo']) ?>" alt="Logo <?= esc($kp['nama']) ?>"
+                                                                style="width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid #eee;">
+                                                        <?php else: ?>
+                                                            <span class="text-muted">Belum ada logo</span>
+                                                        <?php endif; ?>
+                                                    </div>
+
+                                                    <!-- Upload logo baru (opsional) -->
+                                                    <div class="mb-3">
+                                                        <label for="logo<?= $kp['id'] ?>" class="form-label">Ganti Logo (opsional)</label>
+                                                        <input type="file" id="logo<?= $kp['id'] ?>" name="logo" class="form-control" accept="image/*">
+                                                        <div class="form-text">Kosongkan jika tidak ingin mengubah logo.</div>
+                                                    </div>
+
+                                                    <!-- Opsi hapus logo -->
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="1" id="removeLogo<?= $kp['id'] ?>" name="remove_logo">
+                                                        <label class="form-check-label" for="removeLogo<?= $kp['id'] ?>">
+                                                            Hapus logo
+                                                        </label>
+                                                    </div>
                                                 </div>
+
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                                                     <button type="submit" class="btn btn-success">Simpan Perubahan</button>
@@ -651,6 +683,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             <?php endforeach; ?>
                         <?php else : ?>
                             <tr>
@@ -677,21 +710,19 @@
                             <h5 class="modal-title" id="tambahModalLabel">Tambah Content Platform</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                         </div>
-                        <form action="<?= base_url('/sosmed-planner/konten-platform/tambah') ?>" method="post" id="formTambahKontenPlatform">
+                        <form action="<?= base_url('/sosmed-planner/konten-platform/tambah') ?>" method="post" enctype="multipart/form-data" class="mb-4">
                             <?= csrf_field() ?>
-                            <div class="modal-body">
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <!-- Disesuaikan dengan controller -->
-                                        <input type="text" class="form-control" name="nama_kontenplatform" placeholder="Nama Content Platform" required>
-                                    </div>
-                                </div>
+                            <div class="mb-3">
+                                <label for="nama_kontenplatform" class="form-label fw-bold">Nama Platform</label>
+                                <input type="text" name="nama_kontenplatform" id="nama_kontenplatform" class="form-control" placeholder="Masukkan nama platform..." required>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-success">Simpan</button>
+                            <div class="mb-3">
+                                <label for="logo" class="form-label fw-bold">Logo Platform</label>
+                                <input type="file" name="logo" id="logo" class="form-control" accept="image/*" required>
                             </div>
+                            <button type="submit" class="btn btn-primary w-100">Tambah Platform</button>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -708,6 +739,8 @@
                 <div class="row d-flex">
                     <!-- Kolom Kiri: Preview Foto -->
                     <div class="col-6 text-center">
+                        <label for="link_canva" class="form-label fw-bold">Link Canva</label>
+                        <input type="text" class="form-control mb-3" id="link_canva" name="link_canva" placeholder="Masukan Link Canva">
                         <label for="uploadFoto" class="form-label fw-bold">Upload Foto</label>
                         <input type="file" class="form-control mb-3" id="uploadFoto" name="uploadFoto" accept="image/*">
 
@@ -1076,37 +1109,66 @@
       </div>`;
         } else {
             modalContent.innerHTML = content.map(item => `
-      <div class="content-item">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <h6 class="mb-1">${item.title ?? ''}</h6>
-          <small class="text-muted">${item.time ?? ''}</small>
+        <div class="content-item d-flex align-items-start mb-3 p-2 border rounded">
+            <!-- Gambar di kiri -->
+            <img src="${item.media ?? ''}" alt="${item.title ?? ''}" 
+                class="content-image me-3"
+                style="width:170px; height:auto; border-radius:8px; object-fit:cover;">
+
+            <!-- Teks di kanan -->
+            <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-1">${item.title ?? ''}</h6>
+                <small class="text-muted">${item.time ?? ''}</small>
+            </div>
+
+            <div class="mb-2">
+                <span class="content-type-badge type-${String(item.type ?? '').toLowerCase().replace(/\s+/g,'')}">${item.type ?? ''} </span> | 
+                ${(item.platforms ?? []).map(p => `
+                <span class="platform-badge platform-${String(p.name).toLowerCase().replace(/\s+/g,'')}">
+                    ${p.logo 
+                        ? `<img src="${p.logo}" alt="${p.name}" title="${p.name}" 
+                                style="width:20px;height:auto;object-fit:contain;margin-right:4px;border-radius:4px;border:1px solid #ccc;">` 
+                        : ''
+                    }
+                    ${p.name}
+                </span>
+                `).join('')}
+            </div>
+
+            <div class="mb-2">
+                <small class="text-muted">
+                <strong>Pilar:</strong> ${item.pillar ?? '-'} |
+                <strong>Status:</strong> <span class="badge bg-${getStatusColor(item.status)}">${item.status ?? '-'}</span>
+                </small>
+            </div>
+
+            <p class="mb-0 text-muted" style="font-size:13px;">${item.caption ?? ''}</p>
+
+            <div class="mt-2">
+                <button type="button"
+                        class="btn btn-sm btn-outline-primary me-2 btn-edit"
+                        data-slug="${item.slug}">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-success me-2 btn-preview"
+                        data-slug="${item.slug}">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger btn-delete"
+                        data-slug="${item.slug}">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+            </div>
+
+            </div>
         </div>
-        <div class="mb-2">
-          <span class="content-type-badge type-${String(item.type ?? '').toLowerCase().replace(/\s+/g,'')}">${item.type ?? ''}</span>
-          ${(item.platform ?? []).map(p =>
-            `<span class="platform-badge platform-${String(p).toLowerCase().replace(/\s+/g,'')}">${p}</span>`
-          ).join('')}
-        </div>
-        <div class="mb-2">
-          <small class="text-muted">
-            <strong>Pilar:</strong> ${item.pillar ?? '-'} |
-            <strong>Status:</strong> <span class="badge bg-${getStatusColor(item.status)}">${item.status ?? '-'}</span>
-          </small>
-        </div>
-        <p class="mb-0 text-muted" style="font-size:13px;">${item.caption ?? ''}</p>
-        <div class="mt-2">
-            <button type="button" class="btn btn-sm btn-outline-primary me-2" onclick="editContent(${item.id})">
-                <i class="fas fa-edit"></i> Edit
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-success me-2" onclick="previewContent(${item.id})">
-                <i class="fas fa-eye"></i> Preview
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteContent(${item.id})">
-                <i class="fas fa-trash"></i> Hapus
-            </button>
-        </div>
-      </div>
-    `).join('');
+        `).join('');
+
         }
         modal.show();
     }
@@ -1169,19 +1231,41 @@
     });
 
     // === FUNGSI GLOBAL UNTUK TOMBOL MODAL ===
-    window.editContent = function(id) {
-        window.location.href = "<?= base_url('/sosmed-planner/konten-planner/edit/') ?>" + id;
-    };
+    const BASE = "<?= rtrim(base_url(), '/') ?>";
 
-    window.previewContent = function(id) {
-        window.location.href = "<?= base_url('/sosmed-planner/konten-planner/preview/') ?>" + id;
-    };
+    function editContent(slug) {
+        window.location.href = `${BASE}/sosmed-planner/konten-planner/edit/${encodeURIComponent(slug)}`;
+    }
 
-    window.deleteContent = function(id) {
+    function previewContent(slug) {
+        window.location.href = `${BASE}/sosmed-planner/konten-planner/preview/${encodeURIComponent(slug)}`;
+    }
+
+    function deleteContent(slug) {
         if (confirm('Apakah Anda yakin ingin menghapus konten ini?')) {
-            window.location.href = "<?= base_url('/sosmed-planner/konten-planner/delete/') ?>" + id;
+            window.location.href = `${BASE}/sosmed-planner/konten-planner/delete/${encodeURIComponent(slug)}`;
         }
-    };
+    }
+
+    // Event delegation: tombol tetap bekerja meski DOM dibuat ulang
+    document.addEventListener('click', function(e) {
+        const btnEdit = e.target.closest('.btn-edit');
+        const btnPreview = e.target.closest('.btn-preview');
+        const btnDelete = e.target.closest('.btn-delete');
+
+        if (btnEdit) {
+            editContent(btnEdit.dataset.slug);
+            return;
+        }
+        if (btnPreview) {
+            previewContent(btnPreview.dataset.slug);
+            return;
+        }
+        if (btnDelete) {
+            deleteContent(btnDelete.dataset.slug);
+            return;
+        }
+    });
 
     // optional: pastikan tombol "Tambah Konten Baru" juga bisa dipanggil global
     window.scrollToAddContent = scrollToAddContent;
