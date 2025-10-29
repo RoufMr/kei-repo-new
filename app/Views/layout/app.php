@@ -585,7 +585,7 @@
         }
 
         .icon-text {
-            font-size: 3, 5px;
+            font-size: 3.5px;
         }
 
         .social-link {
@@ -677,9 +677,9 @@
     // Definisikan tautan untuk setiap halaman berdasarkan bahasa
     $homeLink = ($lang_segment === 'en/') ? '/' : '/';
     $aboutLink = ($lang_segment === 'en/') ? 'about-us' : 'tentang-kami';
-    $belajarEksporLink = ($lang_segment === 'en/') ? 'export-lessons' : 'materi-ekspor';
+    $belajarEksporLink = ($lang_segment === 'en/') ? 'lessons' : 'materi';
     $pendaftaranLink = ($lang_segment === 'en/') ? 'registration' : 'pendaftaran';
-    $videoTutorialLink = ($lang_segment === 'en/') ? 'tutorial-video' : 'video-tutorial';
+    $videoTutorialLink = ($lang_segment === 'en/') ? 'videos' : 'video';
     $memberLink = ($lang_segment === 'en/') ? 'data-member' : 'data-member';
     $buyersLink = ($lang_segment === 'en/') ? 'data-buyers' : 'data-buyers';
     $SyaratKetentuanLink = ($lang_segment === 'en/') ? 'terms-conditions' : 'syarat-ketentuan';
@@ -688,9 +688,9 @@
     $replace_map = [
         'tentang-kami' => 'about-us',
         'pendaftaran' => 'registration',
-        'materi-ekspor' => 'export-lessons',
+        'materi' => 'lessons',
         'kategori' => 'category',
-        'video-tutorial' => 'tutorial-video',
+        'video' => 'videos',
         'syarat-ketentuan' => 'terms-conditions',
     ];
 
@@ -727,6 +727,18 @@
     $indonesia_url = base_url($clean_url);
     ?>
 
+    <?php $profile = $webprofile[0] ?? [
+        'logo_web' => 'logo.png',
+        'footer_text' => '',
+        'nohp_web' => '',
+        'email_web' => '',
+        'link_ig_web' => '#',
+        'link_yt_web' => '#',
+        'link_fb_web' => '#',
+        'deskripsi_web' => '',
+        'deskripsi_web_en' => ''
+    ]; ?>
+
 
     <!-- header -->
     <header class="header" style="background-color: #F2BF02;">
@@ -736,25 +748,25 @@
                 <div class="icon d-flex justify-content-start">
                     <div class=" d-flex align-items-center gap-2 icon-text text-light">
                         <i class="fas fa-phone" style="color: white;"></i>
-                        <a href="https://wa.me/<?= $webprofile[0]['nohp_web'] ?>" target="_blank" style="color: white; text-decoration: none;">
-                            <p class="mb-0"><?= $webprofile[0]['nohp_web'] ?></p>
+                        <a href="https://wa.me/<?= $profile['nohp_web'] ?>" target="_blank" style="color: white; text-decoration: none;">
+                            <p class="mb-0"><?= $profile['nohp_web'] ?></p>
                         </a>
                     </div>
                     <div class="d-flex align-items-center gap-2 icon-text text-light ms-2">
                         <i class="fas fa-envelope" style="color: white;"></i>
-                        <p class="mb-0" style="color: white; "><?= $webprofile[0]['email_web'] ?></p>
+                        <p class="mb-0" style="color: white; "><?= $profile['email_web'] ?></p>
                     </div>
                 </div>
                 <!-- Ikon Sosial Media dan Garis -->
                 <div class="d-flex align-items-center">
                     <div class="sosmed d-flex gap-2 me-4">
-                        <a href="<?= $webprofile[0]['link_ig_web'] ?>" target="_blank" class="social-link">
+                        <a href="<?= $profile['link_ig_web'] ?>" target="_blank" class="social-link">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="<?= $webprofile[0]['link_yt_web'] ?>" target="_blank" class="social-link">
+                        <a href="<?= $profile['link_yt_web'] ?>" target="_blank" class="social-link">
                             <i class="fab fa-youtube"></i>
                         </a>
-                        <a href="<?= $webprofile[0]['link_fb_web'] ?>" target="_blank" class="social-link">
+                        <a href="<?= $profile['link_fb_web'] ?>" target="_blank" class="social-link">
                             <i class="fab fa-facebook"></i>
                         </a>
                     </div>
@@ -788,7 +800,7 @@
     <!-- start navbar -->
     <nav class="navbar navbar-custom navbar-expand-lg sticky-top" style="background-color: #03AADE;">
         <div class="container d-flex justify-content-between align-items-center py-1">
-            <img class="kei" onclick="window.location.href='/'" style="width:140px;" src="<?= base_url('img/' . $webprofile[0]['logo_web']); ?>" alt="logo">
+            <img class="kei" onclick="window.location.href='/'" style="width:140px;" src="<?= base_url('img/' . $profile['logo_web']); ?>" alt="logo">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -839,12 +851,12 @@
                     <?php endif; ?> -->
 
                     <div class="border-top" style="width: 1.5px; height: 40px; background-color: white; margin: 0 23px;"></div>
-                    
-                        <!-- Jika belum login, tampilkan tombol Login dengan kondisi bahasa -->
-                        <a href="<?= base_url('/login') ?>">
-                            <button type="button" class="btn btn-outline-light"><?php echo lang('Blog.headerMasuk'); ?></button>
-                        </a>
-                    
+
+                    <!-- Jika belum login, tampilkan tombol Login dengan kondisi bahasa -->
+                    <a href="<?= base_url('/login') ?>">
+                        <button type="button" class="btn btn-outline-light"><?php echo lang('Blog.headerMasuk'); ?></button>
+                    </a>
+
 
                 </ul>
             </div>
@@ -858,7 +870,7 @@
     </div>
     <!-- end content -->
 
-    <a href="https://wa.me/<?= $webprofile[0]['nohp_web'] ?>" target="_blank" class="whatsapp-float">
+    <a href="https://wa.me/<?= $profile['nohp_web'] ?>" target="_blank" class="whatsapp-float">
         <i class="fab fa-whatsapp whatsapp-icon"></i>
     </a>
 
@@ -869,11 +881,11 @@
                 <div class="row d-flex justify-content-center gap-5">
                     <!-- Logo and Company Description -->
                     <div class="col-md-6 mb-4">
-                        <img src="<?= base_url('img/' . $webprofile[0]['logo_web']); ?>" alt="logo" style="width: 180px;">
-                        <p class="mt-4"><?= ($lang == 'en') ? $webprofile[0]['deskripsi_web_en'] : $webprofile[0]['deskripsi_web'] ?></p>
+                        <img src="<?= base_url('img/' . $profile['logo_web']); ?>" alt="logo" style="width: 180px;">
+                        <p class="mt-4"><?= ($lang == 'en') ? $profile['deskripsi_web_en'] : $profile['deskripsi_web'] ?></p>
                         <!-- Social Media Icons -->
                         <div class="container2 gap-2 mt-3">
-                            <a href="<?= $webprofile[0]['link_ig_web'] ?>" target="_blank">
+                            <a href="<?= $profile['link_ig_web'] ?>" target="_blank">
                                 <button class="Btn instagram">
                                     <svg
                                         class="svgIcon"
@@ -887,7 +899,7 @@
                                 </button>
                             </a>
 
-                            <a href="<?= $webprofile[0]['link_yt_web'] ?>" target="_blank">
+                            <a href="<?= $profile['link_yt_web'] ?>" target="_blank">
                                 <button class="Btn youtube">
                                     <svg
                                         class="svgIcon"
@@ -901,7 +913,7 @@
                                 </button>
                             </a>
 
-                            <a href="<?= $webprofile[0]['link_fb_web'] ?>" target="_blank">
+                            <a href="<?= $profile['link_fb_web'] ?>" target="_blank">
                                 <button class="Btn facebook">
                                     <svg
                                         class="svgIcon"
@@ -937,7 +949,7 @@
     <!-- Bottom Footer -->
     <div class="py-4" style="background-color: #F2BF02; height: 70px;">
         <div class="container bottom-footer">
-            <p class="text-light" style="text-align: center;"><?= $webprofile[0]['footer_text'] ?></p>
+            <p class="text-light" style="text-align: center;"><?= $profile['footer_text'] ?></p>
         </div>
     </div>
 
@@ -951,10 +963,17 @@
             }
         });
 
-        window.scrollTo({
-            top: targetElement.offsetTop - navbarHeight,
-            behavior: 'smooth'
-        });
+        (function() {
+            const targetElement = document.querySelector('.some-anchor');
+            const navbar = document.querySelector('.navbar-custom');
+            const navbarHeight = navbar ? navbar.offsetHeight : 0;
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - navbarHeight,
+                    behavior: 'smooth'
+                });
+            }
+        })();
     </script>
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://vjs.zencdn.net/8.9.0/video.min.js"></script>

@@ -1,13 +1,6 @@
 <?= $this->extend('layout/app'); ?>
 <?= $this->section('content'); ?>
 
-<?php
-$this->setData([
-    'title' => ($lang == 'id') ? $meta['title_materi'] : $meta['title_materi_en'],
-    'meta_description' => ($lang == 'id') ? $meta['meta_description_materi'] : $meta['meta_description_materi_en']
-]);
-?>
-
 <style>
     /* Artikel Detail Section */
     .artikel-detail-section {
@@ -177,7 +170,18 @@ $this->setData([
     <?php endif; ?>
 
     <!-- Search Bar Start -->
-    <form class="form mt-4" action="<?= base_url(($lang == 'en') ? 'en/export-lessons/search' : 'id/materi-ekspor/search') ?>" method="GET">
+    <form class="form mt-4" action="#" method="GET" onsubmit="
+    event.preventDefault();
+    const lang = '<?= $lang === 'en' ? 'en' : 'id' ?>';
+    const base = lang === 'en' ? 'en/lessons/keyword=' : 'id/materi/keyword=';
+    const input = this.querySelector('input[name=keyword]');
+    let kw = (input.value || '').trim();
+    if (!kw) { input.focus(); return false; }
+    // Encode: spasi -> + (agar sesuai contoh URL), karakter lain tetap aman
+    kw = encodeURIComponent(kw).replace(/%20/g, '+');
+    window.location.href = '<?= base_url() ?>' + base + kw;
+    return false;
+">
         <button>
             <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
                 <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -201,7 +205,9 @@ $this->setData([
                     <!-- Card -->
                     <div class="col-md-4">
                         <div class="card h-100">
-                            <img src="<?= base_url('/img/' . $item['foto_belajar_ekspor']); ?>" class="card-img-top img-fluid" alt="<?= ($lang == 'en') ? $item['judul_belajar_ekspor_en'] : $item['judul_belajar_ekspor']; ?>" style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
+                            <img src="<?= base_url('/img/' . $item['foto_belajar_ekspor']); ?>" class="card-img-top img-fluid" 
+                            alt="<?= ($lang == 'en') ? $item['judul_belajar_ekspor_en'] : $item['judul_belajar_ekspor']; ?>" 
+                            style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
                             <div class="card-body d-flex flex-column">
                                 <div class="mb-3 d-flex justify-content-between align-items-center">
                                     <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($item['created_at'])); ?></p>
@@ -213,7 +219,7 @@ $this->setData([
                                 <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
                                     <?= ($lang == 'en') ? $item['deskripsi_belajar_ekspor_en'] : $item['deskripsi_belajar_ekspor']; ?>
                                 </p>
-                                <a href="<?= base_url(($lang == 'en' ? 'en/export-lessons/' : 'id/materi-ekspor/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
+                                <a href="<?= base_url(($lang == 'en' ? 'en/lessons/' : 'id/materi/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
                                     <?= lang('Blog.readMore') ?>
                                 </a>
                             </div>

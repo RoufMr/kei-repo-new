@@ -85,6 +85,7 @@ return [
     'searchResults' => 'Displaying search results for:',
     'searchPlaceholder' => 'Search lessons...',
     'noArticlesFound' => 'No articles found.',
+    'noVideosFound' => 'No videos found.',
     'seeMore' => 'See More Lessons',
     //end halaman search artikel
 

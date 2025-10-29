@@ -273,7 +273,7 @@ $this->setData([
 
         <!-- Back Button -->
         <div class="artikel-detail-footer text-center mt-5">
-            <a href="<?= base_url(($lang == 'en') ? 'en/export-lessons' : 'id/materi-ekspor'); ?>" class="btn btn-custom"><?= lang('Blog.backtoArticle') ?></a>
+            <a href="<?= base_url(($lang == 'en') ? 'en/lessons' : 'id/materi'); ?>" class="btn btn-custom"><?= lang('Blog.backtoArticle') ?></a>
         </div>
     </div>
     <!-- Paywall overlay -->
@@ -312,7 +312,7 @@ $this->setData([
                             <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
                                 <?= ($lang == 'en') ? $item['deskripsi_belajar_ekspor_en'] : $item['deskripsi_belajar_ekspor']; ?>
                             </p>
-                            <a href="<?= base_url(($lang == 'en' ? 'en/export-lessons/' : 'id/materi-ekspor/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
+                            <a href="<?= base_url(($lang == 'en' ? 'en/lessons/' : 'id/materi/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
                                 <?= ($lang == 'en') ? 'Read More' : 'Baca Selengkapnya'; ?>
                             </a>
                         </div>

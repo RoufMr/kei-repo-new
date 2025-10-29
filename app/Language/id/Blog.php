@@ -92,6 +92,7 @@ return [
     'searchResults' => 'Menampilkan hasil pencarian untuk:',
     'searchPlaceholder' => 'Cari artikel...',
     'noArticlesFound' => 'Tidak ada artikel yang ditemukan.',
+    'noVideosFound' => 'Tidak ada video yang ditemukan.',
     'seeMore' => 'Lihat Lebih Banyak Materi',
     //end halaman belaajr ekspor
 
