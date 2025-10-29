@@ -3,70 +3,133 @@
 
 <?php
 $this->setData([
-    'meta_title' => ($lang == 'id') ? $meta['meta_title_tutorial'] : $meta['meta_title_tutorial_en'],
-    'meta_description' => ($lang == 'id') ? $meta['meta_description_tutorial'] : $meta['meta_description_tutorial_en']
+    'title' => ($lang == 'id') ? $video['title_video'] : $video['title_video_en'],
+    'meta_description' => ($lang == 'id') ? $video['meta_deskripsi_video'] : $video['meta_deskripsi_video_en']
 ]);
 ?>
 
 <style>
-    .embed-responsive {
+    /* === OVERLAY LOKAL HANYA DI AREA VIDEO === */
+    .video-container {
         position: relative;
-        display: block;
-        width: 100%;
-        padding: 0;
-    }
-
-    .rounded {
-        border-radius: 8px;
-    }
-
-    .shadow-sm {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .text-truncate {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .img-fluid {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .d-flex {
-        display: flex;
-    }
-
-    .badge {
-        font-weight: normal;
-        color: #fff;
-        font-size: 0.9rem;
-        padding: 0.8em 1.5em;
-        border-radius: 3px;
-        background-color: #03AADE;
         display: inline-block;
+        width: 100%;
+        max-width: 100%;
     }
 
-    .card {
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    /* Overlay hanya menutupi area video */
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        /* Tidak keluar dari card */
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        /* mengikuti thumbnail */
     }
 
-    .card:hover {
-        box-shadow: 0px 0px 25px #03AADE !important;
-        transform: translateY(-5px) !important;
+    .video-overlay[hidden] {
+        display: none !important;
     }
 
+    /* Modal kecil di tengah area video */
+    .video-modal {
+        background: #fff;
+        padding: 25px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        max-width: 340px;
+        width: 90%;
+        text-align: center;
+        z-index: 11;
+        animation: fadeIn 0.2s ease-in-out;
+    }
+
+    /* anchor bergaya tombol (biar tak perlu <button> di dalam <a>) */
+    .video-modal .btn {
+        background: #03AADE;
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+    .video-modal .btn:hover {
+        background: #F2BF02;
+        color: #fff;
+    }
+
+    .video-modal h2 {
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .video-modal p {
+        margin-bottom: 16px;
+    }
+
+    .video-modal button {
+        background: #03AADE;
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 5px;
+        transition: 0.2s;
+    }
+
+    .video-modal button:hover {
+        background: #F2BF02;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Thumbnail & play button */
     .thumbnail-wrapper {
         position: relative;
         display: inline-block;
+        border-radius: 12px;
+        /* sesuaikan dengan radius card */
+        overflow: hidden;
+        /* 🔥 penting: potong isi (termasuk overlay & gambar) agar tidak keluar */
     }
 
+
     .thumbnail-wrapper img {
+        display: block;
+        /* hilangkan gap inline */
+        width: 100%;
+        height: auto;
+        border-radius: inherit;
+        /* ikuti radius wrapper */
         filter: brightness(70%);
         transition: filter 0.3s ease;
+        margin-bottom: 0;
+        /* 🔥 pastikan tidak ada ruang bawah yang bikin overlay turun */
     }
+
 
     .thumbnail-wrapper:hover img {
         filter: brightness(50%);
@@ -97,85 +160,53 @@ $this->setData([
     }
 </style>
 
-<!-- Video Details Start -->
-<div class="container-fluid pt-5 mb-3">
+<section class="video-detail-section pt-5 mb-3">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
                 <div class="position-relative mb-3">
                     <div class="bg-white border border-top-0 p-4 rounded shadow-sm">
 
-                        <!-- Tags Badges -->
-                        <div style="display: flex;">
-                            <div class="badge py-2">
+                        <!-- Kategori -->
+                        <div style="display:flex;">
+                            <div class="badge py-2 bg-primary text-white">
                                 <?= ($lang === 'en') ? $kategori['nama_kategori_video_en'] : $kategori['nama_kategori_video']; ?>
                             </div>
                         </div>
 
-                        <!-- Video Title -->
+                        <!-- Judul -->
                         <h4 class="py-3 text-uppercase font-weight-bold">
                             <?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>
                         </h4>
 
-                        <!-- Thumbnail Link to Google Drive -->
-                        <div class="mb-3 text-center">
-                            <?php if (session()->get('isLoggedIn')): ?>
-                                <!-- Kalau user sudah login -->
-                                <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                                    <div class="thumbnail-wrapper">
-                                        <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
-                                            alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
-                                            class="img-fluid rounded shadow-sm mb-3" />
-                                        <div class="play-button"></div>
-                                    </div>
+                        <!-- Area Video + Overlay Lokal -->
+                        <div class="video-container text-center">
+                            <div class="thumbnail-wrapper mb-3">
+                                <a href="#" class="text-decoration-none thumb-trigger" data-video-url="<?= esc($video['video_url']); ?>">
+                                    <img
+                                        src="<?= base_url('/img/' . $video['thumbnail']); ?>"
+                                        alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
+                                        class="thumb-img"
+                                        loading="lazy" decoding="async" />
+                                    <div class="play-button"></div>
                                 </a>
-                            <?php else: ?>
-                                <!-- Kalau belum login, panggil modal -->
-                                <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginNoticeModal">
-                                    <div class="thumbnail-wrapper">
-                                        <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
-                                            alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
-                                            class="img-fluid rounded shadow-sm mb-3" />
-                                        <div class="play-button"></div>
-                                    </div>
-                                </a>
-                            <?php endif; ?>
-                        </div>
 
-                        <!-- Modal Notifikasi Login -->
-                        <div class="modal fade" id="loginNoticeModal" tabindex="-1" aria-labelledby="loginNoticeModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content text-center">
-                                    <div class="modal-header border-0">
-                                        <h5 class="modal-title w-100" id="loginNoticeModalLabel" alt="<?= base_url($lang .  '/' . $informasi) ?>"><?php echo lang('Blog.informasi'); ?></h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><?= lang('Blog.informasiDetail'); ?></p>
-                                    </div>
-                                    <div class="modal-footer justify-content-center border-0">
-                                        <a href="<?= base_url('/login'); ?>" class="btn btn-primary">Login</a>
-                                        <a class="btn btn-primary"
-                                            href="<?= base_url($lang .  '/' . $pendaftaranLink) ?>"><?php echo lang('Blog.headerPendaftaran'); ?></a>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= lang('Blog.batal') ?></button>
+                                <!-- Overlay lokal, tanpa id global -->
+                                <div class="video-overlay" role="dialog" aria-modal="false" aria-labelledby="videoGateTitle" aria-describedby="videoGateDesc" hidden>
+                                    <div class="video-modal">
+                                        <h2 id="videoGateTitle"><?= lang('Blog.wantToOpenBE'); ?></h2>
+                                        <p id="videoGateDesc"><?= lang('Blog.deskMemberFree'); ?></p>
+                                        <div>
+                                            <a href="<?= base_url('/login'); ?>" class="btn btn-primary" rel="nofollow"><?= lang('Blog.headerMasuk'); ?></a>
+                                            <a href="<?= base_url($lang . '/' . $pendaftaranLink) ?>" class="btn btn-primary" rel="nofollow"><?= lang('Blog.registerSA'); ?></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- <div class="mb-3 text-center">
-                            <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                                <div class="thumbnail-wrapper">
-                                    <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
-                                        alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
-                                        class="img-fluid rounded shadow-sm mb-3" />
-                                    <div class="play-button"></div>
-                                </div>
-                            </a>
-                        </div> -->
-                        <!-- <video id="player" controls></video> -->
 
-                        <!-- Description -->
+                        <!-- Deskripsi -->
                         <div class="mb-3">
                             <h5 class="font-weight-bold py-2"><?= lang('Blog.titleDesc') ?></h5>
                             <p><?= ($lang === 'en') ? $video['deskripsi_video_en'] : $video['deskripsi_video']; ?></p>
@@ -185,24 +216,24 @@ $this->setData([
                 </div>
             </div>
 
+            <!-- Related Videos -->
             <div class="col-lg-4">
-                <!-- Related Videos -->
                 <div class="mb-3">
                     <div class="section-title mb-0">
                         <h4 class="m-0 py-4 font-weight-bold"><?= lang('Blog.titleOther') ?></h4>
                     </div>
 
-                    <?php foreach ($related_videos as $related_video): ?>
+                    <?php foreach ($related_video as $item): ?>
                         <div class="card bg-white border border-top-0 p-3 rounded shadow-sm mb-3">
-                            <a href="<?= base_url(($lang === 'en' ? 'en/tutorial-video' : 'id/video-tutorial') . '/' . ($lang === 'en' ? $related_video['slug_en'] : $related_video['slug'])); ?>" class="text-decoration-none">
+                            <a href="<?= base_url(($lang === 'en' ? 'en/videos' : 'id/video') . '/' . ($lang === 'en' ? $item['slug_en'] : $item['slug'])); ?>" class="text-decoration-none">
                                 <div class="d-flex align-items-center bg-white rounded border border-light overflow-hidden shadow-sm">
-                                    <img class="img-fluid" style="object-fit: cover; width: 100px; height: 100px;" src="<?= base_url('/img/' . $related_video['thumbnail']); ?>" alt="<?= ($lang === 'en') ? $related_video['judul_video_en'] : $related_video['judul_video']; ?>">
+                                    <img class="img-fluid" style="object-fit:cover;width:100px;height:100px;" src="<?= base_url('/img/' . $item['thumbnail']); ?>" alt="<?= ($lang === 'en') ? $item['judul_video_en'] : $item['judul_video']; ?>">
                                     <div class="w-100 h-100 px-3 d-flex flex-column justify-content-center">
-                                        <h3 class="text-uppercase font-weight-bold text-dark" style="font-size: 18px; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                            <?= $lang === 'en' ? $related_video['judul_video_en'] : $related_video['judul_video']; ?>
+                                        <h3 class="text-uppercase font-weight-bold text-dark" style="font-size:18px;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;">
+                                            <?= $lang === 'en' ? $item['judul_video_en'] : $item['judul_video']; ?>
                                         </h3>
-                                        <p class="text-dark" style="font-size: 14px; margin-bottom: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                            <?= $lang === 'en' ? $related_video['deskripsi_video_en'] : $related_video['deskripsi_video']; ?>
+                                        <p class="text-dark" style="font-size:14px;margin-bottom:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;">
+                                            <?= $lang === 'en' ? $item['deskripsi_video_en'] : $item['deskripsi_video']; ?>
                                         </p>
                                     </div>
                                 </div>
@@ -210,45 +241,63 @@ $this->setData([
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <!-- Related Videos End -->
             </div>
         </div>
     </div>
-</div>
-<!-- Video Details End -->
-<!-- <script>
-    const source = '<?= esc($video['video_url']); ?>';
+</section>
 
-    const video = document.getElementById('player');
-    const player = new Plyr(video);
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const isGuest = <?= $isGuest ? 'true' : 'false' ?>;
+  const triggers = document.querySelectorAll('.thumb-trigger');
 
-    if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(source);
-        hls.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = source;
-    }
-</script> -->
-<!-- <script>
-    const videoUrl = '';
-    const videoToken = '';
+  if (!triggers.length) return;
 
-    const video = document.getElementById('player');
-    const player = new Plyr(video);
+  function openOverlay(overlayEl) {
+    overlayEl.hidden = false;      // tampilkan
+  }
+  function closeOverlay(overlayEl) {
+    overlayEl.hidden = true;       // sembunyikan
+  }
 
-    if (Hls.isSupported()) {
-        const hls = new Hls();
+  // untuk tiap trigger, cari overlay di wrapper terdekat
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      const url = this.getAttribute('data-video-url');
+      const wrapper = this.closest('.thumbnail-wrapper');
+      const overlay = wrapper?.querySelector('.video-overlay');
+      if (!overlay) return;
 
-        hls.config.xhrSetup = function(xhr, url) {
-            xhr.setRequestHeader('X-Auth-Token', videoToken);
-        };
+      if (isGuest) {
+        openOverlay(overlay);
+      } else {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
 
-        hls.loadSource(videoUrl);
-        hls.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Safari fallback (tidak bisa pasang header)
-        video.src = videoUrl + '?token=' + videoToken;
-    }
+      // Tutup saat klik di luar modal
+      const outsideClick = (ev) => {
+        if (ev.target === overlay) {
+          closeOverlay(overlay);
+          overlay.removeEventListener('click', outsideClick);
+          document.removeEventListener('keydown', escClose);
+        }
+      };
+      overlay.addEventListener('click', outsideClick);
+
+      // Tutup via ESC
+      const escClose = (ev) => {
+        if (ev.key === 'Escape') {
+          closeOverlay(overlay);
+          overlay.removeEventListener('click', outsideClick);
+          document.removeEventListener('keydown', escClose);
+        }
+      };
+      document.addEventListener('keydown', escClose);
+    });
+  });
+});
 </script>
-<?= $this->endSection(); ?> -->
+
+
+<?= $this->endSection(); ?>

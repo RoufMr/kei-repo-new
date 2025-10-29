@@ -85,15 +85,18 @@ return [
     'searchResults' => 'Displaying search results for:',
     'searchPlaceholder' => 'Search lessons...',
     'noArticlesFound' => 'No articles found.',
+    'noVideosFound' => 'No videos found.',
     'seeMore' => 'See More Lessons',
     //end halaman search artikel
 
     // Video Tutorial Section
     'videoTutorialTitle' => 'Tutorial Videos',
     'videoTutorialDescription' => 'Find tutorial videos from our community,<br>and dive deep with informative and easy-to-understand videos.',
+    'videoTutorialCTA' => 'Watch Now, conquer the global market!',
     // Video Category Section
     'noVideosAvailable' => 'No videos are available in this category.',
     'readMore' => 'Read More',
+    'watchNow' => 'Watch Now',
     'allVideo' => 'All Video',
     'videoCategory' => 'Video Category:',
     'titleDesc' => 'Description',

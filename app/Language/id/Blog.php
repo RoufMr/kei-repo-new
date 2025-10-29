@@ -85,12 +85,14 @@ return [
     'noCategory' => 'Tidak ada kategori yang tersedia',
     'noContent' => 'Belum ada konten yang dapat ditampilkan di halaman ini.',
     'readMore' => 'Baca Selengkapnya',
+    'watchNow' => 'Tonton Sekarang',
 
     //halaman search belajar artikel
     'searchTitle' => 'Belajar Ekspor',
     'searchResults' => 'Menampilkan hasil pencarian untuk:',
     'searchPlaceholder' => 'Cari artikel...',
     'noArticlesFound' => 'Tidak ada artikel yang ditemukan.',
+    'noVideosFound' => 'Tidak ada video yang ditemukan.',
     'seeMore' => 'Lihat Lebih Banyak Materi',
     //end halaman belaajr ekspor
 
@@ -98,6 +100,7 @@ return [
     // Video Tutorial Section
     'videoTutorialTitle' => 'Video Tutorial',
     'videoTutorialDescription' => 'Temukan video tutorial dari komunitas kami,<br>dan pelajari dengan mendalam melalui video-video yang informatif dan mudah dipahami.',
+    'videoTutorialCTA' => 'Tonton Sekarang, dan kuasai pasar global!',
     // Video Category Section
     'noVideosAvailable' => 'Belum ada video yang tersedia di kategori ini.',
     'videoCategory' => 'Video Kategori:',

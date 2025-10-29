@@ -16,16 +16,18 @@ $routes->group('id', function ($routes) {
     $routes->get('landing-page/(:any)', 'KomunitasEkspor::visitor_landing_page/$1');
 
     // Visitor - Belajar Ekspor
-    $routes->get('materi-ekspor', 'KomunitasEkspor::belajar_ekspor');
-    $routes->get('materi-ekspor/search', 'KomunitasEkspor::search_belajar_ekspor');
-    $routes->get('materi-ekspor/(:segment)', 'KomunitasEkspor::belajar_ekspor_detail/$1');
-    $routes->get('kategori/(:any)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
+    $routes->get('materi/keyword=(:any)', 'KomunitasEkspor::search_belajar_ekspor/$1');
+    $routes->get('materi', 'KomunitasEkspor::belajar_ekspor');               // listing
+    // $routes->get('materi/search', 'KomunitasEkspor::search_belajar_ekspor'); // search
+    $routes->get('materi/(:segment)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
+    $routes->get('materi/(:segment)',   'KomunitasEkspor::belajar_ekspor_detail/$1');
 
     // Visitior - Video Tutorial
-    $routes->get('video-tutorial', 'KomunitasEkspor::video_tutorial');
-    $routes->get('video-tutorial/kategori/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
-    $routes->get('video-tutorial/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
-    $routes->get('watch/(:segment)', 'KomunitasEkspor::watch/$1');
+    $routes->get('video/keyword=(:any)', 'KomunitasEkspor::search_video_tutorial/$1');
+    $routes->get('video', 'KomunitasEkspor::video_tutorial');
+    // $routes->get('video/search', 'KomunitasEkspor::search_video_tutorial');
+    $routes->get('video/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    $routes->get('video/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
 
     $routes->get('pendaftaran', 'KomunitasEkspor::pendaftaran');
 
@@ -58,15 +60,18 @@ $routes->group('en', function ($routes) {
     $routes->get('about-us', 'KomunitasEkspor::tentang_kami');
 
     // Visitor - Belajar Ekspor
-    $routes->get('export-lessons', 'KomunitasEkspor::belajar_ekspor');
-    $routes->get('export-lessons/search', 'KomunitasEkspor::search_belajar_ekspor');
-    $routes->get('export-lessons/(:segment)', 'KomunitasEkspor::belajar_ekspor_detail/$1');
-    $routes->get('category/(:any)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
+    $routes->get('lessons/keyword=(:any)', 'KomunitasEkspor::search_belajar_ekspor/$1');
+    $routes->get('lessons', 'KomunitasEkspor::belajar_ekspor');
+    // $routes->get('lessons/search', 'KomunitasEkspor::search_belajar_ekspor');
+    $routes->get('lessons/(:segment)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
+    $routes->get('lessons/(:segment)',   'KomunitasEkspor::belajar_ekspor_detail/$1');
 
     // Visitior - Video Tutorial
-    $routes->get('tutorial-video', 'KomunitasEkspor::video_tutorial');
-    $routes->get('tutorial-video/category/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
-    $routes->get('tutorial-video/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
+    $routes->get('videos/keyword=(:any)', 'KomunitasEkspor::search_video_tutorial/$1');
+    $routes->get('videos', 'KomunitasEkspor::video_tutorial');
+    // $routes->get('videos/search', 'KomunitasEkspor::search_video_tutorial');
+    $routes->get('videos/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    $routes->get('videos/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
 
     $routes->get('registration', 'KomunitasEkspor::pendaftaran');
 
@@ -116,21 +121,37 @@ $routes->group('', ['filter' => 'auth', 'admin'], function ($routes) {
     $routes->get('delete-produk/(:num)', 'KomunitasEkspor::delete_produk/$1');
 
     // Visitor - Aplikasi Kalkulator Ekspor
+    // halaman kalkulator
     $routes->get('kalkulator-ekspor', 'KomunitasEkspor::index_kalkulator');
 
+    // Ganti satuan
     $routes->post('ganti-satuan/(:num)', 'KomunitasEkspor::ganti_satuan/$1');
 
+    // EXWORK (lama + save-all)
     $routes->post('komponen-exwork/add', 'KomunitasEkspor::add_exwork');
     $routes->get('komponen-exwork/delete/(:num)', 'KomunitasEkspor::delete_exwork/$1');
+    $routes->post('komponen-exwork/save-all', 'KomunitasEkspor::save_all_exwork');
 
+    // FOB (lama + save-all BARU)
     $routes->post('komponen-fob/add', 'KomunitasEkspor::add_fob');
     $routes->get('komponen-fob/delete/(:num)', 'KomunitasEkspor::delete_fob/$1');
+    $routes->post('komponen-fob/save-all', 'KomunitasEkspor::save_all_fob');
 
+    // CFR (lama + save-all BARU)
     $routes->post('komponen-cfr/add', 'KomunitasEkspor::add_cfr');
     $routes->get('komponen-cfr/delete/(:num)', 'KomunitasEkspor::delete_cfr/$1');
+    $routes->post('komponen-cfr/save-all', 'KomunitasEkspor::save_all_cfr');
 
+    // CIF (lama + save-all BARU)
     $routes->post('komponen-cif/add', 'KomunitasEkspor::add_cif');
     $routes->get('komponen-cif/delete/(:num)', 'KomunitasEkspor::delete_cif/$1');
+    $routes->post('komponen-cif/save-all', 'KomunitasEkspor::save_all_cif');
+
+    // Autosave (jumlahBarang, hpp, keuntungan)
+    $routes->post('kalkulator-state/save', 'KomunitasEkspor::save_kalkulator_state');
+    $routes->get('kalkulator-state/json',   'KomunitasEkspor::kalkulator_state_json');
+    $routes->post('kalkulator-state/upsert', 'KomunitasEkspor::kalkulator_state_upsert');
+
 
     // Member - Pengumuman
     $routes->get('pengumuman', 'KomunitasEkspor::pengumuman');
@@ -199,11 +220,11 @@ $routes->get('sosmed-planner/konten-planner/delete/(:segment)',  'KomunitasEkspo
 $routes->post('sosmed-planner/konten-planner/update/(:segment)', 'KomunitasEkspor::update_kontenplanner/$1');
 
 
-$routes->group('en', ['filter' => 'auth', 'admin'], function ($routes) {
-    $routes->get('edit-profile-en', 'KomunitasEkspor::edit_profile');
-    $routes->post('update-foto-profil', 'KomunitasEkspor::updateFotoProfil');
-    $routes->post('ubah-informasi-akun', 'KomunitasEkspor::ubah_informasi_akun');
-    $routes->post('ubah-profil-perusahaan', 'KomunitasEkspor::ubah_profil_perusahaan');
+// $routes->group('en', ['filter' => 'auth', 'admin'], function ($routes) {
+//     $routes->get('edit-profile-en', 'KomunitasEkspor::edit_profile');
+//     $routes->post('update-foto-profil', 'KomunitasEkspor::updateFotoProfil');
+//     $routes->post('ubah-informasi-akun', 'KomunitasEkspor::ubah_informasi_akun');
+//     $routes->post('ubah-profil-perusahaan', 'KomunitasEkspor::ubah_profil_perusahaan');
 
     //     $routes->get('announcement', 'KomunitasEkspor::pengumuman');
     // });
