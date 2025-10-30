@@ -1,6 +1,17 @@
 <?= $this->extend('member/layout/app'); ?>
 <?= $this->section('content'); ?>
 
+<?php
+// Fallback aman jika variabel belum diset
+$labelSatuan     = $labelSatuan     ?? ($satuanRow['satuan'] ?? '');
+$idSatuan        = $idSatuan        ?? ($satuanRow['id_satuan'] ?? 0);
+$ukuranKontainer = $ukuranKontainer ?? [];
+$exwork          = $exwork ?? [];
+$fob             = $fob ?? [];
+$cfr             = $cfr ?? [];
+$cif             = $cif ?? [];
+?>
+
 <style>
     .result-harga-exwork,
     .result-harga-fob,
@@ -40,52 +51,82 @@
 
     .btn-custom {
         text-align: center;
-        color: #ffffff;
+        color: #fff;
     }
 
     .btn-custom:hover {
         color: #fff;
         transform: scale(1.05);
-        box-shadow: 0px 0px 10px #F2BF02;
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 0 10px #F2BF02;
+        transition: background-color .3s ease, transform .3s ease, box-shadow .3s ease;
         background-color: #F2BF02 !important;
     }
 </style>
 
 <!-- judul -->
-<div class="py-5" style="text-align: center;">
+<div class="py-5 text-center">
     <h2 class="text-custom-title">Kalkulator Ekspor</h2>
     <p class="text-custom-paragraph mt-2">Berikut aplikasi Kalkulator Ekspor Indonesia</p>
 </div>
 
 <div class="container py-2 mt-3">
+
+    <!-- FLASH POP-UP bridge -->
+    <?php if (session()->getFlashdata('success')): ?>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                if (typeof notify === 'function') {
+                    notify('success', '<?= esc(session()->getFlashdata('success')) ?>');
+                } else {
+                    alert('<?= esc(session()->getFlashdata('success')) ?>');
+                }
+            });
+        </script>
+    <?php endif; ?>
+    <?php if (session()->getFlashdata('error')): ?>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                if (typeof notify === 'function') {
+                    notify('error', '<?= esc(session()->getFlashdata('error')) ?>');
+                } else {
+                    alert('<?= esc(session()->getFlashdata('error')) ?>');
+                }
+            });
+        </script>
+    <?php endif; ?>
+
+    <!-- Nama Produk -->
+    <div class="form-group mb-3">
+        <label for="namaProduk">Nama Produk:</label>
+        <div class="input-group">
+            <input required type="text" class="form-control" id="namaProduk" name="namaProduk" placeholder="Masukkan Nama Produk" autocomplete="off">
+        </div>
+    </div>
+
+    <!-- Ukuran Kontainer -->
     <div class="form-group mb-3">
         <label for="ukuran_kontainer">Ukuran Kontainer:</label>
         <div class="input-group">
             <select required class="form-control" id="ukuran_kontainer" name="ukuran_kontainer">
                 <option value="">Pilih Ukuran Kontainer</option>
-                <option value="20 Feet">20 Feet</option>
-                <option value="40 Feet">40 Feet</option>
-                <option value="40 Feet HC">40 Feet HC</option>
-                <option value="45 Feet HC">45 Feet HC</option>
+                <?php foreach ($ukuranKontainer as $uk): ?>
+                    <option value="<?= esc($uk['nama']) ?>"><?= esc($uk['nama']) ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>
 
-    <form action="<?= base_url('/ganti-satuan/' . $satuan[0]['id_satuan']); ?>" method="post" enctype="multipart/form-data">
-        <div class="form-group mb-3">
+    <!-- Satuan (autosave, tanpa tombol) -->
+    <div id="blokSatuan" class="mb-3" autocomplete="off">
+        <div class="form-group">
             <label for="satuan">Satuan:</label>
             <div class="input-group">
-                <input required type="text" class="form-control" id="satuan" name="satuan" placeholder="Masukkan Satuan"
-                    value="<?= $satuan[0]['satuan']; ?>" autocomplete="off" disabled>
-                <div class="input-group-prepend">
-                    <button id="editButton" type="button" class="btn btn-custom" style="margin-left: 20px; background-color:#FFA500">
-                        Edit Satuan
-                    </button>
-                </div>
+                <input type="text" class="form-control" id="satuan" name="satuan"
+                    placeholder="Masukkan Satuan" value="<?= esc($labelSatuan); ?>" autocomplete="off">
             </div>
         </div>
-    </form>
+        <small class="text-muted d-block mt-1" id="satuanStatus"></small>
+    </div>
 
     <!-- Exwork Form -->
     <div class="card shadow p-4">
@@ -96,11 +137,8 @@
             <div class="col-md-6">
                 <label id="jumlahBarangLabel" for="jumlahBarang">Jumlah Barang Dalam 1 Kontainer:</label>
                 <div class="input-group">
-                    <input required type="text" class="form-control" id="jumlahBarang" name="jumlahBarang"
-                        placeholder="Masukkan Jumlah Barang" autocomplete="off">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><?= $satuan[0]['satuan']; ?></span>
-                    </div>
+                    <input required type="text" class="form-control" id="jumlahBarang" name="jumlahBarang" placeholder="Masukkan Jumlah Barang" autocomplete="off">
+                    <div class="input-group-prepend"><span class="input-group-text satuan-badge"><?= esc($labelSatuan); ?></span></div>
                 </div>
             </div>
         </div>
@@ -112,7 +150,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
                     <input required type="text" class="form-control" id="hpp" name="hpp" placeholder="Masukkan Biaya HPP" autocomplete="off">
-                    <div class="input-group-prepend"><span class="input-group-text">/ <?= $satuan[0]['satuan']; ?></span></div>
+                    <div class="input-group-prepend"><span class="input-group-text satuan-badge"></span></div>
                 </div>
             </div>
         </div>
@@ -124,7 +162,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
                     <input required type="text" class="form-control" id="keuntungan" name="keuntungan" placeholder="Masukkan Biaya Keuntungan" autocomplete="off">
-                    <div class="input-group-prepend"><span class="input-group-text">/ <?= $satuan[0]['satuan']; ?></span></div>
+                    <div class="input-group-prepend"><span class="input-group-text satuan-badge"></span></div>
                 </div>
             </div>
         </div>
@@ -139,7 +177,7 @@
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center w-25">Komponen</th>
-                            <th>Biaya (Rp.)</th>
+                            <th class="biaya-col-header">Biaya (Rp.)</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -148,8 +186,7 @@
                             <tr>
                                 <td colspan="4" class="text-center">Belum ada Komponen Exwork yang ditambahkan.</td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($exwork as $index => $item): ?>
+                            <?php else: foreach ($exwork as $index => $item): ?>
                                 <tr>
                                     <td class="text-center"><?= $index + 1 ?></td>
                                     <td><?= esc($item['komponen_exwork']) ?></td>
@@ -165,24 +202,21 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="<?= base_url('/komponen-exwork/delete/' . $item['id_exwork']) ?>"
-                                            class="btn btn-outline-danger btn-sm align-center">
+                                        <a href="<?= base_url('/komponen-exwork/delete/' . $item['id_exwork']) ?>" class="btn btn-outline-danger btn-sm align-center">
                                             <i class="bi bi-x-lg"></i> Hapus
                                         </a>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <?php endforeach;
+                        endif; ?>
 
                         <!-- Baris untuk input komponen baru -->
                         <tr>
                             <td colspan="4">
-                                <button type="button" class="btn btn-custom mb-2" style="background-color: #03AADE;" id="tambahKolomExwork">
-                                    Tambah Komponen Baru
-                                </button>
+                                <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;" id="tambahKolomExwork">Tambah Komponen Baru</button>
                                 <div id="komponenExworkContainer"></div>
                                 <div class="d-flex justify-content-end mt-2">
-                                    <button type="submit" class="btn btn-custom" style="background-color: #77DD77;" id="submitKomponenExworkButton">
+                                    <button type="submit" class="btn btn-custom" style="background-color:#77DD77;" id="submitKomponenExworkButton">
                                         Simpan Perubahan & Komponen (0)
                                     </button>
                                 </div>
@@ -195,12 +229,7 @@
         <!-- === /SATU FORM GABUNG EXWORK === -->
 
         <div class="d-flex justify-content-between">
-            <h3 class="result-harga-exwork mt-2">
-                Harga Exwork:
-                <?php if (session()->getFlashdata('harga_exwork')): ?>
-                    <?= session()->getFlashdata('harga_exwork') ?>
-                <?php endif; ?>
-            </h3>
+            <h3 class="result-harga-exwork mt-2">Rekomendasi Harga Exwork: </h3>
         </div>
         <hr class="mt-2" style="border: 1px solid black; background-color: black;">
     </div>
@@ -214,7 +243,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
                     <input required type="text" class="form-control" id="hargaExwork" name="hargaExwork" placeholder="Masukkan Harga Exwork" autocomplete="off">
-                    <div class="input-group-prepend"><span class="input-group-text">/ <?= $satuan[0]['satuan']; ?></span></div>
+                    <div class="input-group-prepend"><span class="input-group-text satuan-badge"></span></div>
                 </div>
             </div>
         </div>
@@ -229,7 +258,7 @@
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center w-25">Komponen</th>
-                            <th>Biaya (Rp.)</th>
+                            <th class="biaya-col-header">Biaya (Rp.)</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -238,22 +267,19 @@
                             <tr>
                                 <td colspan="4" class="text-center">Belum ada Komponen FOB yang ditambahkan.</td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($fob as $index => $item): ?>
+                            <?php else: foreach ($fob as $index => $item): ?>
                                 <tr>
                                     <td class="text-center"><?= $index + 1 ?></td>
                                     <td><?= esc($item['komponen_fob']) ?></td>
                                     <td>
                                         <div class="input-group">
                                             <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
-                                            <input required
-                                                type="text"
+                                            <input required type="text"
                                                 class="form-control fob-existing"
                                                 id="fob_<?= $item['id_fob'] ?>"
                                                 name="fob_<?= $item['id_fob'] ?>"
                                                 value="<?= number_format((int)($item['biaya'] ?? 0), 0, ',', '.') ?>"
-                                                placeholder="Masukkan <?= esc($item['komponen_fob']) ?>"
-                                                autocomplete="off">
+                                                placeholder="Masukkan <?= esc($item['komponen_fob']) ?>" autocomplete="off">
                                         </div>
                                     </td>
                                     <td class="text-center">
@@ -262,15 +288,13 @@
                                         </a>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <?php endforeach;
+                        endif; ?>
 
                         <!-- Baris input komponen baru -->
                         <tr>
                             <td colspan="4">
-                                <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;" id="tambahKolomFOB">
-                                    Tambah Komponen Baru
-                                </button>
+                                <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;" id="tambahKolomFOB">Tambah Komponen Baru</button>
                                 <div id="komponenFOBContainer"></div>
                                 <div class="d-flex justify-content-end mt-2">
                                     <button type="submit" class="btn btn-custom" style="background-color:#77DD77;" id="submitKomponenFOBButton">
@@ -286,7 +310,7 @@
         <!-- === /SATU FORM GABUNG FOB === -->
 
         <div class="d-flex justify-content-between">
-            <h3 class="result-harga-fob mt-2">Harga FOB: </h3>
+            <h3 class="result-harga-fob mt-2">Rekomendasi Harga FOB: </h3>
         </div>
         <hr class="mt-2" style="border: 1px solid black; background-color: black;">
     </div>
@@ -300,7 +324,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
                     <input required type="text" class="form-control" id="hargaFOB" name="hargaFOB" placeholder="Masukkan Harga FOB" autocomplete="off">
-                    <div class="input-group-prepend"><span class="input-group-text">/ <?= $satuan[0]['satuan']; ?></span></div>
+                    <div class="input-group-prepend"><span class="input-group-text satuan-badge"></span></div>
                 </div>
             </div>
         </div>
@@ -315,7 +339,7 @@
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center w-25">Komponen</th>
-                            <th>Biaya (Rp.)</th>
+                            <th class="biaya-col-header">Biaya (Rp.)</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -324,22 +348,19 @@
                             <tr>
                                 <td colspan="4" class="text-center">Belum ada Komponen CFR yang ditambahkan.</td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($cfr as $index => $item): ?>
+                            <?php else: foreach ($cfr as $index => $item): ?>
                                 <tr>
                                     <td class="text-center"><?= $index + 1 ?></td>
                                     <td><?= esc($item['komponen_cfr']) ?></td>
                                     <td>
                                         <div class="input-group">
                                             <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
-                                            <input required
-                                                type="text"
+                                            <input required type="text"
                                                 class="form-control cfr-existing"
                                                 id="cfr_<?= $item['id_cfr'] ?>"
                                                 name="cfr_<?= $item['id_cfr'] ?>"
                                                 value="<?= number_format((int)($item['biaya'] ?? 0), 0, ',', '.') ?>"
-                                                placeholder="Masukkan <?= esc($item['komponen_cfr']) ?>"
-                                                autocomplete="off">
+                                                placeholder="Masukkan <?= esc($item['komponen_cfr']) ?>" autocomplete="off">
                                         </div>
                                     </td>
                                     <td class="text-center">
@@ -348,18 +369,14 @@
                                         </a>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <?php endforeach;
+                        endif; ?>
 
                         <!-- Baris input komponen baru -->
                         <tr>
                             <td colspan="4">
-                                <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;" id="tambahKolomCFR">
-                                    Tambah Komponen Baru
-                                </button>
-
+                                <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;" id="tambahKolomCFR">Tambah Komponen Baru</button>
                                 <div id="komponenCFRContainer"></div>
-
                                 <div class="d-flex justify-content-end mt-2">
                                     <button type="submit" class="btn btn-custom" style="background-color:#77DD77;" id="submitKomponenCFRButton">
                                         Simpan Perubahan & Komponen (0)
@@ -374,7 +391,7 @@
         <!-- === /SATU FORM GABUNG CFR === -->
 
         <div class="d-flex justify-content-between">
-            <h3 class="result-harga-cfr mt-2">Harga CFR: </h3>
+            <h3 class="result-harga-cfr mt-2">Rekomendasi Harga CFR: </h3>
         </div>
         <hr class="mt-2" style="border: 1px solid black; background-color: black;">
     </div>
@@ -388,7 +405,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
                     <input required type="text" class="form-control" id="hargaCFR" name="hargaCFR" placeholder="Masukkan Harga CFR" autocomplete="off">
-                    <div class="input-group-prepend"><span class="input-group-text">/ <?= $satuan[0]['satuan']; ?></span></div>
+                    <div class="input-group-prepend"><span class="input-group-text satuan-badge"></span></div>
                 </div>
             </div>
         </div>
@@ -403,7 +420,7 @@
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center w-25">Komponen</th>
-                            <th>Biaya (Rp.)</th>
+                            <th class="biaya-col-header">Biaya (Rp.)</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -412,22 +429,19 @@
                             <tr>
                                 <td colspan="4" class="text-center">Belum ada Komponen CIF yang ditambahkan.</td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($cif as $index => $item): ?>
+                            <?php else: foreach ($cif as $index => $item): ?>
                                 <tr>
                                     <td class="text-center"><?= $index + 1 ?></td>
                                     <td><?= esc($item['komponen_cif']) ?></td>
                                     <td>
                                         <div class="input-group">
                                             <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
-                                            <input required
-                                                type="text"
+                                            <input required type="text"
                                                 class="form-control cif-existing"
                                                 id="cif_<?= $item['id_cif'] ?>"
                                                 name="cif_<?= $item['id_cif'] ?>"
                                                 value="<?= number_format((int)($item['biaya'] ?? 0), 0, ',', '.') ?>"
-                                                placeholder="Masukkan <?= esc($item['komponen_cif']) ?>"
-                                                autocomplete="off">
+                                                placeholder="Masukkan <?= esc($item['komponen_cif']) ?>" autocomplete="off">
                                         </div>
                                     </td>
                                     <td class="text-center">
@@ -436,15 +450,13 @@
                                         </a>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <?php endforeach;
+                        endif; ?>
 
                         <!-- Baris input komponen baru -->
                         <tr>
                             <td colspan="4">
-                                <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;" id="tambahKolomCIF">
-                                    Tambah Komponen Baru
-                                </button>
+                                <button type="button" class="btn btn-custom mb-2" style="background-color:#03AADE;" id="tambahKolomCIF">Tambah Komponen Baru</button>
                                 <div id="komponenCIFContainer"></div>
                                 <div class="d-flex justify-content-end mt-2">
                                     <button type="submit" class="btn btn-custom" style="background-color:#77DD77;" id="submitKomponenCIFButton">
@@ -460,34 +472,15 @@
         </form>
 
         <div class="d-flex justify-content-between">
-            <h3 class="result-harga-cif mt-2">Harga CIF: </h3>
+            <h3 class="result-harga-cif mt-2">Rekomendasi Harga CIF: </h3>
         </div>
 
         <hr class="mt-2" style="border: 1px solid black; background-color: black;">
     </div>
 </div>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 <script>
-    document.getElementById('ukuran_kontainer').addEventListener('change', function() {
-        var selectedUkuran = this.value;
-        var label = document.getElementById('jumlahBarangLabel');
-        label.textContent = selectedUkuran ?
-            'Jumlah Barang Dalam 1 Kontainer ' + selectedUkuran + ':' :
-            'Jumlah Barang Dalam 1 Kontainer:';
-        // simpan ke sessionStorage
-        saveStateOnce();
-    });
-
-    document.getElementById('editButton').addEventListener('click', function() {
-        document.getElementById('satuan').disabled = false;
-        this.outerHTML = '<button type="submit" class="btn btn-custom" style="margin-left: 20px; background-color: #8FD14F">Simpan Satuan</button>';
-    });
-
+    // ==== UTIL ====
     function formatRupiah(angka) {
         var number_string = (angka || '').toString().replace(/[^,\d]/g, ''),
             split = number_string.split(','),
@@ -506,141 +499,124 @@
         return (str || '').toString().replace(/\./g, '').replace(/[^\d]/g, '');
     }
 
-    const STATE_GET_URL = "<?= base_url('kalkulator-state/json'); ?>";
-    const STATE_POST_URL = "<?= base_url('kalkulator-state/upsert'); ?>";
-    const CSRF_TOKEN_NAME = "<?= csrf_token() ?>";
-    let CSRF_TOKEN_HASH = "<?= csrf_hash() ?>";
-
-    // Debounce helper
-    function debounce(fn, delay) {
-        let t;
-        return (...a) => {
-            clearTimeout(t);
-            t = setTimeout(() => fn(...a), delay);
+    // fallback notify
+    if (typeof notify !== 'function') {
+        window.notify = function(type, msg) {
+            alert(msg);
         };
     }
 
-    async function loadStateFromServer() {
-        try {
-            const res = await fetch(STATE_GET_URL, {
-                credentials: 'same-origin'
-            });
-            if (!res.ok) return null;
-            const data = await res.json();
-            if (data && data.csrf_token) CSRF_TOKEN_HASH = data.csrf_token;
-            return data;
-        } catch (e) {
-            return null;
-        }
+    // LocalStorage (Opsi A)
+    const Store = window.localStorage;
+
+    // === Update label Biaya sesuai ukuran kontainer ===
+    function updateUkuranHints() {
+        const size = document.getElementById('ukuran_kontainer')?.value || '';
+        const suffix = size ? ' / Kontainer ' + size : '';
+
+        // Ubah semua header kolom di tabel
+        document.querySelectorAll('th.biaya-col-header').forEach(th => {
+            th.textContent = 'Biaya (Rp.)' + suffix;
+        });
+
+        // Ubah semua label di form tambah komponen (Exwork, FOB, CFR, CIF)
+        document.querySelectorAll('label.biaya-col-header').forEach(label => {
+            label.textContent = 'Biaya (Rp.)' + suffix;
+        });
     }
 
-    const postStateDebounced = debounce(async function payloadSender(payload) {
-        try {
-            const body = new URLSearchParams();
-            body.set(CSRF_TOKEN_NAME, CSRF_TOKEN_HASH);
-            Object.keys(payload).forEach(k => body.set(k, payload[k]));
+    // === Unit helpers (baru) ===
+    function getSatuanText() {
+        return (document.getElementById('satuan')?.value || '').trim();
+    }
 
-            const res = await fetch(STATE_POST_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                credentials: 'same-origin',
-                body
-            });
-            if (res.ok) {
-                const j = await res.json().catch(() => ({}));
-                if (j && j.csrf_token) CSRF_TOKEN_HASH = j.csrf_token;
+    function updateSatuanBadges() {
+        var txt = getSatuanText();
+        document.querySelectorAll('.satuan-badge').forEach(function(el) {
+            if (txt) {
+                el.textContent = txt;
+                el.style.display = '';
+            } else {
+                el.textContent = '';
+                el.style.display = 'none';
             }
-        } catch (e) {}
-    }, 500);
-
-    function autosaveToServer() {
-        const jumlah = bersihkanRupiah(document.getElementById('jumlahBarang')?.value || '');
-        const hpp = bersihkanRupiah(document.getElementById('hpp')?.value || '');
-        const untung = bersihkanRupiah(document.getElementById('keuntungan')?.value || '');
-        if (jumlah !== '' || hpp !== '' || untung !== '') {
-            postStateDebounced({
-                jumlah_barang: jumlah === '' ? null : jumlah,
-                hpp: hpp === '' ? null : hpp,
-                keuntungan: untung === '' ? null : untung
-            });
-        }
+        });
     }
 
+    // ==== STATE (LOCAL STORAGE ONLY) ====
     const SS_KEYS = {
+        nama: 'kalk_s_namaProduk',
         ukuran: 'kalk_s_ukuran_kontainer',
         jumlah: 'kalk_s_jumlahBarang',
         hpp: 'kalk_s_hpp',
         untung: 'kalk_s_keuntungan',
+        satuan: 'kalk_s_satuan',
     };
-    const SS_FLAG = 'kalk_s_preserve_after_post';
-
-    function getNavType() {
-        const nav = performance.getEntriesByType && performance.getEntriesByType('navigation');
-        if (nav && nav[0] && nav[0].type) return nav[0].type;
-        return performance.navigation && performance.navigation.type === 1 ? 'reload' : 'navigate';
-    }
 
     function saveStateOnce() {
+        const nama = document.getElementById('namaProduk')?.value || '';
         const ukuran = document.getElementById('ukuran_kontainer')?.value || '';
         const jumlah = document.getElementById('jumlahBarang')?.value || '';
         const hpp = document.getElementById('hpp')?.value || '';
         const untung = document.getElementById('keuntungan')?.value || '';
-        sessionStorage.setItem(SS_KEYS.ukuran, ukuran);
-        sessionStorage.setItem(SS_KEYS.jumlah, bersihkanRupiah(jumlah));
-        sessionStorage.setItem(SS_KEYS.hpp, bersihkanRupiah(hpp));
-        sessionStorage.setItem(SS_KEYS.untung, bersihkanRupiah(untung));
+        const satuan = document.getElementById('satuan')?.value || '';
+
+        Store.setItem(SS_KEYS.nama, nama);
+        Store.setItem(SS_KEYS.ukuran, ukuran);
+        Store.setItem(SS_KEYS.jumlah, bersihkanRupiah(jumlah));
+        Store.setItem(SS_KEYS.hpp, bersihkanRupiah(hpp));
+        Store.setItem(SS_KEYS.untung, bersihkanRupiah(untung));
+        Store.setItem(SS_KEYS.satuan, satuan);
+
+        // Simpan angka ke server (nama/jumlah/hpp/untung) → endpoint yang sudah ada
+        (async () => {
+            try {
+                const body = new URLSearchParams();
+                body.set('nama_produk', nama);
+                body.set('jumlah_barang', bersihkanRupiah(jumlah) || '');
+                body.set('hpp', bersihkanRupiah(hpp) || '');
+                body.set('keuntungan', bersihkanRupiah(untung) || '');
+                await fetch('<?= base_url('kalkulator-state/save') ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body
+                });
+            } catch (e) {}
+        })();
     }
 
-    async function restoreStatePreferringServer() {
-        const shouldPreserve = sessionStorage.getItem(SS_FLAG) === '1';
-        let restoredFromServer = false;
+    async function restoreStatePreferringStorage() {
+        const nama = Store.getItem(SS_KEYS.nama) || '';
+        const ukuran = Store.getItem(SS_KEYS.ukuran) || '';
+        const jumlah = Store.getItem(SS_KEYS.jumlah) || '';
+        const hpp = Store.getItem(SS_KEYS.hpp) || '';
+        const untung = Store.getItem(SS_KEYS.untung) || '';
+        const satuan = Store.getItem(SS_KEYS.satuan) || '';
 
-        if (shouldPreserve) {
-            const server = await loadStateFromServer();
-            if (server && (server.jumlah_barang || server.hpp || server.keuntungan)) {
-                const jumlah = server.jumlah_barang || '';
-                const hpp = server.hpp || '';
-                const untung = server.keuntungan || '';
+        const elNama = document.getElementById('namaProduk');
+        if (elNama && nama) elNama.value = nama;
 
-                const elJumlah = document.getElementById('jumlahBarang');
-                if (elJumlah && jumlah !== '') elJumlah.value = formatRupiah(jumlah);
-                const elHpp = document.getElementById('hpp');
-                if (elHpp && hpp !== '') elHpp.value = formatRupiah(hpp);
-                const elUnt = document.getElementById('keuntungan');
-                if (elUnt && untung !== '') elUnt.value = formatRupiah(untung);
-
-                restoredFromServer = true;
-            }
+        const sel = document.getElementById('ukuran_kontainer');
+        if (sel && ukuran) {
+            sel.value = ukuran;
+            const label = document.getElementById('jumlahBarangLabel');
+            if (label) label.textContent = 'Jumlah Barang Dalam 1 Kontainer ' + ukuran + ':';
         }
+        updateUkuranHints();
 
-        // Selalu pulihkan UKURAN dari sessionStorage saat reload atau saat preserve,
-        // meskipun kita sudah restore dari server
-        const navType = getNavType();
-        if (navType === 'reload' || shouldPreserve) {
-            const ukuran = sessionStorage.getItem(SS_KEYS.ukuran) || '';
-            const sel = document.getElementById('ukuran_kontainer');
-            if (sel && ukuran) {
-                sel.value = ukuran;
-                const label = document.getElementById('jumlahBarangLabel');
-                if (label) label.textContent = 'Jumlah Barang Dalam 1 Kontainer ' + ukuran + ':';
-            }
-        }
+        const elJumlah = document.getElementById('jumlahBarang');
+        if (elJumlah && jumlah) elJumlah.value = formatRupiah(jumlah);
+        const elHpp = document.getElementById('hpp');
+        if (elHpp && hpp) elHpp.value = formatRupiah(hpp);
+        const elUnt = document.getElementById('keuntungan');
+        if (elUnt && untung) elUnt.value = formatRupiah(untung);
 
-        // Jika belum restore apa pun (mis. first reload), fallback lengkap dari sessionStorage
-        if (!restoredFromServer && (navType === 'reload' || shouldPreserve)) {
-            const jumlah = sessionStorage.getItem(SS_KEYS.jumlah) || '';
-            const hpp = sessionStorage.getItem(SS_KEYS.hpp) || '';
-            const untung = sessionStorage.getItem(SS_KEYS.untung) || '';
+        const elSatuan = document.getElementById('satuan');
+        if (elSatuan) elSatuan.value = satuan;
 
-            const elJumlah = document.getElementById('jumlahBarang');
-            if (elJumlah && jumlah) elJumlah.value = formatRupiah(jumlah);
-            const elHpp = document.getElementById('hpp');
-            if (elHpp && hpp) elHpp.value = formatRupiah(hpp);
-            const elUnt = document.getElementById('keuntungan');
-            if (elUnt && untung) elUnt.value = formatRupiah(untung);
-        }
+        updateSatuanBadges();
 
         try {
             hitungExwork();
@@ -648,45 +624,157 @@
             hitungCFR();
             hitungCIF();
         } catch (e) {}
-
-        if (shouldPreserve) sessionStorage.removeItem(SS_FLAG);
     }
 
-    document.addEventListener('DOMContentLoaded', restoreStatePreferringServer);
-
-    window.addEventListener('beforeunload', function() {
-        if (sessionStorage.getItem(SS_FLAG) === '1') return;
-        Object.values(SS_KEYS).forEach(k => sessionStorage.removeItem(k));
-    });
-
-    // reset jika back/forward cache
-    window.addEventListener('pageshow', function(e) {
-        if (e.persisted || getNavType() === 'back_forward') {
-            Object.values(SS_KEYS).forEach(k => sessionStorage.removeItem(k));
-            ['jumlahBarang', 'hpp', 'keuntungan'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
+    async function loadStateFromServer() {
+        try {
+            const res = await fetch('<?= base_url('kalkulator-state/load') ?>', {
+                method: 'GET'
             });
-            const sel = document.getElementById('ukuran_kontainer');
-            if (sel) sel.value = '';
-            const label = document.getElementById('jumlahBarangLabel');
-            if (label) label.textContent = 'Jumlah Barang Dalam 1 Kontainer:';
+            const json = await res.json();
+            if (!json.ok || !json.data) return;
+            const d = json.data;
+            const gt0 = v => Number(v) > 0;
+
+            const elNama = document.getElementById('namaProduk');
+            if (elNama && !elNama.value && d.nama_produk) elNama.value = d.nama_produk;
+
+            const elJumlah = document.getElementById('jumlahBarang');
+            if (elJumlah && !elJumlah.value && gt0(d.jumlah_barang)) {
+                elJumlah.value = formatRupiah(String(d.jumlah_barang));
+            }
+
+            const elHpp = document.getElementById('hpp');
+            if (elHpp && !elHpp.value && gt0(d.hpp)) {
+                elHpp.value = formatRupiah(String(d.hpp));
+            }
+
+            const elUnt = document.getElementById('keuntungan');
+            if (elUnt && !elUnt.value && gt0(d.keuntungan)) {
+                elUnt.value = formatRupiah(String(d.keuntungan));
+            }
+
+            updateSatuanBadges();
             try {
                 hitungExwork();
                 hitungFOB();
                 hitungCFR();
                 hitungCIF();
             } catch (e) {}
+        } catch (err) {
+            /* silent */
         }
+    }
+
+    // ==== Debounce helper ====
+    function debounce(fn, delay) {
+        let t;
+        return function(...args) {
+            clearTimeout(t);
+            t = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+
+    // ==== Autosave Satuan (JSON) ====
+    const satuanInput = document.getElementById('satuan');
+    const satuanStatus = document.getElementById('satuanStatus');
+
+    function setSatuanStatus(text, ok = null) {
+        if (!satuanStatus) return;
+        satuanStatus.textContent = text || '';
+        if (ok === true) {
+            satuanStatus.classList.remove('text-danger');
+            satuanStatus.classList.add('text-success');
+        } else if (ok === false) {
+            satuanStatus.classList.remove('text-success');
+            satuanStatus.classList.add('text-danger');
+        } else {
+            satuanStatus.classList.remove('text-success', 'text-danger');
+        }
+    }
+
+    const autosaveSatuan = debounce(async function() {
+        try {
+            const val = (satuanInput?.value || '').trim();
+
+            updateSatuanBadges();
+
+            setSatuanStatus('');
+            const body = new URLSearchParams();
+            body.set('satuan', val);
+
+            const res = await fetch('<?= base_url('satuan/upsert-json') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body
+            });
+
+            const json = await res.json();
+            if (res.ok && json.ok) {
+                Store.setItem(SS_KEYS.satuan, val);
+                setSatuanStatus('', true);
+                try {
+                    hitungExwork();
+                    hitungFOB();
+                    hitungCFR();
+                    hitungCIF();
+                } catch (e) {}
+            } else {
+                setSatuanStatus(json.msg || '', false);
+            }
+        } catch (e) {
+            setSatuanStatus('', false);
+        }
+    }, 500);
+
+    if (satuanInput) {
+        satuanInput.addEventListener('input', function() {
+            Store.setItem(SS_KEYS.satuan, (satuanInput.value || '').trim());
+            updateSatuanBadges();
+            autosaveSatuan();
+        });
+        satuanInput.addEventListener('change', function() {
+            Store.setItem(SS_KEYS.satuan, (satuanInput.value || '').trim());
+            updateSatuanBadges();
+            autosaveSatuan();
+
+            // Opsional: reset angka saat satuan berubah
+            ['jumlahBarang', 'hpp', 'keuntungan', 'hargaExwork', 'hargaFOB', 'hargaCFR'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            Store.setItem(SS_KEYS.jumlah, '');
+            Store.setItem(SS_KEYS.hpp, '');
+            Store.setItem(SS_KEYS.untung, '');
+
+            try {
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+            } catch (e) {}
+        });
+    }
+
+    // ==== Dinamis label ukuran + save ====
+    document.getElementById('ukuran_kontainer').addEventListener('change', function() {
+        var selectedUkuran = this.value;
+        var label = document.getElementById('jumlahBarangLabel');
+        label.textContent = selectedUkuran ? ('Jumlah Barang Dalam 1 Kontainer ' + selectedUkuran + ':') : 'Jumlah Barang Dalam 1 Kontainer:';
+        saveStateOnce();
+        updateUkuranHints();
     });
 
+    // ==== PERHITUNGAN ====
     function hitungExwork() {
         let jumlahBarang = bersihkanRupiah(document.getElementById('jumlahBarang').value);
         let hpp = bersihkanRupiah(document.getElementById('hpp').value);
         let keuntungan = bersihkanRupiah(document.getElementById('keuntungan').value);
 
         if (!jumlahBarang || !hpp || !keuntungan) {
-            document.querySelector('.result-harga-exwork').innerText = 'Harga Exwork: ';
+            document.querySelector('.result-harga-exwork').innerText = 'Rekomendasi Harga Exwork: ';
             return;
         }
 
@@ -696,6 +784,7 @@
 
         let jb_hpp_keuntungan = (hpp + keuntungan) * jumlahBarang;
         let exworkLainnya = 0;
+
         <?php foreach ($exwork as $item): ?>
                 (function() {
                     const el = document.getElementById('exwork_<?= $item['id_exwork'] ?>');
@@ -705,14 +794,17 @@
                     }
                 })();
         <?php endforeach; ?>
+
         document.querySelectorAll('input[name="biayaExwork[]"]').forEach(function(el) {
             const val = bersihkanRupiah(el.value);
             if (val) exworkLainnya += parseFloat(val);
         });
 
         let hargaExwork = (jb_hpp_keuntungan + exworkLainnya) / jumlahBarang;
+        var unit = getSatuanText();
+        var suffixUnit = unit ? (' / ' + unit) : '';
         document.querySelector('.result-harga-exwork').innerText =
-            'Harga Exwork: Rp. ' + formatRupiah(hargaExwork.toFixed(0)) + ' / <?= $satuan[0]['satuan']; ?>';
+            'Rekomendasi Harga Exwork: Rp. ' + formatRupiah(hargaExwork.toFixed(0)) + suffixUnit;
         document.getElementById('hargaExwork').value = formatRupiah(hargaExwork.toFixed(0));
     }
 
@@ -720,7 +812,7 @@
         let jumlahBarang = parseFloat(bersihkanRupiah(document.getElementById('jumlahBarang').value));
         let hargaExwork = parseFloat(bersihkanRupiah(document.getElementById('hargaExwork').value));
         if (!jumlahBarang || !hargaExwork) {
-            document.querySelector('.result-harga-fob').innerText = 'Harga FOB: ';
+            document.querySelector('.result-harga-fob').innerText = 'Rekomendasi Harga FOB: ';
             return;
         }
         let jb_he = hargaExwork * jumlahBarang;
@@ -735,14 +827,17 @@
                     }
                 })();
         <?php endforeach; ?>
+
         document.querySelectorAll('input[name="biayaFOB[]"]').forEach(function(el) {
             const val = bersihkanRupiah(el.value);
             if (val) fobLainnya += parseFloat(val);
         });
 
         let hargaFOB = (jb_he + fobLainnya) / jumlahBarang;
+        var unit = getSatuanText();
+        var suffixUnit = unit ? (' / ' + unit) : '';
         document.querySelector('.result-harga-fob').innerText =
-            'Harga FOB: Rp. ' + formatRupiah(hargaFOB.toFixed(0)) + ' / <?= $satuan[0]['satuan']; ?>';
+            'Rekomendasi Harga FOB: Rp. ' + formatRupiah(hargaFOB.toFixed(0)) + suffixUnit;
         document.getElementById('hargaFOB').value = formatRupiah(hargaFOB.toFixed(0));
     }
 
@@ -750,7 +845,7 @@
         let jumlahBarang = parseFloat(bersihkanRupiah(document.getElementById('jumlahBarang').value));
         let hargaFOB = parseFloat(bersihkanRupiah(document.getElementById('hargaFOB').value));
         if (!jumlahBarang || !hargaFOB) {
-            document.querySelector('.result-harga-cfr').innerText = 'Harga CFR: ';
+            document.querySelector('.result-harga-cfr').innerText = 'Rekomendasi Harga CFR: ';
             return;
         }
         let jb_hfob = hargaFOB * jumlahBarang;
@@ -765,14 +860,17 @@
                     }
                 })();
         <?php endforeach; ?>
+
         document.querySelectorAll('input[name="biayaCFR[]"]').forEach(function(el) {
             const val = bersihkanRupiah(el.value);
             if (val) cfrLainnya += parseFloat(val);
         });
 
         let hargaCFR = (jb_hfob + cfrLainnya) / jumlahBarang;
+        var unit = getSatuanText();
+        var suffixUnit = unit ? (' / ' + unit) : '';
         document.querySelector('.result-harga-cfr').innerText =
-            'Harga CFR: Rp. ' + formatRupiah(hargaCFR.toFixed(0)) + ' / <?= $satuan[0]['satuan']; ?>';
+            'Rekomendasi Harga CFR: Rp. ' + formatRupiah(hargaCFR.toFixed(0)) + suffixUnit;
         document.getElementById('hargaCFR').value = formatRupiah(hargaCFR.toFixed(0));
     }
 
@@ -780,7 +878,7 @@
         let jumlahBarang = parseFloat(bersihkanRupiah(document.getElementById('jumlahBarang').value));
         let hargaCFR = parseFloat(bersihkanRupiah(document.getElementById('hargaCFR').value));
         if (!jumlahBarang || !hargaCFR) {
-            document.querySelector('.result-harga-cif').innerText = 'Harga CIF: ';
+            document.querySelector('.result-harga-cif').innerText = 'Rekomendasi Harga CIF: ';
             return;
         }
         let jb_hcfr = hargaCFR * jumlahBarang;
@@ -795,16 +893,20 @@
                     }
                 })();
         <?php endforeach; ?>
+
         document.querySelectorAll('input[name="biayaCIF[]"]').forEach(function(el) {
             const val = bersihkanRupiah(el.value);
             if (val) cifLainnya += parseFloat(val);
         });
 
         let hargaCIF = (jb_hcfr + cifLainnya) / jumlahBarang;
+        var unit = getSatuanText();
+        var suffixUnit = unit ? (' / ' + unit) : '';
         document.querySelector('.result-harga-cif').innerText =
-            'Harga CIF: Rp. ' + formatRupiah(hargaCIF.toFixed(0)) + ' / <?= $satuan[0]['satuan']; ?>';
+            'Rekomendasi Harga CIF: Rp. ' + formatRupiah(hargaCIF.toFixed(0)) + suffixUnit;
     }
 
+    // ==== LISTENER INPUT ====
     document.querySelectorAll('#jumlahBarang, #hpp, #keuntungan, #hargaExwork, #hargaFOB, #hargaCFR').forEach(function(element) {
         element.addEventListener('keyup', function(e) {
             e.target.value = formatRupiah(e.target.value);
@@ -812,127 +914,101 @@
             hitungFOB();
             hitungCFR();
             hitungCIF();
-            if (['jumlahBarang', 'hpp', 'keuntungan'].includes(e.target.id)) {
-                saveStateOnce();
-                autosaveToServer();
-            }
+            if (['jumlahBarang', 'hpp', 'keuntungan'].includes(e.target.id)) saveStateOnce();
         });
         element.addEventListener('change', function(e) {
-            if (['jumlahBarang', 'hpp', 'keuntungan'].includes(e.target.id)) {
-                saveStateOnce();
-                autosaveToServer();
-            }
+            if (['jumlahBarang', 'hpp', 'keuntungan'].includes(e.target.id)) saveStateOnce();
         });
     });
 
-    // Existing inputs -> format & hitung
-    document.querySelectorAll('.exwork-existing').forEach(function(el) {
-        el.addEventListener('keyup', function(e) {
-            e.target.value = formatRupiah(e.target.value);
-            hitungExwork();
-            hitungFOB();
-            hitungCFR();
-            hitungCIF();
-        });
-    });
-    <?php foreach ($fob as $item): ?>
-        document.getElementById('fob_<?= $item['id_fob'] ?>').addEventListener('keyup', function(e) {
-            e.target.value = formatRupiah(e.target.value);
-            hitungFOB();
-            hitungCFR();
-            hitungCIF();
-        });
-    <?php endforeach; ?>
-    <?php foreach ($cfr as $item): ?>
-        document.getElementById('cfr_<?= $item['id_cfr'] ?>').addEventListener('keyup', function(e) {
-            e.target.value = formatRupiah(e.target.value);
-            hitungCFR();
-            hitungCIF();
-        });
-    <?php endforeach; ?>
-    <?php foreach ($cif as $item): ?>
-        document.getElementById('cif_<?= $item['id_cif'] ?>').addEventListener('keyup', function(e) {
-            e.target.value = formatRupiah(e.target.value);
-            hitungCIF();
-        });
-    <?php endforeach; ?>
+    // Listener Nama Produk
+    (function() {
+        const el = document.getElementById('namaProduk');
+        if (el) {
+            el.addEventListener('keyup', saveStateOnce);
+            el.addEventListener('change', saveStateOnce);
+        }
+    })();
 
-        // Exwork add rows & submit
-        (function() {
-            const container = document.getElementById('komponenExworkContainer');
-            const btnAdd = document.getElementById('tambahKolomExwork');
-            const btnSubmit = document.getElementById('submitKomponenExworkButton');
+    // ==== Exwork add rows & submit ====
+    (function() {
+        const container = document.getElementById('komponenExworkContainer');
+        const btnAdd = document.getElementById('tambahKolomExwork');
+        const btnSubmit = document.getElementById('submitKomponenExworkButton');
 
-            function updateCounter() {
-                const n = container.querySelectorAll('.komponenRow').length;
-                btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + n + ')';
-            }
+        function updateCounter() {
+            const n = container.querySelectorAll('.komponenRow').length;
+            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + n + ')';
+        }
 
-            function ensureVisible() {
-                container.style.display = 'block';
-                btnSubmit.style.display = 'inline-block';
-            }
+        function ensureVisible() {
+            container.style.display = 'block';
+            btnSubmit.style.display = 'inline-block';
+        }
 
-            btnAdd.addEventListener('click', function() {
-                ensureVisible();
-                const row = document.createElement('div');
-                row.className = 'card p-3 mb-2 komponenRow';
-                row.innerHTML = `
-                <div class="row g-2">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label fw-bold">Masukkan Komponen Exwork</label>
-                        <input type="text" name="komponenExwork[]" class="form-control" placeholder="Masukkan Komponen Exwork" autocomplete="off" required>
-                    </div>
-                    <div class="col-12 col-md-5">
-                        <label class="form-label fw-bold">Biaya (Rp.)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">Rp.</span>
-                            <input type="text" name="biayaExwork[]" class="form-control input-biaya-exwork" placeholder="0" inputmode="numeric" autocomplete="off" required>
-                        </div>
-                        <small class="text-muted">Masukkan angka, otomatis diformat.</small>
-                    </div>
-                    <div class="col-12 col-md-1 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger w-100 btn-hapus-baris">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
+        btnAdd.addEventListener('click', function() {
+            ensureVisible();
+            const row = document.createElement('div');
+            row.className = 'card p-3 mb-2 komponenRow';
+            row.innerHTML = `
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <label class="form-label fw-bold">Masukkan Komponen Exwork</label>
+                    <input type="text" name="komponenExwork[]" class="form-control" placeholder="Masukkan Komponen Exwork" autocomplete="off" required>
                 </div>
-            `;
-                row.querySelector('.input-biaya-exwork').addEventListener('keyup', function(e) {
-                    e.target.value = formatRupiah(e.target.value);
-                    hitungExwork();
-                    hitungFOB();
-                    hitungCFR();
-                    hitungCIF();
-                });
-                row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
-                    row.remove();
-                    updateCounter();
-                    if (container.querySelectorAll('.komponenRow').length === 0) {
-                        container.style.display = 'none';
-                        btnSubmit.style.display = 'none';
-                    }
-                    hitungExwork();
-                    hitungFOB();
-                    hitungCFR();
-                    hitungCIF();
-                });
-                container.appendChild(row);
+                <div class="col-12 col-md-5">
+                    <label class="form-label fw-bold biaya-col-header">Biaya (Rp.)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Rp.</span>
+                        <input type="text" name="biayaExwork[]" class="form-control input-biaya-exwork" placeholder="0" inputmode="numeric" autocomplete="off" required>
+                    </div>
+                    <small class="text-muted">Masukkan angka, otomatis diformat.</small>
+                </div>
+                <div class="col-12 col-md-1 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
+                </div>
+            </div>`;
+
+            // format & perhitungan
+            row.querySelector('.input-biaya-exwork').addEventListener('keyup', function(e) {
+                e.target.value = formatRupiah(e.target.value);
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+            });
+
+            // hapus baris
+            row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
+                row.remove();
                 updateCounter();
+                if (container.querySelectorAll('.komponenRow').length === 0) {
+                    container.style.display = 'none';
+                    btnSubmit.style.display = 'none';
+                }
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+                updateUkuranHints();
             });
 
-            document.getElementById('formExworkAll').addEventListener('submit', function() {
-                try {
-                    saveStateOnce();
-                    autosaveToServer();
-                } catch (e) {}
-                sessionStorage.setItem(SS_FLAG, '1');
-                document.querySelectorAll('.exwork-existing').forEach(el => el.value = bersihkanRupiah(el.value));
-                document.querySelectorAll('input[name="biayaExwork[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
-            });
-        })();
+            container.appendChild(row);
+            updateCounter();
+            updateUkuranHints();
+        });
 
-    // FOB add rows & submit
+
+        document.getElementById('formExworkAll').addEventListener('submit', function() {
+            try {
+                saveStateOnce();
+            } catch (e) {}
+            document.querySelectorAll('.exwork-existing').forEach(el => el.value = bersihkanRupiah(el.value));
+            document.querySelectorAll('input[name="biayaExwork[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
+        });
+    })();
+
+    // ==== FOB add rows & submit ====
     (function() {
         const container = document.getElementById('komponenFOBContainer');
         const btnAdd = document.getElementById('tambahKolomFOB');
@@ -940,8 +1016,7 @@
         const form = document.getElementById('formFOBAll');
 
         function updateCounter() {
-            const n = container.querySelectorAll('.komponenRow').length;
-            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + n + ')';
+            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')';
         }
 
         function ensureVisible() {
@@ -954,24 +1029,24 @@
             const row = document.createElement('div');
             row.className = 'card p-3 mb-2 komponenRow';
             row.innerHTML = `
-                <div class="row g-2">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label fw-bold">Masukkan Komponen FOB</label>
-                        <input type="text" name="komponenFOB[]" class="form-control" placeholder="Masukkan Komponen FOB" autocomplete="off" required>
-                    </div>
-                    <div class="col-12 col-md-5">
-                        <label class="form-label fw-bold">Biaya (Rp.)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">Rp.</span>
-                            <input type="text" name="biayaFOB[]" class="form-control input-biaya-fob" placeholder="0" inputmode="numeric" autocomplete="off" required>
-                        </div>
-                        <small class="text-muted">Masukkan angka, otomatis diformat.</small>
-                    </div>
-                    <div class="col-12 col-md-1 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
-                    </div>
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <label class="form-label fw-bold">Masukkan Komponen FOB</label>
+                    <input type="text" name="komponenFOB[]" class="form-control" placeholder="Masukkan Komponen FOB" autocomplete="off" required>
                 </div>
-            `;
+                <div class="col-12 col-md-5">
+                    <label class="form-label fw-bold biaya-col-header">Biaya (Rp.)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Rp.</span>
+                        <input type="text" name="biayaFOB[]" class="form-control input-biaya-fob" placeholder="0" inputmode="numeric" autocomplete="off" required>
+                    </div>
+                    <small class="text-muted">Masukkan angka, otomatis diformat.</small>
+                </div>
+                <div class="col-12 col-md-1 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
+                </div>
+            </div>`;
+
             row.querySelector('.input-biaya-fob').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
                 hitungExwork();
@@ -979,6 +1054,7 @@
                 hitungCFR();
                 hitungCIF();
             });
+
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
                 row.remove();
                 updateCounter();
@@ -990,23 +1066,24 @@
                 hitungFOB();
                 hitungCFR();
                 hitungCIF();
+                updateUkuranHints();
             });
+
             container.appendChild(row);
             updateCounter();
+            updateUkuranHints();
         });
 
         form.addEventListener('submit', function() {
             try {
                 saveStateOnce();
-                autosaveToServer();
             } catch (e) {}
-            sessionStorage.setItem(SS_FLAG, '1');
             document.querySelectorAll('.fob-existing').forEach(el => el.value = bersihkanRupiah(el.value));
             document.querySelectorAll('input[name="biayaFOB[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
         });
     })();
 
-    // CFR add rows & submit
+    // ==== CFR add rows & submit ====
     (function() {
         const container = document.getElementById('komponenCFRContainer');
         const btnAdd = document.getElementById('tambahKolomCFR');
@@ -1014,8 +1091,7 @@
         const form = document.getElementById('formCFRAll');
 
         function updateCounter() {
-            const n = container.querySelectorAll('.komponenRow').length;
-            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + n + ')';
+            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')';
         }
 
         function ensureVisible() {
@@ -1028,24 +1104,24 @@
             const row = document.createElement('div');
             row.className = 'card p-3 mb-2 komponenRow';
             row.innerHTML = `
-                <div class="row g-2">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label fw-bold">Masukkan Komponen CFR</label>
-                        <input type="text" name="komponenCFR[]" class="form-control" placeholder="Masukkan Komponen CFR" autocomplete="off" required>
-                    </div>
-                    <div class="col-12 col-md-5">
-                        <label class="form-label fw-bold">Biaya (Rp.)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">Rp.</span>
-                            <input type="text" name="biayaCFR[]" class="form-control input-biaya-cfr" placeholder="0" inputmode="numeric" autocomplete="off" required>
-                        </div>
-                        <small class="text-muted">Masukkan angka, otomatis diformat.</small>
-                    </div>
-                    <div class="col-12 col-md-1 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
-                    </div>
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <label class="form-label fw-bold">Masukkan Komponen CFR</label>
+                    <input type="text" name="komponenCFR[]" class="form-control" placeholder="Masukkan Komponen CFR" autocomplete="off" required>
                 </div>
-            `;
+                <div class="col-12 col-md-5">
+                    <label class="form-label fw-bold biaya-col-header">Biaya (Rp.)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Rp.</span>
+                        <input type="text" name="biayaCFR[]" class="form-control input-biaya-cfr" placeholder="0" inputmode="numeric" autocomplete="off" required>
+                    </div>
+                    <small class="text-muted">Masukkan angka, otomatis diformat.</small>
+                </div>
+                <div class="col-12 col-md-1 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
+                </div>
+            </div>`;
+
             row.querySelector('.input-biaya-cfr').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
                 hitungExwork();
@@ -1053,6 +1129,7 @@
                 hitungCFR();
                 hitungCIF();
             });
+
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
                 row.remove();
                 updateCounter();
@@ -1064,23 +1141,24 @@
                 hitungFOB();
                 hitungCFR();
                 hitungCIF();
+                updateUkuranHints();
             });
+
             container.appendChild(row);
             updateCounter();
+            updateUkuranHints();
         });
 
         form.addEventListener('submit', function() {
             try {
                 saveStateOnce();
-                autosaveToServer();
             } catch (e) {}
-            sessionStorage.setItem(SS_FLAG, '1');
             document.querySelectorAll('.cfr-existing').forEach(el => el.value = bersihkanRupiah(el.value));
             document.querySelectorAll('input[name="biayaCFR[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
         });
     })();
 
-    // CIF add rows & submit
+    // ==== CIF add rows & submit ====
     (function() {
         const container = document.getElementById('komponenCIFContainer');
         const btnAdd = document.getElementById('tambahKolomCIF');
@@ -1088,8 +1166,7 @@
         const form = document.getElementById('formCIFAll');
 
         function updateCounter() {
-            const n = container.querySelectorAll('.komponenRow').length;
-            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + n + ')';
+            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')';
         }
 
         function ensureVisible() {
@@ -1102,24 +1179,24 @@
             const row = document.createElement('div');
             row.className = 'card p-3 mb-2 komponenRow';
             row.innerHTML = `
-                <div class="row g-2">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label fw-bold">Masukkan Komponen CIF</label>
-                        <input type="text" name="komponenCIF[]" class="form-control" placeholder="Masukkan Komponen CIF" autocomplete="off" required>
-                    </div>
-                    <div class="col-12 col-md-5">
-                        <label class="form-label fw-bold">Biaya (Rp.)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">Rp.</span>
-                            <input type="text" name="biayaCIF[]" class="form-control input-biaya-cif" placeholder="0" inputmode="numeric" autocomplete="off" required>
-                        </div>
-                        <small class="text-muted">Masukkan angka, otomatis diformat.</small>
-                    </div>
-                    <div class="col-12 col-md-1 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
-                    </div>
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <label class="form-label fw-bold">Masukkan Komponen CIF</label>
+                    <input type="text" name="komponenCIF[]" class="form-control" placeholder="Masukkan Komponen CIF" autocomplete="off" required>
                 </div>
-            `;
+                <div class="col-12 col-md-5">
+                    <label class="form-label fw-bold biaya-col-header">Biaya (Rp.)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Rp.</span>
+                        <input type="text" name="biayaCIF[]" class="form-control input-biaya-cif" placeholder="0" inputmode="numeric" autocomplete="off" required>
+                    </div>
+                    <small class="text-muted">Masukkan angka, otomatis diformat.</small>
+                </div>
+                <div class="col-12 col-md-1 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
+                </div>
+            </div>`;
+
             row.querySelector('.input-biaya-cif').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
                 hitungExwork();
@@ -1127,6 +1204,7 @@
                 hitungCFR();
                 hitungCIF();
             });
+
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
                 row.remove();
                 updateCounter();
@@ -1138,40 +1216,30 @@
                 hitungFOB();
                 hitungCFR();
                 hitungCIF();
+                updateUkuranHints();
             });
+
             container.appendChild(row);
             updateCounter();
+            updateUkuranHints();
         });
 
         form.addEventListener('submit', function() {
             try {
                 saveStateOnce();
-                autosaveToServer();
             } catch (e) {}
-            sessionStorage.setItem(SS_FLAG, '1');
             document.querySelectorAll('.cif-existing').forEach(el => el.value = bersihkanRupiah(el.value));
             document.querySelectorAll('input[name="biayaCIF[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
         });
     })();
 
-    (function() {
-        function hookDeleteLinks(selector) {
-            document.addEventListener('click', function(e) {
-                const a = e.target.closest('a');
-                if (!a) return;
-                if (!a.matches(selector)) return;
-                try {
-                    saveStateOnce();
-                    autosaveToServer();
-                } catch (err) {}
-                sessionStorage.setItem(SS_FLAG, '1');
-            }, true);
-        }
-        hookDeleteLinks('a[href*="/komponen-exwork/delete/"]');
-        hookDeleteLinks('a[href*="/komponen-fob/delete/"]');
-        hookDeleteLinks('a[href*="/komponen-cfr/delete/"]');
-        hookDeleteLinks('a[href*="/komponen-cif/delete/"]');
-    })();
+    // ==== Restore saat halaman dibuka ====
+    document.addEventListener('DOMContentLoaded', function() {
+        restoreStatePreferringStorage();
+        updateUkuranHints();
+        updateSatuanBadges();
+        loadStateFromServer(); // boleh parallel
+    });
 </script>
 
 <?= $this->endSection(); ?>

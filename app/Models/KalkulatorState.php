@@ -9,6 +9,13 @@ class KalkulatorState extends Model
     protected $table         = 'kalkulator_state';
     protected $primaryKey    = 'id_state';
     protected $returnType    = 'array';
-    protected $allowedFields = ['id_member', 'jumlah_barang', 'hpp', 'keuntungan', 'updated_at'];
+    protected $allowedFields = [
+        'id_member',
+        'nama_produk',
+        'jumlah_barang',
+        'hpp',
+        'keuntungan',
+        'updated_at'
+    ];
     protected $useTimestamps = false;
 }

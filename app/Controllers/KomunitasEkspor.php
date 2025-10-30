@@ -34,6 +34,7 @@ use App\Models\KontenPlanner;
 use App\Models\KontenPlatform;
 use App\Models\KontenType;
 use App\Models\KalkulatorState;
+use App\Models\UkuranKontainer;
 use CodeIgniter\I18n\Time;
 use DateTime;
 use Exception;
@@ -520,7 +521,7 @@ class KomunitasEkspor extends BaseController
         $data['webprofile'] = $webprofile;
         $model_meta = new Meta();
         $meta = $model_meta
-            ->select('meta_title_beranda, meta_title_beranda_en, meta_description_beranda, meta_description_beranda_en')
+            ->select('title_beranda, title_beranda_en, meta_description_beranda, meta_description_beranda_en')
             ->first();
         $data['meta'] = $meta;
 
@@ -2502,64 +2503,258 @@ class KomunitasEkspor extends BaseController
         $session = session();
         $user_id = $session->get('user_id');
 
-        // --- MODEL UTAMA ---
         $model_webprofile = new WebProfile();
         $model_exwork     = new Exwork();
         $model_fob        = new FOB();
         $model_cfr        = new CFR();
         $model_cif        = new CIF();
         $model_satuan     = new Satuan();
-        $model_state      = new \App\Models\KalkulatorState(); // Tambahan
+        $model_state      = new KalkulatorState();
+        $model_ukuran     = new UkuranKontainer();
 
-        // --- DATA WEB PROFILE ---
         $data['webprofile'] = $model_webprofile->findAll();
-
-        // --- DATA KOMPONEN PER USER ---
         $data['exwork'] = $model_exwork->where('id_member', $user_id)->findAll();
         $data['fob']    = $model_fob->where('id_member', $user_id)->findAll();
         $data['cfr']    = $model_cfr->where('id_member', $user_id)->findAll();
         $data['cif']    = $model_cif->where('id_member', $user_id)->findAll();
-        $data['satuan'] = $model_satuan->where('id_member', $user_id)->findAll();
 
-        // --- DATA STATE (auto-save) ---
+        // Pastikan satuan selalu ada 1 baris per user
+        $rowSatuan = $model_satuan->where('id_member', $user_id)->first();
+
+        $data['satuanRow']   = $rowSatuan;
+        $data['labelSatuan'] = $rowSatuan['satuan'] ?? '';
+        $data['idSatuan']    = $rowSatuan['id_satuan'] ?? 0;
+
+        // Ukuran kontainer (aktif saja)
+        $data['ukuranKontainer'] = $model_ukuran
+            ->where('is_active', 1)
+            ->orderBy('urutan', 'ASC')
+            ->orderBy('nama', 'ASC')
+            ->findAll();
+
+        // Server state
         $state = $model_state->where('id_member', $user_id)->first();
         $data['state'] = $state ?: [
+            'nama_produk'   => '',
             'jumlah_barang' => 0,
             'hpp'           => 0,
             'keuntungan'    => 0,
         ];
 
-        // --- LOAD VIEW ---
         return view('member/kalkulator-ekspor/kalkulator_ekspor', $data);
     }
 
-    public function ganti_satuan($id)
+    public function save_kalkulator_state()
+    {
+        if (!$this->request->is('post')) {
+            return $this->response->setStatusCode(405)->setJSON(['ok' => false, 'msg' => 'Method Not Allowed']);
+        }
+
+        $user_id = session()->get('user_id');
+        if (!$user_id) {
+            return $this->response->setStatusCode(401)->setJSON(['ok' => false, 'msg' => 'Unauthorized']);
+        }
+
+        $payload = [
+            'nama_produk'       => trim((string)$this->request->getPost('nama_produk')),
+            'jumlah_barang'     => (int)($this->request->getPost('jumlah_barang') ?? 0),
+            'hpp'               => (int)($this->request->getPost('hpp') ?? 0),
+            'keuntungan'        => (int)($this->request->getPost('keuntungan') ?? 0),
+            'ukuran_kontainer'  => trim((string)$this->request->getPost('ukuran_kontainer') ?? ''),
+            'updated_at'        => date('Y-m-d H:i:s'),
+        ];
+
+        $model = new KalkulatorState();
+        $exists = $model->where('id_member', $user_id)->first();
+
+        if ($exists) {
+            $model->update($exists['id_state'], $payload);
+        } else {
+            $payload['id_member'] = $user_id;
+            $model->insert($payload);
+        }
+
+        return $this->response->setJSON(['ok' => true]);
+    }
+
+    public function load_kalkulator_state()
+    {
+        $user_id = session()->get('user_id');
+        if (!$user_id) {
+            return $this->response->setStatusCode(401)->setJSON(['ok' => false, 'msg' => 'Unauthorized']);
+        }
+
+        $model = new KalkulatorState();
+        $row = $model->where('id_member', $user_id)->first();
+
+        return $this->response->setJSON([
+            'ok' => true,
+            'data' => $row ?: [
+                'nama_produk'       => '',
+                'jumlah_barang'     => 0,
+                'hpp'               => 0,
+                'keuntungan'        => 0,
+                'ukuran_kontainer'  => '',
+            ],
+        ]);
+    }
+
+    // public function ganti_satuan($id)
+    // {
+    //     $session = session();
+    //     $user_id = $session->get('user_id');
+
+    //     $model_satuan = new Satuan();
+
+    //     $satuan = $model_satuan->find($id);
+
+    //     if ($satuan) {
+    //         $data = [
+    //             'id_member' => $user_id,
+    //             'satuan' => $this->request->getPost('satuan'),
+    //         ];
+
+    //         $model_satuan->update($id, $data);
+
+    //         return redirect()->to('/kalkulator-ekspor')->with('success', 'Produk berhasil disimpan!');
+    //     } else {
+    //         return redirect()->to('/kalkulator-ekspor')->with('error', 'Produk gagal disimpan!');
+    //     }
+    // }
+
+    // public function save_satuan()
+    // {
+    //     if (!$this->request->is('post')) {
+    //         return redirect()->back()->with('error', 'Method tidak valid.');
+    //     }
+
+    //     $user_id = session()->get('user_id');
+    //     if (!$user_id) {
+    //         return redirect()->to('/kalkulator-ekspor')->with('error', 'Unauthorized');
+    //     }
+
+    //     $satuan = trim((string)$this->request->getPost('satuan'));
+
+    //     $model = new Satuan();
+    //     $row   = $model->where('id_member', $user_id)->first();
+
+    //     if ($satuan === '') {
+    //         if ($row) {
+    //             $model->update($row['id_satuan'], ['satuan' => '']);
+    //         } else {
+    //             $model->insert(['id_member' => $user_id, 'satuan' => '']);
+    //         }
+    //         return redirect()->to('/kalkulator-ekspor')->with('success', 'Satuan berhasil diperbarui.');
+    //     }
+
+    //     // Kalau ada nilai → simpan/perbarui seperti biasa
+    //     if ($row) {
+    //         $model->update($row['id_satuan'], ['satuan' => $satuan]);
+    //         $msg = 'Satuan berhasil diperbarui ✅';
+    //     } else {
+    //         $model->insert(['id_member' => $user_id, 'satuan' => $satuan]);
+    //         $msg = 'Satuan baru berhasil disimpan ✅';
+    //     }
+
+    //     return redirect()->to('/kalkulator-ekspor')->with('success', $msg);
+    // }
+
+    public function kalkulator_state_json()
     {
         $session = session();
         $user_id = $session->get('user_id');
 
-        $model_satuan = new Satuan();
-
-        // Mencari satuan berdasarkan ID
-        $satuan = $model_satuan->find($id);
-
-        // Jika satuan ditemukan, lakukan update
-        if ($satuan) {
-            // Mengambil input dari form
-            $data = [
-                'id_member' => $user_id,
-                'satuan' => $this->request->getPost('satuan'),
-            ];
-
-            // Melakukan update data pada model
-            $model_satuan->update($id, $data);
-
-            // Redirect setelah update berhasil
-            return redirect()->to('/kalkulator-ekspor')->with('success', 'Satuan berhasil diganti!');
-        } else {
-            // Jika data tidak ditemukan, bisa diarahkan ke halaman error
-            return redirect()->to('/kalkulator-ekspor')->with('error', 'Data satuan tidak ditemukan.');
+        // Jika belum login / tak ada user id, balas kosong
+        if (!$user_id) {
+            return $this->response->setJSON([
+                'jumlah_barang' => null,
+                'hpp'           => null,
+                'keuntungan'    => null,
+                'csrf_token'    => csrf_hash(),
+            ]);
         }
+
+        $model = new \App\Models\KalkulatorState();
+        $row   = $model->where('id_member', $user_id)->first();
+
+        return $this->response->setJSON([
+            'jumlah_barang' => $row['jumlah_barang'] ?? null,
+            'hpp'           => $row['hpp'] ?? null,
+            'keuntungan'    => $row['keuntungan'] ?? null,
+            'csrf_token'    => csrf_hash(),
+        ]);
+    }
+
+    // POST: simpan/update state (upsert)
+    public function kalkulator_state_upsert()
+    {
+        $session = session();
+        $user_id = $session->get('user_id');
+
+        if (!$user_id) {
+            return $this->response->setStatusCode(401)
+                ->setJSON(['message' => 'Unauthorized', 'csrf_token' => csrf_hash()]);
+        }
+
+        // ambil raw nilai; biarkan kosong jadi null
+        $jumlah = $this->request->getPost('jumlah_barang');
+        $hpp    = $this->request->getPost('hpp');
+        $untung = $this->request->getPost('keuntungan');
+
+        // sanit angka: buang non-digit; kosong -> null
+        $clean = function ($v) {
+            if ($v === null || $v === '') return null;
+            $v = preg_replace('/[^\d]/', '', (string)$v);
+            return $v === '' ? null : (int)$v;
+        };
+
+        $jumlah = $clean($jumlah);
+        $hpp    = $clean($hpp);
+        $untung = $clean($untung);
+
+        $model = new \App\Models\KalkulatorState();
+        $row   = $model->where('id_member', $user_id)->first();
+
+        $data = [
+            'id_member'     => $user_id,
+            'jumlah_barang' => $jumlah,
+            'hpp'           => $hpp,
+            'keuntungan'    => $untung,
+            'updated_at'    => date('Y-m-d H:i:s'),
+        ];
+
+        if ($row) {
+            // pk kamu: id_state
+            $model->update($row['id_state'], $data);
+        } else {
+            $model->insert($data);
+        }
+
+        return $this->response->setJSON(['ok' => true, 'csrf_token' => csrf_hash()]);
+    }
+
+    public function upsert_satuan_json()
+    {
+        if (!$this->request->is('post')) {
+            return $this->response->setStatusCode(405)->setJSON(['ok' => false, 'msg' => 'Method Not Allowed']);
+        }
+
+        $user_id = session()->get('user_id');
+        if (!$user_id) {
+            return $this->response->setStatusCode(401)->setJSON(['ok' => false, 'msg' => 'Unauthorized']);
+        }
+
+        $satuan = trim((string)$this->request->getPost('satuan'));
+        $model  = new \App\Models\Satuan();
+        $row    = $model->where('id_member', $user_id)->first();
+
+        if ($row) {
+            $model->update($row['id_satuan'], ['satuan' => $satuan]);
+        } else {
+            $model->insert(['id_member' => $user_id, 'satuan' => $satuan]);
+        }
+
+        return $this->response->setJSON(['ok' => true, 'satuan' => $satuan]);
     }
 
     public function add_exwork()
@@ -2647,7 +2842,7 @@ class KomunitasEkspor extends BaseController
         }
 
         return redirect()->to('/kalkulator-ekspor#exwork')
-            ->with('success', "Perubahan tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
+            ->with('success', "Komponen Exwork Berhasil Disimpan.");
     }
 
     public function delete_exwork($id)
@@ -2661,7 +2856,7 @@ class KomunitasEkspor extends BaseController
 
         if ($exwork && $exwork['id_member'] == $user_id) {
             $model_exwork->delete($id);
-            return redirect()->to('/kalkulator-ekspor#exwork')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#exwork')->with('success', 'Komponen Exwork berhasil dihapus');
         } else {
             return redirect()->to('/kalkulator-ekspor#exwork')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
@@ -2748,7 +2943,7 @@ class KomunitasEkspor extends BaseController
         }
 
         return redirect()->to('/kalkulator-ekspor#fob')
-            ->with('success', "Perubahan FOB tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
+            ->with('success', "Komponen FOB Berhasil Disimpan.");
     }
 
     public function delete_fob($id)
@@ -2762,7 +2957,7 @@ class KomunitasEkspor extends BaseController
 
         if ($fob && $fob['id_member'] == $user_id) {
             $model_fob->delete($id);
-            return redirect()->to('/kalkulator-ekspor#fob')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#fob')->with('success', 'Komponen FOB berhasil dihapus');
         } else {
             return redirect()->to('/kalkulator-ekspor#fob')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
@@ -2849,7 +3044,7 @@ class KomunitasEkspor extends BaseController
         }
 
         return redirect()->to('/kalkulator-ekspor#cfr')
-            ->with('success', "Perubahan CFR tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
+            ->with('success', "Komponen CFR Berhasil Disimpan.");
     }
 
     public function delete_cfr($id)
@@ -2863,7 +3058,7 @@ class KomunitasEkspor extends BaseController
 
         if ($cfr && $cfr['id_member'] == $user_id) {
             $model_cfr->delete($id);
-            return redirect()->to('/kalkulator-ekspor#cfr')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#cfr')->with('success', 'Komponen CFR berhasil dihapus');
         } else {
             return redirect()->to('/kalkulator-ekspor#cfr')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
@@ -2950,7 +3145,7 @@ class KomunitasEkspor extends BaseController
         }
 
         return redirect()->to('/kalkulator-ekspor#cif')
-            ->with('success', "Perubahan CIF tersimpan. Diupdate: {$updated}, Ditambahkan: {$inserted}.");
+            ->with('success', "Komponen CIF Berhasil Disimpan.");
     }
 
     public function delete_cif($id)
@@ -2964,85 +3159,12 @@ class KomunitasEkspor extends BaseController
 
         if ($cif && $cif['id_member'] == $user_id) {
             $model_cif->delete($id);
-            return redirect()->to('/kalkulator-ekspor#cif')->with('success', 'Produk berhasil dihapus');
+            return redirect()->to('/kalkulator-ekspor#cif')->with('success', 'Komponen CIF berhasil dihapus');
         } else {
             return redirect()->to('/kalkulator-ekspor#cif')->withInput()->with('errors', ['Anda tidak memiliki izin untuk menghapus produk ini']);
         }
     }
 
-    public function kalkulator_state_json()
-    {
-        $session = session();
-        $user_id = $session->get('user_id');
-
-        // Jika belum login / tak ada user id, balas kosong
-        if (!$user_id) {
-            return $this->response->setJSON([
-                'jumlah_barang' => null,
-                'hpp'           => null,
-                'keuntungan'    => null,
-                'csrf_token'    => csrf_hash(),
-            ]);
-        }
-
-        $model = new \App\Models\KalkulatorState();
-        $row   = $model->where('id_member', $user_id)->first();
-
-        return $this->response->setJSON([
-            'jumlah_barang' => $row['jumlah_barang'] ?? null,
-            'hpp'           => $row['hpp'] ?? null,
-            'keuntungan'    => $row['keuntungan'] ?? null,
-            'csrf_token'    => csrf_hash(),
-        ]);
-    }
-
-    // POST: simpan/update state (upsert)
-    public function kalkulator_state_upsert()
-    {
-        $session = session();
-        $user_id = $session->get('user_id');
-
-        if (!$user_id) {
-            return $this->response->setStatusCode(401)
-                ->setJSON(['message' => 'Unauthorized', 'csrf_token' => csrf_hash()]);
-        }
-
-        // ambil raw nilai; biarkan kosong jadi null
-        $jumlah = $this->request->getPost('jumlah_barang');
-        $hpp    = $this->request->getPost('hpp');
-        $untung = $this->request->getPost('keuntungan');
-
-        // sanit angka: buang non-digit; kosong -> null
-        $clean = function ($v) {
-            if ($v === null || $v === '') return null;
-            $v = preg_replace('/[^\d]/', '', (string)$v);
-            return $v === '' ? null : (int)$v;
-        };
-
-        $jumlah = $clean($jumlah);
-        $hpp    = $clean($hpp);
-        $untung = $clean($untung);
-
-        $model = new \App\Models\KalkulatorState();
-        $row   = $model->where('id_member', $user_id)->first();
-
-        $data = [
-            'id_member'     => $user_id,
-            'jumlah_barang' => $jumlah,
-            'hpp'           => $hpp,
-            'keuntungan'    => $untung,
-            'updated_at'    => date('Y-m-d H:i:s'),
-        ];
-
-        if ($row) {
-            // pk kamu: id_state
-            $model->update($row['id_state'], $data);
-        } else {
-            $model->insert($data);
-        }
-
-        return $this->response->setJSON(['ok' => true, 'csrf_token' => csrf_hash()]);
-    }
 
     public function index_kalkulator_premium()
     {
@@ -3914,7 +4036,7 @@ class KomunitasEkspor extends BaseController
 
         $model_meta = new Meta();
         $meta = $model_meta
-            ->select('meta_title_materi, meta_title_materi_en, meta_description_materi, meta_description_materi_en')
+            ->select('title_materi, title_materi_en, meta_description_materi, meta_description_materi_en')
             ->first();
         $data['meta'] = $meta;
 
@@ -4130,8 +4252,8 @@ class KomunitasEkspor extends BaseController
 
         $data['webprofile'] = $webprofile;
 
-        $vidioModel = new VidioTutorialModel();
-        $kategoriModel = new KategoriVidioModel();
+        $vidioModel = new VideoTutorialModel();
+        $kategoriModel = new KategoriVideoModel();
 
         // Mengambil semua kategori
         $kategori = $kategoriModel->findAll();
@@ -4165,8 +4287,8 @@ class KomunitasEkspor extends BaseController
 
         $data['webprofile'] = $webprofile;
 
-        $vidioModel = new VidioTutorialModel();
-        $kategoriModel = new KategoriVidioModel();
+        $vidioModel = new VideoTutorialModel();
+        $kategoriModel = new KategoriVideoModel();
 
         // Mengambil semua kategori
         $kategori = $kategoriModel->findAll();
@@ -4197,8 +4319,8 @@ class KomunitasEkspor extends BaseController
 
         $webprofile = $model_webprofile->findAll();
 
-        $vidioModel = new VidioTutorialModel();
-        $kategoriModel = new KategoriVidioModel();
+        $vidioModel = new VideoTutorialModel();
+        $kategoriModel = new KategoriVideoModel();
 
         // Ambil data kategori berdasarkan slug
         $kategori = $kategoriModel->where('slug', $slug)->first();
@@ -4233,8 +4355,8 @@ class KomunitasEkspor extends BaseController
         $webprofile = $model_webprofile->findAll();
 
         // Inisialisasi model untuk video dan kategori
-        $vidioModel = new VidioTutorialModel();
-        $kategoriModel = new KategoriVidioModel();
+        $vidioModel = new VideoTutorialModel();
+        $kategoriModel = new KategoriVideoModel();
 
         // Mengambil data video berdasarkan slug
         $video = $vidioModel->getVideoBySlug($slug);
@@ -4274,8 +4396,8 @@ class KomunitasEkspor extends BaseController
         $webprofile = $model_webprofile->findAll();
 
         // Inisialisasi model untuk video dan kategori
-        $vidioModel = new VidioTutorialModel();
-        $kategoriModel = new KategoriVidioModel();
+        $vidioModel = new VideoTutorialModel();
+        $kategoriModel = new KategoriVideoModel();
 
         // Mengambil data video berdasarkan slug
         $video = $vidioModel->getVideoBySlug($slug);
@@ -4365,7 +4487,7 @@ class KomunitasEkspor extends BaseController
         $model_exwork = new Exwork();
         $model_fob = new FOB();
         $model_kategoribelajarekspor = new KategoriBelajarEksporModel;
-        $model_kategorivideo = new KategoriVidioModel();
+        $model_kategorivideo = new KategoriVideoModel();
         $model_manfaatjoin = new ManfaatJoin();
         $model_member = new Member();
         $model_mpm = new MPM();
@@ -4374,7 +4496,7 @@ class KomunitasEkspor extends BaseController
         $model_satuan = new Satuan();
         $model_sertifikat = new Sertifikat();
         $model_slider = new Slider();
-        $model_videotutorial = new VidioTutorialModel();
+        $model_videotutorial = new VideoTutorialModel();
         $model_webprofile = new WebProfile();
         $model_websiteaudit = new WebsiteAudit();
         $model_tentang = new TentangKami();
@@ -5532,7 +5654,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_video_tutorial()
     {
-        $model_video = new VidioTutorialModel();
+        $model_video = new VideoTutorialModel();
 
         $video = $model_video->getAllVideos();
 
@@ -5543,7 +5665,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_video_tutorial_tambah()
     {
-        $model_kategori = new KategoriVidioModel();
+        $model_kategori = new KategoriVideoModel();
 
         $kategori = $model_kategori->findAll();
 
@@ -5554,7 +5676,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_video_tutorial_store()
     {
-        $model_video = new VidioTutorialModel();
+        $model_video = new VideoTutorialModel();
 
         $data = [
             'judul_video' => $this->request->getPost('judul_video'),
@@ -5587,8 +5709,8 @@ class KomunitasEkspor extends BaseController
 
     public function admin_video_tutorial_ubah($id)
     {
-        $model_video = new VidioTutorialModel();
-        $model_kategori = new KategoriVidioModel();
+        $model_video = new VideoTutorialModel();
+        $model_kategori = new KategoriVideoModel();
 
         $video = $model_video->find($id);
         $kategori = $model_kategori->findAll();
@@ -5601,7 +5723,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_video_tutorial_update($id)
     {
-        $model_video = new VidioTutorialModel();
+        $model_video = new VideoTutorialModel();
 
         $existingData = $model_video->find($id);
         if (!$existingData) {
@@ -5643,7 +5765,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_video_tutorial_delete($id)
     {
-        $model_video = new VidioTutorialModel();
+        $model_video = new VideoTutorialModel();
 
         $model_video->delete($id);
 
@@ -5652,7 +5774,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_kategori_video_tutorial()
     {
-        $model_video = new KategoriVidioModel();
+        $model_video = new KategoriVideoModel();
 
         $video = $model_video->findAll();
 
@@ -5668,7 +5790,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_kategori_vidio_tutorial_store()
     {
-        $kategori_video = new KategoriVidioModel();
+        $kategori_video = new KategoriVideoModel();
 
         $data = [
             'nama_kategori_video' => $this->request->getPost('kategori_vidio'),
@@ -5684,7 +5806,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_kategori_video_tutorial_ubah($id)
     {
-        $model_video = new KategoriVidioModel();
+        $model_video = new KategoriVideoModel();
 
         $video = $model_video->find($id);
 
@@ -5695,7 +5817,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_kategori_video_tutorial_update($id)
     {
-        $kategori_video = new KategoriVidioModel();
+        $kategori_video = new KategoriVideoModel();
 
         $data = [
             'nama_kategori_video' => $this->request->getPost('kategori_video'),
@@ -5711,7 +5833,7 @@ class KomunitasEkspor extends BaseController
 
     public function admin_kategori_video_tutorial_delete($id)
     {
-        $kategori_video_model = new KategoriVidioModel();
+        $kategori_video_model = new KategoriVideoModel();
 
         $kategori_video_model->delete($id);
 
@@ -7241,28 +7363,28 @@ class KomunitasEkspor extends BaseController
         $meta = $model_meta->first();
 
         $data = [
-            'meta_title_beranda' => $this->request->getPost('meta_title_beranda'),
-            'meta_title_beranda_en' => $this->request->getPost('meta_title_beranda_en'),
+            'title_beranda' => $this->request->getPost('title_beranda'),
+            'title_beranda_en' => $this->request->getPost('title_beranda_en'),
             'meta_description_beranda' => $this->request->getPost('meta_description_beranda'),
             'meta_description_beranda_en' => $this->request->getPost('meta_description_beranda_en'),
-            'meta_title_tentang' => $this->request->getPost('meta_title_tentang'),
-            'meta_title_tentang_en' => $this->request->getPost('meta_title_tentang_en'),
+            'title_tentang' => $this->request->getPost('title_tentang'),
+            'title_tentang_en' => $this->request->getPost('title_tentang_en'),
             'meta_description_tentang' => $this->request->getPost('meta_description_tentang'),
             'meta_description_tentang_en' => $this->request->getPost('meta_description_tentang_en'),
-            'meta_title_materi' => $this->request->getPost('meta_title_materi'),
-            'meta_title_materi_en' => $this->request->getPost('meta_title_materi_en'),
+            'title_materi' => $this->request->getPost('title_materi'),
+            'title_materi_en' => $this->request->getPost('title_materi_en'),
             'meta_description_materi' => $this->request->getPost('meta_description_materi'),
             'meta_description_materi_en' => $this->request->getPost('meta_description_materi_en'),
-            'meta_title_tutorial' => $this->request->getPost('meta_title_tutorial'),
-            'meta_title_tutorial_en' => $this->request->getPost('meta_title_tutorial_en'),
+            'title_tutorial' => $this->request->getPost('title_tutorial'),
+            'title_tutorial_en' => $this->request->getPost('title_tutorial_en'),
             'meta_description_tutorial' => $this->request->getPost('meta_description_tutorial'),
             'meta_description_tutorial_en' => $this->request->getPost('meta_description_tutorial_en'),
-            'meta_title_member' => $this->request->getPost('meta_title_member'),
-            'meta_title_member_en' => $this->request->getPost('meta_title_member_en'),
+            'title_member' => $this->request->getPost('title_member'),
+            'title_member_en' => $this->request->getPost('title_member_en'),
             'meta_description_member' => $this->request->getPost('meta_description_member'),
             'meta_description_member_en' => $this->request->getPost('meta_description_member_en'),
-            'meta_title_daftar' => $this->request->getPost('meta_title_daftar'),
-            'meta_title_daftar_en' => $this->request->getPost('meta_title_daftar_en'),
+            'title_daftar' => $this->request->getPost('title_daftar'),
+            'title_daftar_en' => $this->request->getPost('title_daftar_en'),
             'meta_description_daftar' => $this->request->getPost('meta_description_daftar'),
             'meta_description_daftar_en' => $this->request->getPost('meta_description_daftar_en'),
         ];

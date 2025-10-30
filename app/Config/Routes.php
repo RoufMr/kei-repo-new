@@ -118,7 +118,7 @@ $routes->group('', ['filter' => 'auth', 'admin'], function ($routes) {
     $routes->post('add-produk', 'KomunitasEkspor::add_produk');
     $routes->get('delete-produk/(:num)', 'KomunitasEkspor::delete_produk/$1');
 
-    // Visitor - Aplikasi Kalkulator Ekspor
+    // Aplikasi Kalkulator Ekspor
     // halaman kalkulator
     $routes->get('kalkulator-ekspor', 'KomunitasEkspor::index_kalkulator');
 
@@ -145,11 +145,10 @@ $routes->group('', ['filter' => 'auth', 'admin'], function ($routes) {
     $routes->get('komponen-cif/delete/(:num)', 'KomunitasEkspor::delete_cif/$1');
     $routes->post('komponen-cif/save-all', 'KomunitasEkspor::save_all_cif');
 
-    // Autosave (jumlahBarang, hpp, keuntungan)
     $routes->post('kalkulator-state/save', 'KomunitasEkspor::save_kalkulator_state');
-    $routes->get('kalkulator-state/json',   'KomunitasEkspor::kalkulator_state_json');
-    $routes->post('kalkulator-state/upsert', 'KomunitasEkspor::kalkulator_state_upsert');
-
+    $routes->get('kalkulator-state/load', 'KomunitasEkspor::load_kalkulator_state');
+    // $routes->post('satuan/save', 'KomunitasEkspor::save_satuan');
+    $routes->post('satuan/upsert-json', 'KomunitasEkspor::upsert_satuan_json');
 
     // Member - Pengumuman
     $routes->get('pengumuman', 'KomunitasEkspor::pengumuman');
