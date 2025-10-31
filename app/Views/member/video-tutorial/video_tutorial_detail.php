@@ -1,6 +1,11 @@
 <?= $this->extend('member/layout/app'); ?>
 <?= $this->section('content'); ?>
-
+<?php
+$this->setData([
+    'title' => $video['title_video'] ,
+    'meta_description' => $video['meta_deskripsi_video'] 
+]);
+?>
 <style>
     .rounded {
         border-radius: 8px;
@@ -115,9 +120,9 @@
                         <h4 class="m-0 py-4 font-weight-bold">Video Lainnya</h4>
                     </div>
 
-                    <?php foreach ($related_videos as $related_video): ?>
+                    <?php foreach ($related_video as $related_video): ?>
                         <div class="card bg-white border border-top-0 p-3 rounded shadow-sm mb-3">
-                            <a href="<?= base_url('/video-tutorial-detail/' . esc($related_video['slug'])); ?>" class="text-decoration-none">
+                            <a href="<?= base_url('video/' . esc($related_video['slug'])); ?>" class="text-decoration-none">
                                 <div class="d-flex align-items-center bg-white rounded border border-light overflow-hidden shadow-sm">
                                     <img class="img-fluid" style="object-fit: cover; width: 100px; height: 100px;" src="<?= base_url('/img/' . esc($related_video['thumbnail'])); ?>" alt="Thumbnail Video">
                                     <div class="w-100 h-100 px-3 d-flex flex-column justify-content-center">
