@@ -1,6 +1,8 @@
 <?php
 
 use CodeIgniter\Router\RouteCollection;
+use App\Controllers\KomunitasEkspor;
+
 
 /**
  * @var RouteCollection $routes
@@ -29,7 +31,13 @@ $routes->group('id', function ($routes) {
     $routes->get('video-tutorial/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
     $routes->get('watch/(:segment)', 'KomunitasEkspor::watch/$1');
 
-    $routes->get('pendaftaran', 'KomunitasEkspor::pendaftaran');
+    $routes->get('pendaftaran', static function () {
+        $s = session();
+        if ($s->get('user_id') || $s->get('logged_in')) {
+            return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
+        }
+        return (new KomunitasEkspor())->pendaftaran();
+    });
 
     // Visitor - Data Member
     // $routes->get('data-member', function () {
@@ -71,7 +79,13 @@ $routes->group('en', function ($routes) {
     $routes->get('category-video/(:any)', 'KomunitasEkspor::video_selengkapnya/$1');
     $routes->get('tutorial-video/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
 
-    $routes->get('registration', 'KomunitasEkspor::pendaftaran');
+    $routes->get('registration', static function () {
+        $s = session();
+        if ($s->get('user_id') || $s->get('logged_in')) {
+            return redirect()->to('/beranda')->with('info', 'You are already logged in.');
+        }
+        return (new KomunitasEkspor())->pendaftaran();
+    });
 
     // Visitor - Data Member
     // $routes->get('data-member', 'KomunitasEkspor::visitor_data_member');
@@ -89,7 +103,15 @@ $routes->group('en', function ($routes) {
 $routes->post('/user/checkAvailability', 'KomunitasEkspor::checkAvailability');
 
 // login
-$routes->get('login', 'KomunitasEkspor::login');
+$routes->get('login', static function () {
+    $s = session();
+    if ($s->get('user_id') || $s->get('logged_in')) {
+        return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
+    }
+    // panggil method login di controller
+    return (new KomunitasEkspor())->login();
+});
+
 $routes->post('/auth/authenticate', 'KomunitasEkspor::authenticate');
 $routes->get('/logout', 'KomunitasEkspor::logout');
 
