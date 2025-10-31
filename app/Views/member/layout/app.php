@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= isset($meta_title) ? $meta_title : 'Default Title'; ?></title>
+    <title><?= isset($title) ? $title : 'Default Title'; ?></title>
     <meta name="title" content="<?= isset($meta_title) ? $meta_title : 'Default Title for the website.'; ?>">
     <meta name="description"
         content="<?= isset($meta_description) ? $meta_description : 'Default description for the website.'; ?>">
@@ -691,9 +691,9 @@
     // Definisikan tautan untuk setiap halaman berdasarkan bahasa
     $homeLink = ($lang_segment === 'en/') ? 'beranda' : 'beranda';
     $aboutLink = ($lang_segment === 'en/') ? 'about-us' : 'tentang-kami';
-    $belajarEksporLink = ($lang_segment === 'en/') ? 'export-lessons' : 'materi-ekspor';
+    $belajarEksporLink = ($lang_segment === 'en/') ? 'lessons' : 'materi';
     $pendaftaranLink = ($lang_segment === 'en/') ? 'registration' : 'pendaftaran';
-    $videoTutorialLink = ($lang_segment === 'en/') ? 'tutorial-video' : 'video-tutorial';
+    $videoTutorialLink = ($lang_segment === 'en/') ? 'videos' : 'video';
     $memberLink = ($lang_segment === 'en/') ? 'data-member' : 'data-member';
     $buyersLink = ($lang_segment === 'en/') ? 'data-buyers' : 'data-buyers';
     $kalkulatorLink = ($lang_segment === 'en/') ? 'calculator-export' : 'kalkulator-ekspor';
@@ -707,9 +707,9 @@
         'beranda' => 'beranda',
         'tentang-kami' => 'about-us',
         'pendaftaran' => 'registration',
-        'materi-ekspor' => 'export-lessons',
+        'materi' => 'lessons',
         'kategori' => 'category',
-        'video-tutorial' => 'tutorial-video',
+        'video' => 'videos',
         'data-member' => 'data-member',
         'data-buyers' => 'data-buyers',
         'kalkulator-ekspor' => 'calculator-export',
@@ -977,17 +977,18 @@
                             </a>
                         </div>
                     </div>
+                    
                     <div class="col-md-2">
                         <h5 class="mt-4"><b>Menu</b></h5>
                         <div class="list-unstyled pt-2">
-                            <p><a href="<?= base_url('/beranda') ?>" class="footer-link"><?php echo lang('Blog.headerBeranda'); ?></a></p>
-                            <p><a href="<?= base_url('/tentang-kami') ?>" class="footer-link"><?php echo lang('Blog.headerTentang'); ?> </a></p>
-                            <p><a href="<?= base_url('/materi-ekspor') ?>" class="footer-link"><?php echo lang('Blog.headerMateri'); ?></a></p>
-                            <p><a href="<?= base_url('/video-tutorial') ?>" class="footer-link"><?php echo lang('Blog.headerVideo'); ?></a></p>
-                            <p><a href="<?= base_url('/data-member') ?>" class="footer-link"><?php echo lang('Blog.headerMember'); ?></a></a></p>
-                            <!-- <p><a href="<?= base_url('/data-buyers') ?>" class="footer-link"><?php echo lang('Blog.headerBuyers'); ?></a></a></p> -->
-                            <p><a href="<?= base_url('/pengumuman') ?>" class="footer-link"> <?php echo lang('Blog.headerPengumuman'); ?></a></a></p>
-                            <p><a href="<?= base_url('/edit-profile') ?>" class="footer-link"><?php echo lang('Blog.headerEditProfile'); ?></a></a></p>
+                            <p><a href="<?= base_url('/'.$homeLink) ?>" class="footer-link"><?php echo lang('Blog.headerBeranda'); ?></a></p>
+                            <p><a href="<?= base_url('/'.$aboutLink) ?>" class="footer-link"><?php echo lang('Blog.headerTentang'); ?> </a></p>
+                            <p><a href="<?= base_url('/'.$belajarEksporLink) ?>" class="footer-link"><?php echo lang('Blog.headerMateri'); ?></a></p>
+                            <p><a href="<?= base_url('/'.$videoTutorialLink) ?>" class="footer-link"><?php echo lang('Blog.headerVideo'); ?></a></p>
+                            <p><a href="<?= base_url('/'.$memberLink) ?>" class="footer-link"><?php echo lang('Blog.headerMember'); ?></a></a></p>
+                            <!-- <p><a href="<?= base_url('/'.$buyersLink) ?>" class="footer-link"><?php echo lang('Blog.headerBuyers'); ?></a></a></p> -->
+                            <p><a href="<?= base_url('/'.$pengumumanLink) ?>" class="footer-link"> <?php echo lang('Blog.headerPengumuman'); ?></a></a></p>
+                            <p><a href="<?= base_url('/'.$editprofileLink) ?>" class="footer-link"><?php echo lang('Blog.headerEditProfile'); ?></a></a></p>
                         </div>
                     </div>
                     <div class="col-md-2">

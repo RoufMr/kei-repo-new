@@ -14,6 +14,7 @@ class KontenPlatform extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'nama',
+        'logo',
     ];
 
     protected bool $allowEmptyInserts = false;

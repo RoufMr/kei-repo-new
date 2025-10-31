@@ -22,6 +22,8 @@ class KontenPlanner extends Model
         'tanggal_posting',
         'jam_posting',
         'media',
+        'link_canva',
+        'slug'
     ];
 
     protected bool $allowEmptyInserts = false;

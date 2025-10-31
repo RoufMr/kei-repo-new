@@ -1,4 +1,4 @@
-<?= $this->extend('layout/app'); ?>
+<?= $this->extend('member/layout/app'); ?>
 <?= $this->section('content'); ?>
 
 <style>
@@ -164,7 +164,7 @@
 
 <!-- judul -->
 <div class="artikel-detail-section py-5" style="text-align: center;">
-    <h2 class="artikel-detail-section text-custom-title"><?= lang('Blog.videoTutorialTitle') ?></h2>
+    <h2 class="artikel-detail-section text-custom-title"><?= lang('Blog.headerMateri') ?></h2>
     <?php if (!empty($keyword)): ?>
         <p class="text-custom-paragraph mt-2"><?= lang('Blog.searchResults') ?> <strong><?= esc($keyword) ?></strong></p>
     <?php endif; ?>
@@ -172,8 +172,7 @@
     <!-- Search Bar Start -->
     <form class="form mt-4" action="#" method="GET" onsubmit="
     event.preventDefault();
-    const lang = '<?= $lang === 'en' ? 'en' : 'id' ?>';
-    const base = lang === 'en' ? 'en/videos/keyword=' : 'id/video/keyword=';
+    const base ='materi/keyword=';
     const input = this.querySelector('input[name=keyword]');
     let kw = (input.value || '').trim();
     if (!kw) { input.focus(); return false; }
@@ -184,17 +183,11 @@
 ">
         <button>
             <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
-                <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
-                    stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
         </button>
-        <input id="vtSearchInput" class="input" autocomplete="off"
-            placeholder="<?= lang('Blog.searchPlaceholder') ?>"
-            name="keyword" required type="text"
-            value="<?= isset($keyword) ? esc($keyword) : '' ?>">
-        <!-- Tombol X -->
-        <button id="vtSearchReset" type="button" class="reset" aria-label="Clear search"
-            data-reset-url="<?= base_url(($lang === 'en') ? 'en/tutorial-video' : 'id/video-tutorial'); ?>">
+        <input class="input" autocomplete="off" placeholder="<?= lang('Blog.searchPlaceholder') ?> " name="keyword" required="" type="text" value="<?= isset($keyword) ? esc($keyword) : '' ?>">
+        <button class="reset" type="reset">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -207,26 +200,26 @@
     <div class="filter-container">
         <div class="row g-4 mb-5">
             <?php if (!empty($hasilPencarian)): ?>
-                <?php foreach ($hasilPencarian as $video): ?>
+                <?php foreach ($hasilPencarian as $item): ?>
                     <!-- Card -->
                     <div class="col-md-4">
-                        <div class="card h-100 shadow-sm">
-                            <img src="<?= base_url('/img/' . $video['thumbnail']); ?>" class="card-img-top img-fluid"
-                                alt="<?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>"
-                                style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
+                        <div class="card h-100">
+                            <img src="<?= base_url('/img/' . $item['foto_belajar_ekspor']); ?>" class="card-img-top img-fluid" 
+                            alt="<?= $item['judul_belajar_ekspor']; ?>" 
+                            style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
                             <div class="card-body d-flex flex-column">
                                 <div class="mb-3 d-flex justify-content-between align-items-center">
-                                    <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($video['created_at'])); ?></p>
-                                    <span class="badge"><?= ($lang === 'en') ? $video['nama_kategori_video_en'] : $video['nama_kategori_video']; ?></span>
+                                    <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($item['created_at'])); ?></p>
+                                    <span class="badge">#<?= $item['nama_kategori']; ?></span>
                                 </div>
-                                <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                    <?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>
+                                <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <?= $item['judul_belajar_ekspor']; ?>
                                 </h5>
-                                <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                    <?= ($lang === 'en') ? $video['deskripsi_video_en'] : $video['deskripsi_video']; ?>
+                                <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <?= $item['deskripsi_belajar_ekspor']; ?>
                                 </p>
-                                <a href="<?= base_url(($lang === 'en' ? 'en/videos/' : 'id/video/') . ($lang === 'en' ? $video['slug_en'] : $video['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; text-align: center;">
-                                    <?= lang('Blog.watchNow') ?>
+                                <a href="<?= base_url(('materi/') . ($item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
+                                    <?= lang('Blog.readMore') ?>
                                 </a>
                             </div>
                         </div>
@@ -238,7 +231,7 @@
             <?php else: ?>
                 <div class="col-12 d-flex justify-content-center">
                     <div class="alert alert-info text-center" role="alert">
-                        <?= lang('Blog.noVideosFound') ?>
+                        <?= lang('Blog.noArticlesFound') ?>
                     </div>
                 </div>
 
@@ -246,32 +239,5 @@
         </div>
     </div>
 </section>
-
-<script>
-    (function() {
-        const resetBtn = document.getElementById('vtSearchReset');
-        const input = document.getElementById('vtSearchInput');
-
-        if (!resetBtn) return;
-
-        const toggleReset = () => {
-            if (!input) return;
-            const hasText = input.value && input.value.trim() !== '';
-            resetBtn.style.opacity = hasText ? '1' : '0';
-            resetBtn.style.visibility = hasText ? 'visible' : 'hidden';
-        };
-
-        if (input) {
-            input.addEventListener('input', toggleReset);
-            toggleReset();
-        }
-
-        resetBtn.addEventListener('click', function() {
-            if (input) input.value = '';
-            const url = this.dataset.resetUrl;
-            if (url) window.location.href = url; // kembali ke listing awal video
-        });
-    })();
-</script>
 
 <?= $this->endSection(); ?>
