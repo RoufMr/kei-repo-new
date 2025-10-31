@@ -6,8 +6,6 @@ $this->setData([
     'title' => ($lang == 'id') ? $artikel['title_belajar_ekspor'] : $artikel['title_belajar_ekspor_en'],
     'meta_description' => ($lang == 'id') ? $artikel['meta_deskripsi'] : $artikel['meta_deskripsi_en']
 ]);
-
-
 ?>
 <style>
     /* Artikel Detail Section */
