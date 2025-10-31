@@ -1083,6 +1083,12 @@ class KomunitasEkspor extends BaseController
 
     public function pendaftaran()
     {
+        // 🔒 Guard: jika sudah login, jangan boleh akses halaman pendaftaran
+        if (session()->get('user_id') || session()->get('logged_in')) {
+            return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
+        }
+
+        // --- logic lama kamu (tetap) ---
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
         $data['webprofile'] = $webprofile;
@@ -1106,6 +1112,7 @@ class KomunitasEkspor extends BaseController
 
         $model_kategori_produk = new KategoriProduk();
         $kategori_produk = $model_kategori_produk->findAll();
+
         $kategori_produk_terkelompok = [];
         foreach ($kategori_produk as $produk) {
             $kategori_produk_terkelompok[$produk['id_kategori_induk']][] = $produk;
@@ -4144,13 +4151,24 @@ class KomunitasEkspor extends BaseController
 
     public function login()
     {
+        // Guard: jika sudah login, pantulkan ke beranda
+        if (session()->get('user_id') || session()->get('logged_in')) {
+            return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
+        }
+
         return view('login/login');
     }
 
+
     public function authenticate()
     {
-        $session = session();
+        $session     = session();
         $memberModel = new Member();
+
+        // Jika sudah login, jangan autentikasi ulang
+        if ($session->get('user_id') || $session->get('logged_in')) {
+            return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
+        }
 
         $username = $this->request->getVar('username');
         $password = $this->request->getVar('password');
@@ -4158,46 +4176,48 @@ class KomunitasEkspor extends BaseController
         // Cari user berdasarkan username
         $user = $memberModel->where('username', $username)->first();
 
-        if ($user) {
-            // Pastikan status aktif
-            if ($user['status'] != 1) {
-                $session->setFlashdata('error', 'Akun Anda belum dikonfirmasi oleh admin.');
-                return redirect()->back();
-            }
-
-            // Verifikasi password
-            if (password_verify($password, $user['password'])) {
-                // Simpan data sesi
-                $sessionData = [
-                    'user_id'        => $user['id_member'],
-                    'username'       => $user['username'],
-                    'role'           => $user['role'],
-                    'status_premium' => $user['status_premium'],
-                    'logged_in'      => true,
-                    'status'         => $user['status'], // pakai status user sebenarnya
-                ];
-                $session->set($sessionData);
-
-                // $lang = session()->get('lang') ?? 'id';
-
-                // Arahkan sesuai role
-                if ($user['role'] === 'admin') {
-                    return redirect()->to("/beranda");
-                } else if ($user['role'] === 'member' || ($user['role'] === 'premium' && $user['status_premium'] !== 'verified')) {
-                    return redirect()->to("/beranda");
-                } else if ($user['role'] === 'premium') {
-                    return redirect()->to('/beranda-premium');
-                }
-            } else {
-                $session->setFlashdata('error', 'Password salah.');
-                return redirect()->back();
-            }
-        } else {
+        if (!$user) {
             $session->setFlashdata('error', 'Username tidak ditemukan.');
             return redirect()->back();
         }
-    }
 
+        // Pastikan status aktif
+        if ((int)$user['status'] !== 1) {
+            $session->setFlashdata('error', 'Akun Anda belum dikonfirmasi oleh admin.');
+            return redirect()->back();
+        }
+
+        // Verifikasi password
+        if (!password_verify($password, $user['password'])) {
+            $session->setFlashdata('error', 'Password salah.');
+            return redirect()->back();
+        }
+
+        // Set session + regenerate (anti session fixation)
+        $sessionData = [
+            'user_id'        => $user['id_member'],
+            'username'       => $user['username'],
+            'role'           => $user['role'],
+            'status_premium' => $user['status_premium'],
+            'logged_in'      => true,
+            'status'         => $user['status'],
+        ];
+
+        $session->regenerate(true);
+        $session->set($sessionData);
+
+        // Arahkan sesuai role (tetap pakai logika milikmu)
+        if ($user['role'] === 'admin') {
+            return redirect()->to('/beranda');
+        } elseif ($user['role'] === 'member' || ($user['role'] === 'premium' && $user['status_premium'] !== 'verified')) {
+            return redirect()->to('/beranda');
+        } elseif ($user['role'] === 'premium') {
+            return redirect()->to('/beranda-premium');
+        }
+
+        // fallback aman
+        return redirect()->to('/beranda');
+    }
 
     public function logout()
     {
