@@ -1054,6 +1054,23 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // === SweetAlert2 Toast helper (global) ===
+        window.Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2200,
+            timerProgressBar: true
+        });
+        window.notify = function(type, message) {
+            // type: 'success' | 'error' | 'info' | 'warning'
+            Toast.fire({
+                icon: type,
+                title: message
+            });
+        };
+    </script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             <?php if (session()->getFlashdata('success')) : ?>
                 Swal.fire({

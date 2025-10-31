@@ -184,12 +184,19 @@
 ">
         <button>
             <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
-                <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+                    stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
         </button>
-        <input class="input" autocomplete="off" placeholder="<?= lang('Blog.searchPlaceholder') ?> " name="keyword" required="" type="text" value="<?= isset($keyword) ? esc($keyword) : '' ?>">
-        <button class="reset" type="reset">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <input id="searchInput" class="input" autocomplete="off"
+            placeholder="<?= lang('Blog.searchPlaceholder') ?> "
+            name="keyword" required type="text"
+            value="<?= isset($keyword) ? esc($keyword) : '' ?>">
+        <!-- Tombol X -->
+        <button id="searchReset" type="button" class="reset" aria-label="Clear search"
+            data-reset-url="<?= base_url(($lang === 'en') ? 'en/export-lessons' : 'id/materi-ekspor'); ?>">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
@@ -240,5 +247,35 @@
         </div>
     </div>
 </section>
+
+<script>
+  (function () {
+    const resetBtn = document.getElementById('searchReset');
+    const input = document.getElementById('searchInput');
+
+    if (resetBtn) {
+      const toggleReset = () => {
+        if (!input) return;
+        if (input.value && input.value.trim() !== '') {
+          resetBtn.style.opacity = '1';
+          resetBtn.style.visibility = 'visible';
+        } else {
+          resetBtn.style.opacity = '0';
+          resetBtn.style.visibility = 'hidden';
+        }
+      };
+      if (input) {
+        input.addEventListener('input', toggleReset);
+        toggleReset();
+      }
+
+      resetBtn.addEventListener('click', function () {
+        if (input) input.value = '';
+        const url = this.dataset.resetUrl;
+        if (url) window.location.href = url; // ← kembali ke listing awal
+      });
+    }
+  })();
+</script>
 
 <?= $this->endSection(); ?>

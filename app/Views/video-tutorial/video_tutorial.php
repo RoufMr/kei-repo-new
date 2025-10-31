@@ -450,4 +450,31 @@
     </div>
 </section>
 
+<script>
+    (function() {
+        const resetBtn = document.getElementById('vtSearchReset');
+        const input = document.getElementById('vtSearchInput');
+
+        if (!resetBtn) return;
+
+        const toggleReset = () => {
+            if (!input) return;
+            const hasText = input.value && input.value.trim() !== '';
+            resetBtn.style.opacity = hasText ? '1' : '0';
+            resetBtn.style.visibility = hasText ? 'visible' : 'hidden';
+        };
+
+        if (input) {
+            input.addEventListener('input', toggleReset);
+            toggleReset();
+        }
+
+        resetBtn.addEventListener('click', function() {
+            if (input) input.value = '';
+            const url = this.dataset.resetUrl;
+            if (url) window.location.href = url; // kembali ke listing awal (tanpa query)
+        });
+    })();
+</script>
+
 <?= $this->endSection(); ?>
