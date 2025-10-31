@@ -4323,7 +4323,7 @@ class KomunitasEkspor extends BaseController
             $data['pager']->setPath($prettyBase);
         }
 
-        $data['title'] = 'Hasil Pencarian Materi Ekspor' ;
+        $data['title'] = 'Hasil Pencarian Materi Ekspor';
         $data['meta_description'] = 'Hasil pencarian materi dan artikel belajar ekspor.';
 
         return view('member/belajar-ekspor/belajar_ekspor_search', $data);
@@ -4928,7 +4928,7 @@ class KomunitasEkspor extends BaseController
         return view('member/video-tutorial/video_tutorial_detail', $data);
     }
 
-        public function member_search_video_tutorial(?string $keywordSegmen = null)
+    public function member_search_video_tutorial(?string $keywordSegmen = null)
     {
         $model_webprofile = new WebProfile();
         $data['webprofile'] = $model_webprofile->findAll();
@@ -4981,11 +4981,11 @@ class KomunitasEkspor extends BaseController
         // Pastikan pagination tetap di path "keyword="
         if ($keyword !== '' && $data['pager']) {
             $encodedForPath = str_replace('%20', '+', rawurlencode($keyword));
-            $prettyBase = base_url(( 'video/keyword=') . $encodedForPath);
+            $prettyBase = base_url(('video/keyword=') . $encodedForPath);
             $data['pager']->setPath($prettyBase);
         }
 
-        $data['title'] ='Hasil Pencarian video';
+        $data['title'] = 'Hasil Pencarian video';
         $data['meta_description'] =  'Hasil pencarian video.';
 
 
