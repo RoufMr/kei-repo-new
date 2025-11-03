@@ -38,6 +38,7 @@ class Filters extends BaseFilters
         'auth' => \App\Filters\AuthFilter::class,
         'admin' => \App\Filters\AdminFilter::class,
         'premium' => \App\Filters\PremiumFilter::class,
+        'guest' => \App\Filters\GuestFilter::class,
     ];
 
     /**
