@@ -2802,6 +2802,7 @@ class KomunitasEkspor extends BaseController
             'keuntungan'    => 0,
         ];
 
+        $data['user_id'] = $user_id;
         return view('member/kalkulator-ekspor/kalkulator_ekspor', $data);
     }
 
