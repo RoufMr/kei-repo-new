@@ -28,652 +28,200 @@
 <style>
     .language-btn {
         padding: 5px 10px;
-        /* Ubah padding sesuai keinginan */
         font-size: 0.875rem;
-        /* Ubah ukuran font */
-        width: 70px;
-        height: 30px;
+        width: 70px; height: 30px;
     }
-
-    .flag-icon {
-        width: 20px;
-        /* Ubah ukuran bendera jika perlu */
-        height: auto;
-        /* Mempertahankan rasio aspek */
-    }
+    .flag-icon { width: 20px; height: auto; }
 
     /* hover header */
     .social-link i {
-        color: white;
-        font-size: 17px;
-        transition: color 0.3s ease, transform 0.3s ease;
-        /* Menambahkan transisi pada transform */
+        color:#fff; font-size:17px;
+        transition: color .3s, transform .3s;
     }
+    .social-link:hover i { color:#03AADE; transform:scale(1.1); }
 
-    .social-link:hover i {
-        color: #03AADE;
-        transform: scale(1.1);
-        /* Menambahkan efek scaling saat hover */
-    }
-
-    .language-btn {
-        background-color: transparent;
-        border: 1px solid white;
-        transition: all 0.3s ease;
-    }
-
-    .language-btn:hover {
-        background-color: #03AADE;
-        border-color: #03AADE;
-    }
-
-    .language-btn img {
-        transition: transform 0.3s ease;
-    }
-
-    .language-btn:hover img {
-        transform: scale(1.1);
-    }
-
-    /* end */
+    .language-btn{ background:transparent; border:1px solid #fff; transition:all .3s; }
+    .language-btn:hover{ background:#03AADE; border-color:#03AADE; }
+    .language-btn img{ transition:transform .3s; }
+    .language-btn:hover img{ transform:scale(1.1); }
 
     /* hover navbar */
-    .navbar-nav .nav-link,
-    .dropdown-item {
-        color: white;
-        font-weight: 500;
-        padding: 10px 15px;
-        position: relative;
-        transition: color 0.3s ease-in-out;
+    .navbar-nav .nav-link, .dropdown-item {
+        color:#fff; font-weight:500; padding:10px 15px; position:relative; transition:color .3s;
     }
-
-    .navbar-nav .nav-link:hover,
-    .dropdown-item:hover {
-        color: #FFD700;
+    .navbar-nav .nav-link:hover, .dropdown-item:hover { color:#FFD700; }
+    .navbar-nav .nav-link::before, .dropdown-item::before {
+        content:""; position:absolute; width:0; height:3px; bottom:0; left:0;
+        background:#FFD700; visibility:hidden; transition:all .3s;
     }
+    .navbar-nav .nav-link:hover::before, .dropdown-item:hover::before { visibility:visible; width:100%; }
 
-    .navbar-nav .nav-link::before,
-    .dropdown-item::before {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 3px;
-        bottom: 0;
-        left: 0;
-        background-color: #FFD700;
-        visibility: hidden;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .navbar-nav .nav-link:hover::before,
-    .dropdown-item:hover::before {
-        visibility: visible;
-        width: 100%;
-    }
-
-    /* Dropdown */
-    .dropdown-menu .dropdown-item {
-        color: black;
-        position: relative;
-        transition: color 0.3s ease-in-out;
-    }
-
-    .dropdown-menu .dropdown-item:hover {
-        color: #FFD700;
-    }
-
+    .dropdown-menu .dropdown-item { color:#000; position:relative; transition:color .3s; }
+    .dropdown-menu .dropdown-item:hover { color:#FFD700; }
     .dropdown-menu .dropdown-item::before {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 3px;
-        bottom: 0;
-        left: 0;
-        background-color: #FFD700;
-        visibility: hidden;
-        transition: all 0.3s ease-in-out;
+        content:""; position:absolute; width:0; height:3px; bottom:0; left:0;
+        background:#FFD700; visibility:hidden; transition:all .3s;
     }
-
-    .dropdown-menu .dropdown-item:hover::before {
-        visibility: visible;
-        width: 100%;
-    }
-
-    /* end */
+    .dropdown-menu .dropdown-item:hover::before { visibility:visible; width:100%; }
 
     /* sticky navbar */
-    .navbar-custom {
-        transition: background-color 0.3s ease, padding 1s ease;
-    }
+    .navbar-custom{ transition: background-color .3s, padding 1s; }
+    .navbar-custom.scrolled{ background:rgba(0,0,0,.8); padding:13px 0; }
+    .nav-link{ color:#fff; }
 
-    .navbar-custom.scrolled {
-        background-color: rgba(0, 0, 0, 0.8);
-        padding: 13px 0;
-    }
+    /* ——— JANGAN paksa overflow visible secara global ——— */
+    .container, .navbar, .header { overflow: visible; }
 
-    .nav-link {
-        color: #fff;
-    }
-
-    .container {
-        overflow: visible;
-    }
-
-    .header {
-        overflow: visible;
-    }
-
-    .container,
-    .navbar,
-    .header {
-        overflow: visible !important;
-    }
-
-
-    /* end */
-    .dropdown-menu {
-        position: absolute;
-        z-index: 1050;
-    }
-
-    .dropdown-menu-end {
-        right: 0;
-        left: auto;
-    }
-
-    #languageDropdown::after {
-        border-color: black transparent transparent transparent;
-    }
+    .dropdown-menu{ position:absolute; z-index:1050; }
+    .dropdown-menu-end{ right:0; left:auto; }
+    #languageDropdown::after{ border-color:black transparent transparent transparent; }
 
     /* From Uiverse.io by akshayjalluri6 */
-    .container2 {
-        display: flex;
+    .container2{ display:flex; }
+    .Btn{
+        border:none; border-radius:50%; width:45px; height:45px;
+        display:flex; align-items:center; justify-content:center;
+        transition-duration:.4s; cursor:pointer; position:relative; overflow:hidden; margin-left:10px;
     }
-
-    .Btn {
-        border: none;
-        border-radius: 50%;
-        width: 45px;
-        height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition-duration: 0.4s;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        margin-left: 10px;
+    .instagram{
+        background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f09433', endColorstr='#bc1888', GradientType=1);
     }
+    .youtube{ background:#ff0000; }
+    .twitter{ background:#1da1f2; }
+    .Btn:hover{ width:110px; border-radius:30px; }
+    .Btn:hover .text{ opacity:1; transition-duration:.4s; }
+    .Btn:hover .svgIcon{ opacity:0; transition-duration:.3s; }
+    .text{ position:absolute; color:#fff; width:120px; font-weight:600; opacity:0; transition-duration:.4s; }
+    .svgIcon{ transition-duration:.3s; }
+    .svgIcon path{ fill:#fff; }
 
-    .instagram {
-        background: #f09433;
-        background: -moz-linear-gradient(45deg,
-                #f09433 0%,
-                #e6683c 25%,
-                #dc2743 50%,
-                #cc2366 75%,
-                #bc1888 100%);
-        background: -webkit-linear-gradient(45deg,
-                #f09433 0%,
-                #e6683c 25%,
-                #dc2743 50%,
-                #cc2366 75%,
-                #bc1888 100%);
-        background: linear-gradient(45deg,
-                #f09433 0%,
-                #e6683c 25%,
-                #dc2743 50%,
-                #cc2366 75%,
-                #bc1888 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f09433', endColorstr='#bc1888', GradientType=1);
+    .whatsapp-float{
+        position:fixed; width:50px; height:50px; bottom:20px; right:30px;
+        background:#25d366; color:#fff; border-radius:50%; text-align:center;
+        font-size:30px; box-shadow:2px 2px 3px #999; z-index:1000;
+        display:flex; align-items:center; justify-content:center;
     }
-
-    .youtube {
-        background-color: #ff0000;
-    }
-
-    .twitter {
-        background-color: #1da1f2;
-    }
-
-    .Btn:hover {
-        width: 110px;
-        transition-duration: 0.4s;
-        border-radius: 30px;
-    }
-
-    .Btn:hover .text {
-        opacity: 1;
-        transition-duration: 0.4s;
-    }
-
-    .Btn:hover .svgIcon {
-        opacity: 0;
-        transition-duration: 0.3s;
-    }
-
-    .text {
-        position: absolute;
-        color: rgb(255, 255, 255);
-        width: 120px;
-        font-weight: 600;
-        opacity: 0;
-        transition-duration: 0.4s;
-    }
-
-    .svgIcon {
-        transition-duration: 0.3s;
-    }
-
-    .svgIcon path {
-        fill: white;
-    }
-
-    /* end */
-
-    .whatsapp-float {
-        position: fixed;
-        width: 50px;
-        height: 50px;
-        bottom: 20px;
-        right: 30px;
-        background-color: #25d366;
-        color: white;
-        /* Warna ikon */
-        border-radius: 50%;
-        text-align: center;
-        font-size: 30px;
-        box-shadow: 2px 2px 3px #999;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .whatsapp-float i {
-        color: white;
-        /* Warna ikon tetap putih */
-    }
-
-    .whatsapp-float:hover {
-        background-color: #128c7e;
-        /* Warna latar belakang saat hover */
-        text-decoration: none;
-    }
+    .whatsapp-float i{ color:#fff; }
+    .whatsapp-float:hover{ background:#128c7e; text-decoration:none; }
 
     /* footer hover */
-    .footer-link {
-        color: #fff;
-        text-decoration: none;
-        position: relative;
-        transition: color 0.3s ease;
+    .footer-link{ color:#fff; text-decoration:none; position:relative; transition:color .3s; }
+    .footer-link:hover{ color:#FFD700; }
+    .footer-link::after{
+        content:''; position:absolute; width:0; height:2px; background:#FFD700; bottom:-5px; left:0; transition:width .3s;
+    }
+    .footer-link:hover::after{ width:100%; }
+    h5{ font-size:1.2rem; } p{ margin-bottom:10px; }
+    .list-unstyled p{ margin-bottom:20px; }
+
+    .Btn.facebook{ background:blue; }
+    .Btn.facebook:hover{ background:darkblue; }
+
+    /* ====== Layout header: ikon sosmed di kanan sejajar HP & Email ====== */
+    .head{ display:flex; align-items:center; gap:12px; min-width:0; }
+    .icon{ display:flex; align-items:center; gap:16px; flex:1 1 auto; min-width:0; }
+    .icon-text{ display:flex; align-items:center; gap:8px; min-width:0; }
+    .icon-text p{ margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sosmed{ display:flex; align-items:center; gap:8px; margin-left:auto; }  /* >>> pindah ke kanan */
+
+    /* =================== BREAKPOINTS =================== */
+    @media (max-width: 768px){
+        .header, .container, .head, .icon, .icon-text{
+            width:100%; padding:0; margin:0; box-sizing:border-box;
+        }
+        /* Hapus geser kiri yang bikin overflow */
+        .icon-text{ position:static; left:0; }
+        /* Tetap satu baris: biarkan flex mengecil + ellipsis */
+        .head{ flex-wrap:nowrap; }
+        .icon{ flex:1 1 auto; min-width:0; }
+        .icon-text p{ max-width: 52vw; } /* batasi agar ikon sosmed tetap muat */
+        .border-top{ width:90px !important; height:1.5px !important; margin:15px 0 !important; }
+        .border-top2{ margin-right:20px; }
+        .bottom-footer p{ margin-left:50px; }
+        .navbar img{ margin-left:20px; }
+        .footer img{ margin-left:20px; }
+        .col-md-6 p{ margin-left:20px; }
+        .container2{ margin-left:20px; }
     }
 
-    .footer-link:hover {
-        color: #FFD700;
+    @media (max-width: 576px){
+        .header, .container, .head{ width:100%; padding:0; margin:0; box-sizing:border-box; }
+        .icon{ font-size:8px; }
+        .bottom-footer{ text-align:center; }
+        .footer img{ margin-left:40px; }
+        .footer p{ margin-left:40px; }
+        .footer a{ margin-left:10px; }
+        .footer h5{ margin-left:40px; }
+        .col-md-2 p{ margin-left:30px; }
+        /* Hindari dorongan gambar ke kanan */
+        .navbar img{ margin-left:0 !important; }
     }
 
-    .footer-link::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 2px;
-        background-color: #FFD700;
-        bottom: -5px;
-        left: 0;
-        transition: width 0.3s ease;
+    @media (max-width: 425px){
+        .header, .container, .head{ width:100%; padding:0; margin:0; box-sizing:border-box; }
+        .navbar-custom button{ margin-right:10px; }
+        .icon-text{ font-size:6px; margin-left:5px; }
+        .head .dropdown{ margin-right:5px; }
+        .border-top2{ position:relative; left:10px; }
+        .sosmed i{ font-size:15px; }
+        .kei{ margin-left:5px; }
+        .navbar-toggler{ margin-right:5px; }
+        .footer img{ margin-left:30px; }
+        .footer p{ margin-left:35px; font-size:10px; }
+        .col-md-2 h5{ margin-left:35px; }
+        .col-md-2 p{ margin-left:25px; }
+        .py-4 p{ font-size:11px; position:relative; left:10px; top:4px; }
+        .bottom-footer p{ margin-right:60px; }
     }
 
-    .footer-link:hover::after {
-        width: 100%;
+    @media (max-width: 375px){
+        .header, .head{ width:100%; padding:0; margin:0; box-sizing:border-box; }
+        .icon-text{ font-size:4.5px; }
+        .head .dropdown{ margin-right:5px; }
+        .sosmed i{ font-size:15px; }
+        .border-top2{ position:relative; left:10px; }
+        .kei{ margin-left:5px; }
+        .navbar-toggler{ margin-right:5px; }
+        .footer img{ margin-left:25px; }
+        .footer p{ margin-left:30px; font-size:13px; }
+        .col-md-2 h5{ margin-left:30px; }
+        .col-md-2 p{ margin-left:20px; }
+        .py-4 p{ font-size:11px; position:relative; right:20px; top:4px; }
     }
 
-    h5 {
-        font-size: 1.2rem;
+    @media (max-width: 320px){
+        .header, .container, .head{ width:100%; padding:0; margin:0; box-sizing:border-box; }
+        .icon-text{ font-size:3.5px; }
+        .social-link{ width:2px; position:relative; right:15px; margin-left:10px; }
+        .language-btn{ width:50px; margin-right:5px; }
+        .navbar-toggler{ margin-right:5px; }
+        .kei{ margin-left:5px; }
+        .col-md-6 p{ margin-left:25px; font-size:10px; }
+        .col-md-6 a{ position:relative; right:10px; }
+        .col-md-6 img{ margin-left:15px; }
+        .col-md-2 p{ margin-left:20px; }
+        .col-md-2 h5{ margin-left:28px; }
+        .sosmed i{ margin-left:15px; font-size:15px; }
+        .login{ width:40px; height:25px; }
+        .dropdown-menu{
+            position:absolute; top:100%; left:0; right:0; z-index:1060; background:#fff; width:100%;
+        }
+        .language-btn{ padding:5px 10px; font-size:.875rem; width:70px; height:30px; }
     }
 
-    p {
-        margin-bottom: 10px;
+    /* ====== Anti overflow kanan ====== */
+    @media (max-width:1200px){
+        .container, .navbar, .header{ overflow-x:hidden !important; }
     }
-
-    /* end */
-
-    /* jarak footer */
-    .list-unstyled p {
-        margin-bottom: 20px;
-    }
-
-    /* end */
-
-    /* footer facebook */
-    .Btn.facebook {
-        background-color: blue;
-    }
-
-    .Btn.facebook:hover {
-        background-color: darkblue;
-    }
-
-    /* end */
-    @media (max-width: 768px) {
-
-        .header,
-        .container,
-        .head,
-        .icon,
-        .icon-text {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .icon-text {
-            position: relative;
-            left: 50px;
-        }
-
-        .border-top {
-            width: 90px !important;
-            height: 1.5px !important;
-            margin: 15px 0 !important;
-        }
-
-        .border-top2 {
-            margin-right: 20px;
-        }
-
-        .bottom-footer p {
-            margin-left: 50px;
-        }
-
-        .navbar img {
-            margin-left: 20px;
-        }
-
-        .footer img {
-            margin-left: 20px;
-        }
-
-        .col-md-6 p {
-            margin-left: 20px;
-        }
-
-        .container2 {
-            margin-left: 20px;
-        }
-    }
-
-    @media (max-width: 576px) {
-
-        .header,
-        .container,
-        .head {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .icon {
-            font-size: 8px;
-        }
-
-
-        .bottom-footer {
-            text-align: center;
-        }
-
-        .footer img {
-            margin-left: 40px;
-        }
-
-        .footer p {
-            margin-left: 40px;
-        }
-
-        .footer a {
-            margin-left: 10px;
-        }
-
-        .footer h5 {
-            margin-left: 40px;
-        }
-
-        .col-md-2 p {
-            margin-left: 30px;
-        }
-    }
-
-
-    @media (max-width: 425px) {
-
-        .header,
-        .container,
-        .head {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .navbar-custom button {
-            margin-right: 10px;
-        }
-
-        .icon-text {
-            font-size: 6px;
-            margin-left: 5px;
-        }
-
-        .head .dropdown {
-            margin-right: 5px;
-        }
-
-        .border-top2 {
-            position: relative;
-            left: 10px;
-        }
-
-        .sosmed i {
-            font-size: 15px;
-            position: relative;
-            left: 25px;
-        }
-
-        .kei {
-            margin-left: 5px;
-        }
-
-        .navbar-toggler {
-            margin-right: 5px;
-        }
-
-        .footer img {
-            margin-left: 30px;
-        }
-
-        .footer p {
-            margin-left: 35px;
-            font-size: 10px;
-        }
-
-        .col-md-2 h5 {
-            margin-left: 35px;
-        }
-
-        .col-md-2 p {
-            margin-left: 25px;
-        }
-
-        .py-4 p {
-            font-size: 11px;
-            position: relative;
-            left: 10px;
-            top: 4px;
-        }
-
-        .bottom-footer p {
-            margin-right: 60px;
-        }
-    }
-
-    @media (max-width: 375px) {
-
-        .header,
-        .head {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .icon-text {
-            font-size: 4.5px;
-        }
-
-
-
-        .head .dropdown {
-            margin-right: 5px;
-        }
-
-        .sosmed i {
-            font-size: 15px;
-            position: relative;
-            left: 25px;
-        }
-
-        .border-top2 {
-            position: relative;
-            left: 10px;
-        }
-
-        .kei {
-            margin-left: 5px;
-        }
-
-        .navbar-toggler {
-            margin-right: 5px;
-        }
-
-        .footer img {
-            margin-left: 25px;
-        }
-
-        .footer p {
-            margin-left: 30px;
-            font-size: 13px;
-        }
-
-        .col-md-2 h5 {
-            margin-left: 30px;
-        }
-
-        .col-md-2 p {
-            margin-left: 20px;
-        }
-
-        .py-4 p {
-            font-size: 11px;
-            position: relative;
-            right: 20px;
-            top: 4px;
-        }
-    }
-
-    @media (max-width: 320px) {
-
-        .header,
-        .container,
-        .head {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .icon-text {
-            font-size: 3, 5px;
-        }
-
-        .social-link {
-            width: 2px;
-            position: relative;
-            right: 15px;
-            margin-left: 10px;
-        }
-
-        .language-btn {
-            width: 50px;
-            margin-right: 5px;
-        }
-
-        .navbar-toggler {
-            margin-right: 5px;
-        }
-
-        .kei {
-            margin-left: 5px;
-        }
-
-        .col-md-6 p {
-            margin-left: 25px;
-            font-size: 10px;
-        }
-
-        .col-md-6 a {
-            position: relative;
-            right: 10px;
-        }
-
-        .col-md-6 img {
-            margin-left: 15px;
-        }
-
-        .col-md-2 p {
-            margin-left: 20px;
-        }
-
-        .col-md-2 h5 {
-            margin-left: 28px;
-        }
-
-        .sosmed i {
-            margin-left: 15px;
-            font-size: 15px;
-        }
-
-        .login {
-            width: 40px;
-            height: 25px;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            /* Dropdown muncul tepat di bawah tombol */
-            left: 0;
-            right: 0;
-            z-index: 1060;
-            /* Pastikan dropdown muncul di atas navbar */
-            background-color: white;
-            width: 100%;
-        }
-
-        .language-btn {
-            padding: 5px 10px;
-            font-size: 0.875rem;
-            width: 70px;
-            height: 30px;
-        }
+    html, body{ overflow-x:hidden; }
+
+    /* Sedikit ruang kiri/kanan konten agar tidak menempel pada layar kecil */
+    @media (max-width: 768.98px){
+        .container{ padding-left:16px; padding-right:16px; }
     }
 </style>
+
 
 <body>
     <?php
@@ -977,18 +525,18 @@
                             </a>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-2">
                         <h5 class="mt-4"><b>Menu</b></h5>
                         <div class="list-unstyled pt-2">
-                            <p><a href="<?= base_url('/'.$homeLink) ?>" class="footer-link"><?php echo lang('Blog.headerBeranda'); ?></a></p>
-                            <p><a href="<?= base_url('/'.$aboutLink) ?>" class="footer-link"><?php echo lang('Blog.headerTentang'); ?> </a></p>
-                            <p><a href="<?= base_url('/'.$belajarEksporLink) ?>" class="footer-link"><?php echo lang('Blog.headerMateri'); ?></a></p>
-                            <p><a href="<?= base_url('/'.$videoTutorialLink) ?>" class="footer-link"><?php echo lang('Blog.headerVideo'); ?></a></p>
-                            <p><a href="<?= base_url('/'.$memberLink) ?>" class="footer-link"><?php echo lang('Blog.headerMember'); ?></a></a></p>
-                            <!-- <p><a href="<?= base_url('/'.$buyersLink) ?>" class="footer-link"><?php echo lang('Blog.headerBuyers'); ?></a></a></p> -->
-                            <p><a href="<?= base_url('/'.$pengumumanLink) ?>" class="footer-link"> <?php echo lang('Blog.headerPengumuman'); ?></a></a></p>
-                            <p><a href="<?= base_url('/'.$editprofileLink) ?>" class="footer-link"><?php echo lang('Blog.headerEditProfile'); ?></a></a></p>
+                            <p><a href="<?= base_url('/' . $homeLink) ?>" class="footer-link"><?php echo lang('Blog.headerBeranda'); ?></a></p>
+                            <p><a href="<?= base_url('/' . $aboutLink) ?>" class="footer-link"><?php echo lang('Blog.headerTentang'); ?> </a></p>
+                            <p><a href="<?= base_url('/' . $belajarEksporLink) ?>" class="footer-link"><?php echo lang('Blog.headerMateri'); ?></a></p>
+                            <p><a href="<?= base_url('/' . $videoTutorialLink) ?>" class="footer-link"><?php echo lang('Blog.headerVideo'); ?></a></p>
+                            <p><a href="<?= base_url('/' . $memberLink) ?>" class="footer-link"><?php echo lang('Blog.headerMember'); ?></a></a></p>
+                            <!-- <p><a href="<?= base_url('/' . $buyersLink) ?>" class="footer-link"><?php echo lang('Blog.headerBuyers'); ?></a></a></p> -->
+                            <p><a href="<?= base_url('/' . $pengumumanLink) ?>" class="footer-link"> <?php echo lang('Blog.headerPengumuman'); ?></a></a></p>
+                            <p><a href="<?= base_url('/' . $editprofileLink) ?>" class="footer-link"><?php echo lang('Blog.headerEditProfile'); ?></a></a></p>
                         </div>
                     </div>
                     <div class="col-md-2">

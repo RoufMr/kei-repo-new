@@ -789,7 +789,7 @@ $this->setData([
 <!-- ajakan end -->
 
 <!-- populer member -->
-<section>
+<!-- <section>
     <div class="member container mt-5">
         <div class="d-flex justify-content-center">
             <div class="garis d-flex justify-content-center align-items-center mb-2">
@@ -812,9 +812,9 @@ $this->setData([
                 </div>
             </div>
         <?php else: ?>
-            <div class="row justify-content-center g-4"> <!-- Use Bootstrap's grid system -->
+            <div class="row justify-content-center g-4">
                 <?php foreach ($top4_member as $item): ?>
-                    <div class="col-12 col-md-6 col-lg-3 rounded"> <!-- Responsive column sizes -->
+                    <div class="col-12 col-md-6 col-lg-3 rounded">
                         <div class="card">
                             <div class="img-content" style="display: flex; justify-content: center;">
                                 <img src="<?= base_url('img/' . $item['foto_profil']); ?>" class="card-img-top"
@@ -836,7 +836,7 @@ $this->setData([
             </div>
         <?php endif; ?>
     </div>
-</section>
+</section> -->
 <!-- end -->
 
 <!-- Card Section -->

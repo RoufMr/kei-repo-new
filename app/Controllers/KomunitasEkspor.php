@@ -1083,12 +1083,10 @@ class KomunitasEkspor extends BaseController
 
     public function pendaftaran()
     {
-        // 🔒 Guard: jika sudah login, jangan boleh akses halaman pendaftaran
         if (session()->get('user_id') || session()->get('logged_in')) {
             return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
         }
 
-        // --- logic lama kamu (tetap) ---
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
         $data['webprofile'] = $webprofile;

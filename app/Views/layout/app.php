@@ -394,13 +394,16 @@
     @media (max-width: 576px) {
 
         .header,
-        .container,
         .head {
             width: 100%;
-            padding: 0;
             margin: 0;
             box-sizing: border-box;
             overflow: hidden;
+        }
+
+        .page-container {
+            padding-left: 24px;
+            padding-right: 24px;
         }
 
         .icon {
@@ -437,10 +440,8 @@
     @media (max-width: 425px) {
 
         .header,
-        .container,
         .head {
             width: 100%;
-            padding: 0;
             margin: 0;
             box-sizing: border-box;
             overflow: hidden;
@@ -522,8 +523,6 @@
             font-size: 4.5px;
         }
 
-
-
         .head .dropdown {
             margin-right: 5px;
         }
@@ -575,10 +574,8 @@
     @media (max-width: 320px) {
 
         .header,
-        .container,
         .head {
             width: 100%;
-            padding: 0;
             margin: 0;
             box-sizing: border-box;
             overflow: hidden;

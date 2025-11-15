@@ -13,6 +13,7 @@ $cif             = $cif ?? [];
 ?>
 
 <style>
+    /* ===== OUTPUT HARGA ===== */
     .result-harga-exwork,
     .result-harga-fob,
     .result-harga-cfr,
@@ -21,6 +22,34 @@ $cif             = $cif ?? [];
         font-size: 1.5em;
     }
 
+    /* ===== TABLE BASE ===== */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .table {
+        width: 100%;
+        table-layout: auto;
+        font-size: 0.95rem;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    /* Input di kolom biaya agar tidak terlalu panjang */
+    .table input.form-control {
+        min-width: 120px;
+    }
+
+    /* Tombol hapus kecil */
+    .btn-hapus-baris {
+        font-size: .8rem;
+    }
+
+    /* Sembunyikan container komponen baru sampai tombol tambah ditekan */
     #komponenExworkContainer,
     #komponenFOBContainer,
     #komponenCFRContainer,
@@ -32,19 +61,7 @@ $cif             = $cif ?? [];
         display: none;
     }
 
-    .table-responsive {
-        overflow-x: auto;
-        width: 100%;
-    }
-
-    .table {
-        min-width: 500px;
-    }
-
-    .nav-link {
-        font-weight: 600;
-    }
-
+    /* ===== FORM & CARD ===== */
     .form-group {
         margin-bottom: 20px;
     }
@@ -61,7 +78,95 @@ $cif             = $cif ?? [];
         transition: background-color .3s ease, transform .3s ease, box-shadow .3s ease;
         background-color: #F2BF02 !important;
     }
+
+    /* ===== SPACING CONTAINER UNTUK HP ===== */
+    .calc-container {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
+    @media (max-width: 768px) {
+        .calc-container .card {
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .form-control,
+        .form-select,
+        .input-group-text {
+            font-size: .85rem;
+            padding: 8px 10px;
+        }
+
+        /* Tabel jadi lebih ringkas */
+        .table {
+            font-size: 0.82rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 6px 8px;
+        }
+
+        /* Tombol tambah komponen full width */
+        #tambahKolomExwork,
+        #tambahKolomFOB,
+        #tambahKolomCFR,
+        #tambahKolomCIF {
+            width: 100%;
+            display: block;
+        }
+
+        /* Tombol simpan juga full width */
+        #submitKomponenExworkButton,
+        #submitKomponenFOBButton,
+        #submitKomponenCFRButton,
+        #submitKomponenCIFButton {
+            width: 100% !important;
+            margin-top: 10px;
+        }
+    }
+
+    /* ===== HP KECIL (≤425px) ===== */
+    @media (max-width: 425px) {
+
+        /* Kolom nomor diperkecil */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            width: 35px;
+        }
+
+        /* Form komponen baru auto stack full width */
+        .komponenRow .col-md-6,
+        .komponenRow .col-md-5,
+        .komponenRow .col-md-1 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .komponenRow .col-12 {
+            margin-bottom: 8px;
+        }
+
+        .btn-hapus-baris {
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .form-control,
+        .form-select {
+            font-size: .8rem;
+            padding: 7px 8px;
+        }
+    }
+
+    /* ===== PERBAIKAN SUPAYA TIDAK SCROLL KANAN ===== */
+    html,
+    body {
+        overflow-x: hidden !important;
+    }
 </style>
+
 
 <!-- judul -->
 <div class="py-5 text-center">
@@ -69,9 +174,7 @@ $cif             = $cif ?? [];
     <p class="text-custom-paragraph mt-2">Berikut aplikasi Kalkulator Ekspor Indonesia</p>
 </div>
 
-<div class="container py-2 mt-3">
-
-    <!-- FLASH POP-UP bridge -->
+<div class="container py-2 mt-3 calc-container">
     <?php if (session()->getFlashdata('success')): ?>
         <script>
             window.addEventListener('DOMContentLoaded', () => {
@@ -177,7 +280,7 @@ $cif             = $cif ?? [];
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center w-25">Komponen</th>
-                            <th class="biaya-col-header">Biaya (Rp.)</th>
+                            <th class="biaya-col-header text-center">Biaya (Rp.)</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -486,16 +589,22 @@ $cif             = $cif ?? [];
     const LAST_UID_KEY = 'kei_calc_last_uid';
     const Store = window.localStorage;
     const NS = {
-        get(k){ return Store.getItem(STORE_NS + k); },
-        set(k,v){ Store.setItem(STORE_NS + k, v); },
-        del(k){ Store.removeItem(STORE_NS + k); }
+        get(k) {
+            return Store.getItem(STORE_NS + k);
+        },
+        set(k, v) {
+            Store.setItem(STORE_NS + k, v);
+        },
+        del(k) {
+            Store.removeItem(STORE_NS + k);
+        }
     };
-    (function handleUserSwitch(){
+    (function handleUserSwitch() {
         const last = Store.getItem(LAST_UID_KEY);
         if (last && String(last) !== String(USER_ID)) {
             // bersihkan jejak lama non-namespaced (versi sebelum patch)
-            ['kalk_s_namaProduk','kalk_s_ukuran_kontainer','kalk_s_jumlahBarang','kalk_s_hpp','kalk_s_keuntungan','kalk_s_satuan']
-                .forEach(key => Store.removeItem(key));
+            ['kalk_s_namaProduk', 'kalk_s_ukuran_kontainer', 'kalk_s_jumlahBarang', 'kalk_s_hpp', 'kalk_s_keuntungan', 'kalk_s_satuan']
+            .forEach(key => Store.removeItem(key));
         }
         Store.setItem(LAST_UID_KEY, String(USER_ID));
     })();
@@ -514,19 +623,22 @@ $cif             = $cif ?? [];
         rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
         return rupiah;
     }
+
     function bersihkanRupiah(str) {
         return (str || '').toString().replace(/\./g, '').replace(/[^\d]/g, '');
     }
     if (typeof notify !== 'function') {
-        window.notify = function(type, msg) { alert(msg); };
+        window.notify = function(type, msg) {
+            alert(msg);
+        };
     }
 
     // ==== STATE KEYS (per-user namespace via NS) ====
     const SS_KEYS = {
-        nama:   'namaProduk',
+        nama: 'namaProduk',
         ukuran: 'ukuran_kontainer',
         jumlah: 'jumlahBarang',
-        hpp:    'hpp',
+        hpp: 'hpp',
         untung: 'keuntungan',
         satuan: 'satuan',
     };
@@ -547,27 +659,33 @@ $cif             = $cif ?? [];
     function getSatuanText() {
         return (document.getElementById('satuan')?.value || '').trim();
     }
+
     function updateSatuanBadges() {
         var txt = getSatuanText();
         document.querySelectorAll('.satuan-badge').forEach(function(el) {
-            if (txt) { el.textContent = txt; el.style.display = ''; }
-            else     { el.textContent = ''; el.style.display = 'none'; }
+            if (txt) {
+                el.textContent = txt;
+                el.style.display = '';
+            } else {
+                el.textContent = '';
+                el.style.display = 'none';
+            }
         });
     }
 
     // ==== SAVE STATE (NS + server) ====
     function saveStateOnce() {
-        const nama    = document.getElementById('namaProduk')?.value || '';
-        const ukuran  = document.getElementById('ukuran_kontainer')?.value || '';
-        const jumlah  = document.getElementById('jumlahBarang')?.value || '';
-        const hpp     = document.getElementById('hpp')?.value || '';
-        const untung  = document.getElementById('keuntungan')?.value || '';
-        const satuan  = document.getElementById('satuan')?.value || '';
+        const nama = document.getElementById('namaProduk')?.value || '';
+        const ukuran = document.getElementById('ukuran_kontainer')?.value || '';
+        const jumlah = document.getElementById('jumlahBarang')?.value || '';
+        const hpp = document.getElementById('hpp')?.value || '';
+        const untung = document.getElementById('keuntungan')?.value || '';
+        const satuan = document.getElementById('satuan')?.value || '';
 
-        NS.set(SS_KEYS.nama,   nama);
+        NS.set(SS_KEYS.nama, nama);
         NS.set(SS_KEYS.ukuran, ukuran);
         NS.set(SS_KEYS.jumlah, bersihkanRupiah(jumlah));
-        NS.set(SS_KEYS.hpp,    bersihkanRupiah(hpp));
+        NS.set(SS_KEYS.hpp, bersihkanRupiah(hpp));
         NS.set(SS_KEYS.untung, bersihkanRupiah(untung));
         NS.set(SS_KEYS.satuan, satuan);
 
@@ -576,11 +694,13 @@ $cif             = $cif ?? [];
                 const body = new URLSearchParams();
                 body.set('nama_produk', nama);
                 body.set('jumlah_barang', bersihkanRupiah(jumlah) || '');
-                body.set('hpp',            bersihkanRupiah(hpp)    || '');
-                body.set('keuntungan',     bersihkanRupiah(untung) || '');
+                body.set('hpp', bersihkanRupiah(hpp) || '');
+                body.set('keuntungan', bersihkanRupiah(untung) || '');
                 await fetch('<?= base_url('kalkulator-state/save') ?>', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
                     body
                 });
             } catch (e) {}
@@ -590,7 +710,9 @@ $cif             = $cif ?? [];
     // ==== SERVER-FIRST RESTORE lalu merge storage per-user ====
     async function restoreStateServerFirstThenStorage() {
         try {
-            const res = await fetch('<?= base_url('kalkulator-state/load') ?>', { method: 'GET' });
+            const res = await fetch('<?= base_url('kalkulator-state/load') ?>', {
+                method: 'GET'
+            });
             const json = await res.json();
             if (json?.ok && json.data) {
                 const d = json.data;
@@ -608,12 +730,14 @@ $cif             = $cif ?? [];
                 const elUnt = document.getElementById('keuntungan');
                 if (elUnt && gt0(d.keuntungan)) elUnt.value = formatRupiah(String(d.keuntungan));
             }
-        } catch (e) { /* silent */ }
+        } catch (e) {
+            /* silent */
+        }
 
-        const nama   = NS.get(SS_KEYS.nama)   || '';
+        const nama = NS.get(SS_KEYS.nama) || '';
         const ukuran = NS.get(SS_KEYS.ukuran) || '';
         const jumlah = NS.get(SS_KEYS.jumlah) || '';
-        const hpp    = NS.get(SS_KEYS.hpp)    || '';
+        const hpp = NS.get(SS_KEYS.hpp) || '';
         const untung = NS.get(SS_KEYS.untung) || '';
         const satuan = NS.get(SS_KEYS.satuan) || '';
 
@@ -642,7 +766,12 @@ $cif             = $cif ?? [];
 
         updateSatuanBadges();
 
-        try { hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF(); } catch (e) {}
+        try {
+            hitungExwork();
+            hitungFOB();
+            hitungCFR();
+            hitungCIF();
+        } catch (e) {}
     }
 
     // ==== Debounce helper ====
@@ -655,14 +784,21 @@ $cif             = $cif ?? [];
     }
 
     // ==== Autosave Satuan (JSON) ====
-    const satuanInput  = document.getElementById('satuan');
+    const satuanInput = document.getElementById('satuan');
     const satuanStatus = document.getElementById('satuanStatus');
+
     function setSatuanStatus(text, ok = null) {
         if (!satuanStatus) return;
         satuanStatus.textContent = text || '';
-        if (ok === true) { satuanStatus.classList.remove('text-danger'); satuanStatus.classList.add('text-success'); }
-        else if (ok === false) { satuanStatus.classList.remove('text-success'); satuanStatus.classList.add('text-danger'); }
-        else { satuanStatus.classList.remove('text-success','text-danger'); }
+        if (ok === true) {
+            satuanStatus.classList.remove('text-danger');
+            satuanStatus.classList.add('text-success');
+        } else if (ok === false) {
+            satuanStatus.classList.remove('text-success');
+            satuanStatus.classList.add('text-danger');
+        } else {
+            satuanStatus.classList.remove('text-success', 'text-danger');
+        }
     }
     const autosaveSatuan = debounce(async function() {
         try {
@@ -674,14 +810,21 @@ $cif             = $cif ?? [];
 
             const res = await fetch('<?= base_url('satuan/upsert-json') ?>', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
                 body
             });
             const json = await res.json();
             if (res.ok && json.ok) {
                 NS.set(SS_KEYS.satuan, val);
                 setSatuanStatus('', true);
-                try { hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF(); } catch (e) {}
+                try {
+                    hitungExwork();
+                    hitungFOB();
+                    hitungCFR();
+                    hitungCIF();
+                } catch (e) {}
             } else {
                 setSatuanStatus(json.msg || '', false);
             }
@@ -707,7 +850,12 @@ $cif             = $cif ?? [];
             NS.set(SS_KEYS.jumlah, '');
             NS.set(SS_KEYS.hpp, '');
             NS.set(SS_KEYS.untung, '');
-            try { hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF(); } catch (e) {}
+            try {
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+            } catch (e) {}
         });
     }
 
@@ -738,13 +886,13 @@ $cif             = $cif ?? [];
         let exworkLainnya = 0;
 
         <?php foreach ($exwork as $item): ?>
-        (function() {
-            const el = document.getElementById('exwork_<?= $item['id_exwork'] ?>');
-            if (el) {
-                const val = bersihkanRupiah(el.value);
-                if (val) exworkLainnya += parseFloat(val);
-            }
-        })();
+                (function() {
+                    const el = document.getElementById('exwork_<?= $item['id_exwork'] ?>');
+                    if (el) {
+                        const val = bersihkanRupiah(el.value);
+                        if (val) exworkLainnya += parseFloat(val);
+                    }
+                })();
         <?php endforeach; ?>
 
         document.querySelectorAll('input[name="biayaExwork[]"]').forEach(function(el) {
@@ -762,7 +910,7 @@ $cif             = $cif ?? [];
 
     function hitungFOB() {
         let jumlahBarang = parseFloat(bersihkanRupiah(document.getElementById('jumlahBarang').value));
-        let hargaExwork  = parseFloat(bersihkanRupiah(document.getElementById('hargaExwork').value));
+        let hargaExwork = parseFloat(bersihkanRupiah(document.getElementById('hargaExwork').value));
         if (!jumlahBarang || !hargaExwork) {
             document.querySelector('.result-harga-fob').innerText = 'Rekomendasi Harga FOB: ';
             return;
@@ -771,13 +919,13 @@ $cif             = $cif ?? [];
         let fobLainnya = 0;
 
         <?php foreach ($fob as $item): ?>
-        (function() {
-            const el = document.getElementById('fob_<?= $item['id_fob'] ?>');
-            if (el) {
-                const val = bersihkanRupiah(el.value);
-                if (val) fobLainnya += parseFloat(val);
-            }
-        })();
+                (function() {
+                    const el = document.getElementById('fob_<?= $item['id_fob'] ?>');
+                    if (el) {
+                        const val = bersihkanRupiah(el.value);
+                        if (val) fobLainnya += parseFloat(val);
+                    }
+                })();
         <?php endforeach; ?>
 
         document.querySelectorAll('input[name="biayaFOB[]"]').forEach(function(el) {
@@ -795,7 +943,7 @@ $cif             = $cif ?? [];
 
     function hitungCFR() {
         let jumlahBarang = parseFloat(bersihkanRupiah(document.getElementById('jumlahBarang').value));
-        let hargaFOB     = parseFloat(bersihkanRupiah(document.getElementById('hargaFOB').value));
+        let hargaFOB = parseFloat(bersihkanRupiah(document.getElementById('hargaFOB').value));
         if (!jumlahBarang || !hargaFOB) {
             document.querySelector('.result-harga-cfr').innerText = 'Rekomendasi Harga CFR: ';
             return;
@@ -804,13 +952,13 @@ $cif             = $cif ?? [];
         let cfrLainnya = 0;
 
         <?php foreach ($cfr as $item): ?>
-        (function() {
-            const el = document.getElementById('cfr_<?= $item['id_cfr'] ?>');
-            if (el) {
-                const val = bersihkanRupiah(el.value);
-                if (val) cfrLainnya += parseFloat(val);
-            }
-        })();
+                (function() {
+                    const el = document.getElementById('cfr_<?= $item['id_cfr'] ?>');
+                    if (el) {
+                        const val = bersihkanRupiah(el.value);
+                        if (val) cfrLainnya += parseFloat(val);
+                    }
+                })();
         <?php endforeach; ?>
 
         document.querySelectorAll('input[name="biayaCFR[]"]').forEach(function(el) {
@@ -828,7 +976,7 @@ $cif             = $cif ?? [];
 
     function hitungCIF() {
         let jumlahBarang = parseFloat(bersihkanRupiah(document.getElementById('jumlahBarang').value));
-        let hargaCFR     = parseFloat(bersihkanRupiah(document.getElementById('hargaCFR').value));
+        let hargaCFR = parseFloat(bersihkanRupiah(document.getElementById('hargaCFR').value));
         if (!jumlahBarang || !hargaCFR) {
             document.querySelector('.result-harga-cif').innerText = 'Rekomendasi Harga CIF: ';
             return;
@@ -837,13 +985,13 @@ $cif             = $cif ?? [];
         let cifLainnya = 0;
 
         <?php foreach ($cif as $item): ?>
-        (function() {
-            const el = document.getElementById('cif_<?= $item['id_cif'] ?>');
-            if (el) {
-                const val = bersihkanRupiah(el.value);
-                if (val) cifLainnya += parseFloat(val);
-            }
-        })();
+                (function() {
+                    const el = document.getElementById('cif_<?= $item['id_cif'] ?>');
+                    if (el) {
+                        const val = bersihkanRupiah(el.value);
+                        if (val) cifLainnya += parseFloat(val);
+                    }
+                })();
         <?php endforeach; ?>
 
         document.querySelectorAll('input[name="biayaCIF[]"]').forEach(function(el) {
@@ -862,7 +1010,10 @@ $cif             = $cif ?? [];
     document.querySelectorAll('#jumlahBarang, #hpp, #keuntungan, #hargaExwork, #hargaFOB, #hargaCFR').forEach(function(element) {
         element.addEventListener('keyup', function(e) {
             e.target.value = formatRupiah(e.target.value);
-            hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF();
+            hitungExwork();
+            hitungFOB();
+            hitungCFR();
+            hitungCIF();
             if (['jumlahBarang', 'hpp', 'keuntungan'].includes(e.target.id)) saveStateOnce();
         });
         element.addEventListener('change', function(e) {
@@ -889,6 +1040,7 @@ $cif             = $cif ?? [];
             const n = container.querySelectorAll('.komponenRow').length;
             btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + n + ')';
         }
+
         function ensureVisible() {
             container.style.display = 'block';
             btnSubmit.style.display = 'inline-block';
@@ -917,20 +1069,32 @@ $cif             = $cif ?? [];
             </div>`;
             row.querySelector('.input-biaya-exwork').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
             });
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
-                row.remove(); updateCounter();
+                row.remove();
+                updateCounter();
                 if (container.querySelectorAll('.komponenRow').length === 0) {
-                    container.style.display = 'none'; btnSubmit.style.display = 'none';
+                    container.style.display = 'none';
+                    btnSubmit.style.display = 'none';
                 }
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF(); updateUkuranHints();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+                updateUkuranHints();
             });
             container.appendChild(row);
-            updateCounter(); updateUkuranHints();
+            updateCounter();
+            updateUkuranHints();
         });
         document.getElementById('formExworkAll').addEventListener('submit', function() {
-            try { saveStateOnce(); } catch (e) {}
+            try {
+                saveStateOnce();
+            } catch (e) {}
             document.querySelectorAll('.exwork-existing').forEach(el => el.value = bersihkanRupiah(el.value));
             document.querySelectorAll('input[name="biayaExwork[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
         });
@@ -942,10 +1106,15 @@ $cif             = $cif ?? [];
         const btnAdd = document.getElementById('tambahKolomFOB');
         const btnSubmit = document.getElementById('submitKomponenFOBButton');
         const form = document.getElementById('formFOBAll');
+
         function updateCounter() {
             btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')';
         }
-        function ensureVisible() { container.style.display = 'block'; btnSubmit.style.display = 'inline-block'; }
+
+        function ensureVisible() {
+            container.style.display = 'block';
+            btnSubmit.style.display = 'inline-block';
+        }
         btnAdd.addEventListener('click', function() {
             ensureVisible();
             const row = document.createElement('div');
@@ -970,20 +1139,32 @@ $cif             = $cif ?? [];
             </div>`;
             row.querySelector('.input-biaya-fob').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
             });
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
-                row.remove(); updateCounter();
+                row.remove();
+                updateCounter();
                 if (container.querySelectorAll('.komponenRow').length === 0) {
-                    container.style.display = 'none'; btnSubmit.style.display = 'none';
+                    container.style.display = 'none';
+                    btnSubmit.style.display = 'none';
                 }
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF(); updateUkuranHints();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+                updateUkuranHints();
             });
             container.appendChild(row);
-            updateCounter(); updateUkuranHints();
+            updateCounter();
+            updateUkuranHints();
         });
         form.addEventListener('submit', function() {
-            try { saveStateOnce(); } catch (e) {}
+            try {
+                saveStateOnce();
+            } catch (e) {}
             document.querySelectorAll('.fob-existing').forEach(el => el.value = bersihkanRupiah(el.value));
             document.querySelectorAll('input[name="biayaFOB[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
         });
@@ -995,8 +1176,15 @@ $cif             = $cif ?? [];
         const btnAdd = document.getElementById('tambahKolomCFR');
         const btnSubmit = document.getElementById('submitKomponenCFRButton');
         const form = document.getElementById('formCFRAll');
-        function updateCounter() { btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')'; }
-        function ensureVisible() { container.style.display = 'block'; btnSubmit.style.display = 'inline-block'; }
+
+        function updateCounter() {
+            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')';
+        }
+
+        function ensureVisible() {
+            container.style.display = 'block';
+            btnSubmit.style.display = 'inline-block';
+        }
         btnAdd.addEventListener('click', function() {
             ensureVisible();
             const row = document.createElement('div');
@@ -1021,20 +1209,32 @@ $cif             = $cif ?? [];
             </div>`;
             row.querySelector('.input-biaya-cfr').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
             });
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
-                row.remove(); updateCounter();
+                row.remove();
+                updateCounter();
                 if (container.querySelectorAll('.komponenRow').length === 0) {
-                    container.style.display = 'none'; btnSubmit.style.display = 'none';
+                    container.style.display = 'none';
+                    btnSubmit.style.display = 'none';
                 }
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF(); updateUkuranHints();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+                updateUkuranHints();
             });
             container.appendChild(row);
-            updateCounter(); updateUkuranHints();
+            updateCounter();
+            updateUkuranHints();
         });
         form.addEventListener('submit', function() {
-            try { saveStateOnce(); } catch (e) {}
+            try {
+                saveStateOnce();
+            } catch (e) {}
             document.querySelectorAll('.cfr-existing').forEach(el => el.value = bersihkanRupiah(el.value));
             document.querySelectorAll('input[name="biayaCFR[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
         });
@@ -1046,8 +1246,15 @@ $cif             = $cif ?? [];
         const btnAdd = document.getElementById('tambahKolomCIF');
         const btnSubmit = document.getElementById('submitKomponenCIFButton');
         const form = document.getElementById('formCIFAll');
-        function updateCounter() { btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')'; }
-        function ensureVisible() { container.style.display = 'block'; btnSubmit.style.display = 'inline-block'; }
+
+        function updateCounter() {
+            btnSubmit.textContent = 'Simpan Perubahan & Komponen (' + container.querySelectorAll('.komponenRow').length + ')';
+        }
+
+        function ensureVisible() {
+            container.style.display = 'block';
+            btnSubmit.style.display = 'inline-block';
+        }
         btnAdd.addEventListener('click', function() {
             ensureVisible();
             const row = document.createElement('div');
@@ -1072,20 +1279,32 @@ $cif             = $cif ?? [];
             </div>`;
             row.querySelector('.input-biaya-cif').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
             });
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
-                row.remove(); updateCounter();
+                row.remove();
+                updateCounter();
                 if (container.querySelectorAll('.komponenRow').length === 0) {
-                    container.style.display = 'none'; btnSubmit.style.display = 'none';
+                    container.style.display = 'none';
+                    btnSubmit.style.display = 'none';
                 }
-                hitungExwork(); hitungFOB(); hitungCFR(); hitungCIF(); updateUkuranHints();
+                hitungExwork();
+                hitungFOB();
+                hitungCFR();
+                hitungCIF();
+                updateUkuranHints();
             });
             container.appendChild(row);
-            updateCounter(); updateUkuranHints();
+            updateCounter();
+            updateUkuranHints();
         });
         form.addEventListener('submit', function() {
-            try { saveStateOnce(); } catch (e) {}
+            try {
+                saveStateOnce();
+            } catch (e) {}
             document.querySelectorAll('.cif-existing').forEach(el => el.value = bersihkanRupiah(el.value));
             document.querySelectorAll('input[name="biayaCIF[]"]').forEach(el => el.value = bersihkanRupiah(el.value));
         });

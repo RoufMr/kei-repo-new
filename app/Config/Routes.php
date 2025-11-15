@@ -27,7 +27,7 @@ $routes->group('id', ['filter' => 'guest'], function ($routes) {
     $routes->get('video/selengkapnya/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
     $routes->get('video/detail/(:segment)',       'KomunitasEkspor::video_tutorial_detail/$1');
 
-    $routes->get('pendaftaran', 'KomunitasEkspor::pendaftaran'); // guard dipindah ke filter
+    $routes->get('pendaftaran', 'KomunitasEkspor::pendaftaran');
     $routes->get('syarat-ketentuan', 'KomunitasEkspor::syarat_ketentuan');
 });
 
@@ -47,15 +47,16 @@ $routes->group('en', ['filter' => 'guest'], function ($routes) {
     $routes->get('videos/more/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
     $routes->get('videos/detail/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
 
-    $routes->get('registration', 'KomunitasEkspor::pendaftaran'); // guard by filter
+    $routes->get('registration', 'KomunitasEkspor::pendaftaran');
     $routes->get('terms-conditions', 'KomunitasEkspor::syarat_ketentuan');
 });
 
 // ==== Login route juga guest-only ====
 $routes->group('', ['filter' => 'guest'], function ($routes) {
     $routes->get('login', 'KomunitasEkspor::login');
-    $routes->post('/auth/authenticate', 'KomunitasEkspor::authenticate');
-    $routes->post('/daftar-member', 'KomunitasEkspor::registrasiMember');
+    $routes->post('auth/authenticate', 'KomunitasEkspor::authenticate');
+    $routes->get('daftar-member', 'KomunitasEkspor::pendaftaran');
+    $routes->post('daftar-member', 'KomunitasEkspor::registrasiMember');
 });
 
 // ==== Logout tetap bebas (siapapun bisa memanggil) ====

@@ -13,18 +13,27 @@
         box-shadow: 0px 0px 10px #F2BF02;
         transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         background-color: #F2BF02 !important;
-        /* Mengubah warna saat hover menjadi #F2BF02 */
     }
 
     @media (max-width: 768px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
         .row {
-            margin-left: 30px;
+            margin: 0 !important;
         }
     }
 
     @media (max-width: 425px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
         .row {
-            margin-right: 30px;
+            margin: 0 !important;
         }
     }
 </style>
@@ -55,7 +64,7 @@
         <?php endforeach ?>
 
         <!-- Card Pengumuman 2 -->
-        <!-- <div class="col-md-4 mb-4 animate__animated animate__zoomIn animate__delay-1s">
+        <div class="col-md-4 mb-4 animate__animated animate__zoomIn animate__delay-1s">
             <div class="card h-100 shadow-sm">
                 <img src="/img/navbar1.jpg" class="card-img-top" alt="Pengumuman 2">
                 <div class="card-body">
@@ -69,10 +78,10 @@
                         Selengkapnya</a>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <!-- Card Pengumuman 3 -->
-        <!-- <div class="col-md-4 mb-4 animate__animated animate__zoomIn animate__delay-2s">
+        <div class="col-md-4 mb-4 animate__animated animate__zoomIn animate__delay-2s">
             <div class="card h-100 shadow-sm">
                 <img src="/img/navbar1.jpg" class="card-img-top" alt="Pengumuman 3">
                 <div class="card-body">
@@ -86,7 +95,7 @@
                         Selengkapnya</a>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </section>
 

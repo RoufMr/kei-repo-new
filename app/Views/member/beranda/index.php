@@ -58,9 +58,7 @@ $this->setData([
         background: #ccc;
         border-radius: 3px;
     }
-
     /* end */
-
 
     .carousel-item img {
         width: 100%;
@@ -628,6 +626,62 @@ $this->setData([
             right: 110px;
         }
     }
+
+    /* === PERBAIKAN RESPONSIVE UNTUK BERANDA === */
+
+    /* Hapus offset posisi paksa */
+    .card-member,
+    .gambar-peta,
+    .pacakage {
+        position: static !important;
+        margin: 0 auto !important;
+    }
+
+    /* Pastikan kontainer di mobile tidak mepet */
+    @media (max-width: 768px) {
+
+        .container,
+        .container-fluid {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+    }
+
+    /* Pastikan grid align tengah */
+    .card-member .row,
+    .pacakage .row,
+    .gambar-peta {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Pastikan kolom full dan center di ≤ 425px */
+    @media (max-width: 425px) {
+
+        .card-member .col-12,
+        .pacakage .col-md-6,
+        .manfaat .col-12,
+        .gambar-peta {
+            width: 100% !important;
+            text-align: center;
+        }
+
+        #map.map {
+            width: 100% !important;
+            margin: 0 auto;
+        }
+    }
+
+    /* Hapus margin berlebih yang menyebabkan geser */
+    @media (max-width: 425px) {
+
+        .card-member,
+        .pacakage {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+    }
 </style>
 
 <?php if (empty($slider)): ?>
@@ -801,7 +855,7 @@ $this->setData([
                     <div class="col-12 col-md-6 col-lg-3 rounded"> <!-- Responsive column sizes -->
                         <div class="card">
                             <div class="img-content" style="display: flex; justify-content: center;">
-                                <img src="<?= base_url('img/' . $item['foto_profil']); ?>" class="card-img-top" style="width: 90%; height: 90%; object-fit: cover; border-radius: 10px;" alt="...">
+                                <img src="<?= base_url('uploads/foto_usaha/' . $item['foto_profil']); ?>" class="card-img-top" style="width: 90%; height: 90%; object-fit: cover; border-radius: 10px;" alt="...">
                             </div>
                             <div class="content text-center" style="padding: 10px 0; color: #03AADE;">
                                 <p class="heading" style="margin-bottom: 5px; font-weight: bold; text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;"><?= $item['username'] ?></p>

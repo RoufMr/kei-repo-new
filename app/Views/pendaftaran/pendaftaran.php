@@ -196,6 +196,13 @@ $this->setData([
             margin-left: 10px;
         }
     }
+
+    @media (max-width: 576px) {
+        .container-pendaftaran {
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+    }
 </style>
 
 <!-- judul -->
@@ -205,8 +212,8 @@ $this->setData([
 </div>
 
 <!-- Form Pendaftaran -->
-<div class="container py-5">
-    <div class="row container gx-4">
+<div class="container py-5 container-pendaftaran">
+    <div class="row gx-4">
         <div class="col-md-6 left-section">
             <h3><?= lang('Blog.keuntunganMember'); ?></h3>
             <hr class="line-separator">
@@ -243,7 +250,7 @@ $this->setData([
                     </div>
                 <?php endif; ?>
 
-                <form action="<?= base_url('daftar-member') ?>" method="post" enctype="multipart/form-data">
+                <form action="<?= base_url('pendaftaran') ?>" method="post" enctype="multipart/form-data">
                     <?= csrf_field() ?>
 
                     <!-- Hidden field for role -->
@@ -556,133 +563,9 @@ $this->setData([
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
 <script>
-    $(document).ready(function() {
-        var isUsernameValid = false;
-        var isEmailValid = false;
-        var isReferralValid = true;
-
-        function checkFormValidity() {
-            return isUsernameValid && isEmailValid && isReferralValid;
-        }
-
-        // Pengecekan di sisi client ketika form akan disubmit
-        $('form').on('submit', function(event) {
-            var username = $('#username').val();
-            var referral = $('#referral').val();
-
-            if (referral && username === referral) {
-                event.preventDefault();
-                Swal.fire({
-                    title: "Pastikan Input Sesuai Dengan Ketentuan!",
-                    icon: "warning",
-                    confirmButtonText: "Oke",
-                });
-                isReferralValid = false;
-                return;
-            }
-
-            if (!checkFormValidity()) {
-                event.preventDefault();
-                Swal.fire({
-                    title: "Pastikan Input Sesuai Dengan Ketentuan!",
-                    icon: "warning",
-                    confirmButtonText: "Oke",
-                });
-            }
-        });
-
-        // Pengecekan username dari server
-        $('#username').on('input', function() {
-            var username = $(this).val();
-            var referral = $('#referral').val();
-
-            if (username.length > 0) {
-                $.ajax({
-                    url: '/user/checkAvailability',
-                    type: 'POST',
-                    data: {
-                        username: username
-                    },
-                    success: function(response) {
-                        if (response.status === 'exists') {
-                            $('#username-status').html('<span style="color: red;">Username sudah terdaftar</span>');
-                            isUsernameValid = false;
-                        } else {
-                            $('#username-status').html('<span style="color: green;">Username tersedia</span>');
-                            isUsernameValid = true;
-                        }
-                    }
-                });
-            } else {
-                $('#username-status').html('');
-                isUsernameValid = false;
-            }
-
-            if (referral && username === referral) {
-                $('#referral-status').html('<span style="color: red;">Kode referral tidak boleh sama dengan username</span>');
-                isReferralValid = false;
-            } else {
-                $('#referral-status').html('');
-                isReferralValid = true;
-            }
-        });
-
-        // Pengecekan email dari server
-        $('#email').on('input', function() {
-            var email = $(this).val();
-            if (email.length > 0) {
-                $.ajax({
-                    url: '/user/checkAvailability',
-                    type: 'POST',
-                    data: {
-                        email: email
-                    },
-                    success: function(response) {
-                        if (response.status === 'exists') {
-                            $('#email-status').html('<span style="color: red;">Email sudah terdaftar</span>');
-                            isEmailValid = false;
-                        } else {
-                            $('#email-status').html('<span style="color: green;">Email tersedia</span>');
-                            isEmailValid = true;
-                        }
-                    }
-                });
-            } else {
-                $('#email-status').html('');
-                isEmailValid = false;
-            }
-        });
-
-        // Pengecekan referral dari server
-        $('#referral').on('input', function() {
-            var referral = $(this).val();
-            var username = $('#username').val();
-
-            if (referral.length > 0) {
-                $.ajax({
-                    url: '/user/checkAvailability',
-                    type: 'POST',
-                    data: {
-                        referral: referral
-                    },
-                    success: function(response) {
-                        if (response.status === 'invalid') {
-                            $('#referral-status').html('<span style="color: red;">' + response.message + '</span>');
-                            isReferralValid = false;
-                        } else {
-                            $('#referral-status').html('<span style="color: green;">Kode referral valid</span>');
-                            isReferralValid = true;
-                        }
-                    }
-                });
-            } else {
-                $('#referral-status').html('');
-                isReferralValid = true;
-            }
-        });
-    });
-
+    // Cuma untuk show/hide password
     function togglePassword() {
         var passwordField = document.getElementById("password");
         var showPassword = document.getElementById("show-password");
@@ -692,6 +575,24 @@ $this->setData([
             passwordField.type = "password";
         }
     }
+
+    // VALIDASI SEDIKIT DI CLIENT: referral tidak boleh sama dengan username
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.querySelector('form');
+        var usernameInput = document.getElementById('username');
+        var referralInput = document.getElementById('referral');
+
+        form.addEventListener('submit', function (e) {
+            var username = usernameInput.value.trim();
+            var referral = referralInput.value.trim();
+
+            if (referral && username && username === referral) {
+                e.preventDefault();
+                alert('Kode referral tidak boleh sama dengan username');
+            }
+        });
+    });
 </script>
+
 
 <?= $this->endSection(); ?>
