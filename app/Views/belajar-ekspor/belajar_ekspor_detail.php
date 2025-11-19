@@ -3,18 +3,20 @@
 
 <?php
 $this->setData([
-    'title' => ($lang == 'id') ? $artikel['title_belajar_ekspor'] : $artikel['title_belajar_ekspor_en'],
-    'meta_description' => ($lang == 'id') ? $artikel['meta_deskripsi'] : $artikel['meta_deskripsi_en']
+    'title'            => ($lang == 'id') ? $artikel['title_belajar_ekspor'] : $artikel['title_belajar_ekspor_en'],
+    'meta_description' => ($lang == 'id') ? $artikel['meta_deskripsi']       : $artikel['meta_deskripsi_en']
 ]);
 ?>
 <style>
     /* Artikel Detail Section */
     .artikel-detail-section {
         position: relative;
-        /* supaya overlay absolute menempel di sini */
+        /* supaya overlay & modal absolute menempel di sini */
         padding: 60px 15px;
         background-color: #f9f9f9;
         border-bottom: 1px solid #ddd;
+        overflow: hidden;
+        /* ➜ modal & overlay tidak bisa keluar area ini */
     }
 
     .artikel-detail-header h1 {
@@ -29,19 +31,15 @@ $this->setData([
         margin-bottom: 10px;
     }
 
-    /* Add spacing between elements */
+    /* Spasi antar elemen dalam artikel */
     .artikel-text *+* {
         margin-top: 20px;
     }
 
-
     .image-wrapper {
         text-align: center;
-        /* Center the image within this wrapper */
         margin-top: 30px;
     }
-
-    /* Image styling */
 
     .artikel-text {
         line-height: 1.6;
@@ -50,7 +48,6 @@ $this->setData([
         padding-inline-end: 50px;
         text-align: justify;
     }
-
 
     /* Recommended Articles Section */
     .recommended-articles-section {
@@ -72,7 +69,6 @@ $this->setData([
         font-size: 1rem;
         color: #03AADE;
         flex-grow: 1;
-        /* Allow text to grow and fill available space */
     }
 
     .btn-custom {
@@ -93,10 +89,8 @@ $this->setData([
         padding: 0.8em 1.5em;
         border-radius: 3px;
         background-color: #03AADE;
-        width: auto;
-        /* Membuat lebar badge mengikuti panjang teks */
         display: inline-block;
-        /* Menjamin badge sesuai dengan teks */
+        width: auto;
     }
 
     .line-separator {
@@ -115,49 +109,32 @@ $this->setData([
         transform: translateY(-5px) !important;
     }
 
-    @media (max-width: 768px) {
-        .artikel-text {
-            padding: 0px;
-        }
-
-        .artikel-detail-header h1 {
-            font-size: 2rem;
-        }
-
-        .artikel-detail-content {
-            padding: 0 15px;
-        }
-
-        .artikel-text {
-            font-size: 1rem;
-        }
-
+    .fake-lorem {
+        margin-top: 20px;
+        line-height: 1.6;
+        text-align: justify;
     }
 
     /* Paywall modal */
     .paywall-overlay {
         position: absolute;
         top: 20%;
-        /* mulai blur dari 20% artikel */
+        /* mulai blur dari 20% tinggi artikel */
         left: 0;
         width: 100%;
-        height: 80%;
+        height: 100%;
         background: rgba(255, 255, 255, 0.6);
-        /* harus ada warna semi-transparan */
         backdrop-filter: blur(8px);
-        /* blur artikel di belakang */
         -webkit-backdrop-filter: blur(8px);
-        /* untuk Safari */
         display: none;
         z-index: 10;
     }
 
-
     .paywall-modal {
         position: absolute;
-        /* sebelumnya fixed */
+        /* relative ke artikel-detail-section */
         top: 50%;
-        /* akan diatur melalui JS supaya berada di tengah artikel */
+        /* posisi awal di tengah, nanti diatur JS */
         left: 50%;
         transform: translate(-50%, -50%);
         background: #fff;
@@ -169,10 +146,7 @@ $this->setData([
         text-align: center;
         z-index: 20;
         display: none;
-
     }
-
-
 
     .paywall-modal h2 {
         margin-bottom: 20px;
@@ -185,16 +159,69 @@ $this->setData([
         padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
+        margin: 4px;
     }
 
     .paywall-modal button:hover {
         background: #F2BF02;
     }
 
-    .fake-lorem {
-        margin-top: 20px;
-        line-height: 1.6;
-        text-align: justify;
+    /* Responsive */
+    @media (max-width: 768px) {
+        .artikel-text {
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        .artikel-detail-header h1 {
+            font-size: 2rem;
+        }
+
+        .artikel-detail-content {
+            padding: 0 15px;
+        }
+
+        .paywall-overlay {
+            top: 8%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .artikel-detail-section {
+            padding: 40px 10px;
+        }
+
+        .artikel-detail-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .artikel-text {
+            font-size: 0.95rem;
+        }
+
+        .paywall-modal {
+            padding: 22px 20px;
+        }
+    }
+
+    @media (max-width: 425px) {
+        .artikel-detail-header h1 {
+            font-size: 1.6rem;
+        }
+
+        .artikel-text {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .artikel-detail-header h1 {
+            font-size: 1.4rem;
+        }
+
+        .artikel-text {
+            font-size: 0.85rem;
+        }
     }
 </style>
 
@@ -203,19 +230,30 @@ $this->setData([
     <div class="container">
         <!-- Article Header -->
         <div class="artikel-detail-header text-center">
-            <h1><?= ($lang == 'en') ? $artikel['judul_belajar_ekspor_en'] : $artikel['judul_belajar_ekspor']; ?></h1>
+            <h1><?= ($lang == 'en')
+                    ? esc($artikel['judul_belajar_ekspor_en'])
+                    : esc($artikel['judul_belajar_ekspor']); ?></h1>
             <p class="text-muted mt-4"><?= date('d F Y', strtotime($artikel['created_at'])); ?></p>
         </div>
 
         <div class="artikel-detail-content">
             <div class="image-wrapper">
-                <img src="<?= base_url('/img/' . $artikel['foto_belajar_ekspor']); ?>" class="artikel-img img-fluid" alt="<?= ($lang == 'en') ? $artikel['judul_belajar_ekspor_en'] : $artikel['judul_belajar_ekspor']; ?>" style="width: 750px; aspect-ratio: 16/9;" loading="lazy">
+                <img
+                    src="<?= base_url('img/' . esc($artikel['foto_belajar_ekspor'], 'url')); ?>"
+                    class="artikel-img img-fluid"
+                    alt="<?= ($lang == 'en')
+                                ? esc($artikel['judul_belajar_ekspor_en'])
+                                : esc($artikel['judul_belajar_ekspor']); ?>"
+                    style="width: 750px; max-width: 100%; aspect-ratio: 16/9; object-fit: cover;"
+                    loading="lazy">
             </div>
 
             <!-- Tags Badges -->
-            <div style="display: flex; justify-content: center; align-items: center;">
+            <div class="d-flex justify-content-center align-items-center">
                 <div class="badge mt-4">
-                    <?= $kategori['nama_kategori']; ?>
+                    <?= ($lang == 'en')
+                        ? esc($kategori['nama_kategori_en'] ?? $kategori['nama_kategori'])
+                        : esc($kategori['nama_kategori']); ?>
                 </div>
             </div>
 
@@ -242,7 +280,7 @@ $this->setData([
                     }
 
                     if ($isGuest) {
-                        // tampilkan misalnya 2–3 paragraf asli
+                        // tampilkan misalnya 3 paragraf asli
                         $previewCount = 3;
                         $preview_pars = array_slice($paragraphs, 0, $previewCount);
 
@@ -266,14 +304,17 @@ $this->setData([
                     ?>
                 </div>
             </div>
-
         </div>
 
         <!-- Back Button -->
         <div class="artikel-detail-footer text-center mt-5">
-            <a href="<?= base_url(($lang == 'en') ? 'en/lessons' : 'id/materi'); ?>" class="btn btn-custom"><?= lang('Blog.backtoArticle') ?></a>
+            <a href="<?= base_url(($lang == 'en') ? 'en/lessons' : 'id/materi'); ?>"
+                class="btn btn-custom">
+                <?= lang('Blog.backtoArticle') ?>
+            </a>
         </div>
     </div>
+
     <!-- Paywall overlay -->
     <div class="paywall-overlay" id="paywallOverlay"></div>
 
@@ -281,13 +322,14 @@ $this->setData([
     <div class="paywall-modal" id="paywallModal">
         <h2><?= lang('Blog.wantToOpenBE'); ?></h2>
         <p><?= lang('Blog.deskMemberFree'); ?></p>
-        <a href="<?= base_url('/login'); ?>"><button><?php echo lang('Blog.headerMasuk'); ?></button></a>
-        <a href="<?= base_url($lang .  '/' . $pendaftaranLink) ?>"><button><?php echo lang('Blog.registerSA'); ?></button></a>
-
+        <a href="<?= base_url('/login'); ?>">
+            <button type="button"><?= lang('Blog.headerMasuk'); ?></button>
+        </a>
+        <a href="<?= base_url($lang . '/' . $pendaftaranLink); ?>">
+            <button type="button"><?= lang('Blog.registerSA'); ?></button>
+        </a>
     </div>
-
 </section>
-
 <!-- artikel-detail section end -->
 
 <!-- recommended articles section start -->
@@ -298,19 +340,42 @@ $this->setData([
             <?php foreach ($belajar_ekspor as $item): ?>
                 <div class="col-md-4 mt-4">
                     <div class="card h-100">
-                        <img src="<?= base_url('/img/' . $item['foto_belajar_ekspor']); ?>" class="card-img-top img-fluid" alt="<?= ($lang == 'en') ? $item['judul_belajar_ekspor_en'] : $item['judul_belajar_ekspor']; ?>" style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
+                        <img
+                            src="<?= base_url('img/' . esc($item['foto_belajar_ekspor'], 'url')); ?>"
+                            class="card-img-top img-fluid"
+                            alt="<?= ($lang == 'en')
+                                        ? esc($item['judul_belajar_ekspor_en'])
+                                        : esc($item['judul_belajar_ekspor']); ?>"
+                            style="object-fit: cover; object-position: center; aspect-ratio: 16/9;"
+                            loading="lazy">
                         <div class="card-body d-flex flex-column">
                             <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($item['created_at'])); ?></p>
-                                <span class="badge"><?= ($lang == 'en') ? $item['kategori']['nama_kategori_en'] : $item['kategori']['nama_kategori']; ?></span>
+                                <p class="card-text mb-0" style="font-size: 1rem;">
+                                    <?= date('d F Y', strtotime($item['created_at'])); ?>
+                                </p>
+                                <span class="badge">
+                                    <?= ($lang == 'en')
+                                        ? esc($item['kategori']['nama_kategori_en'] ?? $item['kategori']['nama_kategori'])
+                                        : esc($item['kategori']['nama_kategori']); ?>
+                                </span>
                             </div>
-                            <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <?= ($lang == 'en') ? $item['judul_belajar_ekspor_en'] : $item['judul_belajar_ekspor']; ?>
+                            <h5 class="card-title"
+                                style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <?= ($lang == 'en')
+                                    ? esc($item['judul_belajar_ekspor_en'])
+                                    : esc($item['judul_belajar_ekspor']); ?>
                             </h5>
                             <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <?= ($lang == 'en') ? $item['deskripsi_belajar_ekspor_en'] : $item['deskripsi_belajar_ekspor']; ?>
+                                <?= ($lang == 'en')
+                                    ? esc($item['deskripsi_belajar_ekspor_en'])
+                                    : esc($item['deskripsi_belajar_ekspor']); ?>
                             </p>
-                            <a href="<?= base_url(($lang == 'en' ? 'en/lessons/' : 'id/materi/') . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">
+                            <a href="<?= base_url(
+                                            ($lang == 'en' ? 'en/lessons/' : 'id/materi/') .
+                                                (($lang == 'en') ? $item['slug_en'] : $item['slug'])
+                                        ); ?>"
+                                class="btn btn-custom mt-auto"
+                                style="width: 100%; display: block; text-align: center;">
                                 <?= ($lang == 'en') ? 'Read More' : 'Baca Selengkapnya'; ?>
                             </a>
                         </div>
@@ -320,6 +385,7 @@ $this->setData([
         </div>
     </div>
 </section>
+<!-- recommended articles section end -->
 
 <script>
     <?php if ($isGuest): ?>
@@ -328,22 +394,23 @@ $this->setData([
             const overlay = document.getElementById('paywallOverlay');
             const modal = document.getElementById('paywallModal');
 
+            if (!artikelSection || !overlay || !modal) return;
+
             window.addEventListener('scroll', function() {
                 const scrollTop = window.scrollY;
                 const artikelTop = artikelSection.offsetTop;
                 const artikelHeight = artikelSection.offsetHeight;
-                const triggerPoint = artikelTop + artikelHeight * 0.2; // 20% scroll
+                const triggerPoint = artikelTop + artikelHeight * 0.15; // 15% scroll
 
                 if (scrollTop >= triggerPoint) {
                     overlay.style.display = 'block';
                     modal.style.display = 'block';
 
-                    // pastikan modal tidak keluar dari artikel
                     const modalHeight = modal.offsetHeight;
                     const maxTop = artikelHeight - modalHeight / 2;
                     let newTop = scrollTop - artikelTop + window.innerHeight / 2;
 
-                    // batasi modal agar tetap dalam artikel
+                    // batasi modal agar tetap di dalam artikel-detail-section
                     if (newTop < modalHeight / 2) newTop = modalHeight / 2;
                     if (newTop > maxTop) newTop = maxTop;
 
