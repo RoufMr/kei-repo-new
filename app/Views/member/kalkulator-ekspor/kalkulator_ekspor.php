@@ -13,6 +13,7 @@ $cif             = $cif ?? [];
 ?>
 
 <style>
+    /* ===== OUTPUT HARGA ===== */
     .result-harga-exwork,
     .result-harga-fob,
     .result-harga-cfr,
@@ -21,6 +22,34 @@ $cif             = $cif ?? [];
         font-size: 1.5em;
     }
 
+    /* ===== TABLE BASE ===== */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .table {
+        width: 100%;
+        table-layout: auto;
+        font-size: 0.95rem;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    /* Input di kolom biaya agar tidak terlalu panjang */
+    .table input.form-control {
+        min-width: 120px;
+    }
+
+    /* Tombol hapus kecil */
+    .btn-hapus-baris {
+        font-size: .8rem;
+    }
+
+    /* Sembunyikan container komponen baru sampai tombol tambah ditekan */
     #komponenExworkContainer,
     #komponenFOBContainer,
     #komponenCFRContainer,
@@ -32,19 +61,7 @@ $cif             = $cif ?? [];
         display: none;
     }
 
-    .table-responsive {
-        overflow-x: auto;
-        width: 100%;
-    }
-
-    .table {
-        min-width: 500px;
-    }
-
-    .nav-link {
-        font-weight: 600;
-    }
-
+    /* ===== FORM & CARD ===== */
     .form-group {
         margin-bottom: 20px;
     }
@@ -61,7 +78,95 @@ $cif             = $cif ?? [];
         transition: background-color .3s ease, transform .3s ease, box-shadow .3s ease;
         background-color: #F2BF02 !important;
     }
+
+    /* ===== SPACING CONTAINER UNTUK HP ===== */
+    .calc-container {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
+    @media (max-width: 768px) {
+        .calc-container .card {
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .form-control,
+        .form-select,
+        .input-group-text {
+            font-size: .85rem;
+            padding: 8px 10px;
+        }
+
+        /* Tabel jadi lebih ringkas */
+        .table {
+            font-size: 0.82rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 6px 8px;
+        }
+
+        /* Tombol tambah komponen full width */
+        #tambahKolomExwork,
+        #tambahKolomFOB,
+        #tambahKolomCFR,
+        #tambahKolomCIF {
+            width: 100%;
+            display: block;
+        }
+
+        /* Tombol simpan juga full width */
+        #submitKomponenExworkButton,
+        #submitKomponenFOBButton,
+        #submitKomponenCFRButton,
+        #submitKomponenCIFButton {
+            width: 100% !important;
+            margin-top: 10px;
+        }
+    }
+
+    /* ===== HP KECIL (≤425px) ===== */
+    @media (max-width: 425px) {
+
+        /* Kolom nomor diperkecil */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            width: 35px;
+        }
+
+        /* Form komponen baru auto stack full width */
+        .komponenRow .col-md-6,
+        .komponenRow .col-md-5,
+        .komponenRow .col-md-1 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .komponenRow .col-12 {
+            margin-bottom: 8px;
+        }
+
+        .btn-hapus-baris {
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .form-control,
+        .form-select {
+            font-size: .8rem;
+            padding: 7px 8px;
+        }
+    }
+
+    /* ===== PERBAIKAN SUPAYA TIDAK SCROLL KANAN ===== */
+    html,
+    body {
+        overflow-x: hidden !important;
+    }
 </style>
+
 
 <!-- judul -->
 <div class="py-5 text-center">
@@ -69,9 +174,7 @@ $cif             = $cif ?? [];
     <p class="text-custom-paragraph mt-2">Berikut aplikasi Kalkulator Ekspor Indonesia</p>
 </div>
 
-<div class="container py-2 mt-3">
-
-    <!-- FLASH POP-UP bridge -->
+<div class="container py-2 mt-3 calc-container">
     <?php if (session()->getFlashdata('success')): ?>
         <script>
             window.addEventListener('DOMContentLoaded', () => {
@@ -177,7 +280,7 @@ $cif             = $cif ?? [];
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center w-25">Komponen</th>
-                            <th class="biaya-col-header">Biaya (Rp.)</th>
+                            <th class="biaya-col-header text-center">Biaya (Rp.)</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -480,6 +583,32 @@ $cif             = $cif ?? [];
 </div>
 
 <script>
+    // ==== USER CONTEXT (baru) ====
+    const USER_ID = <?= (int)($user_id ?? 0); ?>; // dari controller
+    const STORE_NS = `kei_calc_${USER_ID}_`;
+    const LAST_UID_KEY = 'kei_calc_last_uid';
+    const Store = window.localStorage;
+    const NS = {
+        get(k) {
+            return Store.getItem(STORE_NS + k);
+        },
+        set(k, v) {
+            Store.setItem(STORE_NS + k, v);
+        },
+        del(k) {
+            Store.removeItem(STORE_NS + k);
+        }
+    };
+    (function handleUserSwitch() {
+        const last = Store.getItem(LAST_UID_KEY);
+        if (last && String(last) !== String(USER_ID)) {
+            // bersihkan jejak lama non-namespaced (versi sebelum patch)
+            ['kalk_s_namaProduk', 'kalk_s_ukuran_kontainer', 'kalk_s_jumlahBarang', 'kalk_s_hpp', 'kalk_s_keuntungan', 'kalk_s_satuan']
+            .forEach(key => Store.removeItem(key));
+        }
+        Store.setItem(LAST_UID_KEY, String(USER_ID));
+    })();
+
     // ==== UTIL ====
     function formatRupiah(angka) {
         var number_string = (angka || '').toString().replace(/[^,\d]/g, ''),
@@ -498,34 +627,35 @@ $cif             = $cif ?? [];
     function bersihkanRupiah(str) {
         return (str || '').toString().replace(/\./g, '').replace(/[^\d]/g, '');
     }
-
-    // fallback notify
     if (typeof notify !== 'function') {
         window.notify = function(type, msg) {
             alert(msg);
         };
     }
 
-    // LocalStorage (Opsi A)
-    const Store = window.localStorage;
+    // ==== STATE KEYS (per-user namespace via NS) ====
+    const SS_KEYS = {
+        nama: 'namaProduk',
+        ukuran: 'ukuran_kontainer',
+        jumlah: 'jumlahBarang',
+        hpp: 'hpp',
+        untung: 'keuntungan',
+        satuan: 'satuan',
+    };
 
     // === Update label Biaya sesuai ukuran kontainer ===
     function updateUkuranHints() {
         const size = document.getElementById('ukuran_kontainer')?.value || '';
         const suffix = size ? ' / Kontainer ' + size : '';
-
-        // Ubah semua header kolom di tabel
         document.querySelectorAll('th.biaya-col-header').forEach(th => {
             th.textContent = 'Biaya (Rp.)' + suffix;
         });
-
-        // Ubah semua label di form tambah komponen (Exwork, FOB, CFR, CIF)
         document.querySelectorAll('label.biaya-col-header').forEach(label => {
             label.textContent = 'Biaya (Rp.)' + suffix;
         });
     }
 
-    // === Unit helpers (baru) ===
+    // === Unit helpers ===
     function getSatuanText() {
         return (document.getElementById('satuan')?.value || '').trim();
     }
@@ -543,16 +673,7 @@ $cif             = $cif ?? [];
         });
     }
 
-    // ==== STATE (LOCAL STORAGE ONLY) ====
-    const SS_KEYS = {
-        nama: 'kalk_s_namaProduk',
-        ukuran: 'kalk_s_ukuran_kontainer',
-        jumlah: 'kalk_s_jumlahBarang',
-        hpp: 'kalk_s_hpp',
-        untung: 'kalk_s_keuntungan',
-        satuan: 'kalk_s_satuan',
-    };
-
+    // ==== SAVE STATE (NS + server) ====
     function saveStateOnce() {
         const nama = document.getElementById('namaProduk')?.value || '';
         const ukuran = document.getElementById('ukuran_kontainer')?.value || '';
@@ -561,14 +682,13 @@ $cif             = $cif ?? [];
         const untung = document.getElementById('keuntungan')?.value || '';
         const satuan = document.getElementById('satuan')?.value || '';
 
-        Store.setItem(SS_KEYS.nama, nama);
-        Store.setItem(SS_KEYS.ukuran, ukuran);
-        Store.setItem(SS_KEYS.jumlah, bersihkanRupiah(jumlah));
-        Store.setItem(SS_KEYS.hpp, bersihkanRupiah(hpp));
-        Store.setItem(SS_KEYS.untung, bersihkanRupiah(untung));
-        Store.setItem(SS_KEYS.satuan, satuan);
+        NS.set(SS_KEYS.nama, nama);
+        NS.set(SS_KEYS.ukuran, ukuran);
+        NS.set(SS_KEYS.jumlah, bersihkanRupiah(jumlah));
+        NS.set(SS_KEYS.hpp, bersihkanRupiah(hpp));
+        NS.set(SS_KEYS.untung, bersihkanRupiah(untung));
+        NS.set(SS_KEYS.satuan, satuan);
 
-        // Simpan angka ke server (nama/jumlah/hpp/untung) → endpoint yang sudah ada
         (async () => {
             try {
                 const body = new URLSearchParams();
@@ -587,16 +707,42 @@ $cif             = $cif ?? [];
         })();
     }
 
-    async function restoreStatePreferringStorage() {
-        const nama = Store.getItem(SS_KEYS.nama) || '';
-        const ukuran = Store.getItem(SS_KEYS.ukuran) || '';
-        const jumlah = Store.getItem(SS_KEYS.jumlah) || '';
-        const hpp = Store.getItem(SS_KEYS.hpp) || '';
-        const untung = Store.getItem(SS_KEYS.untung) || '';
-        const satuan = Store.getItem(SS_KEYS.satuan) || '';
+    // ==== SERVER-FIRST RESTORE lalu merge storage per-user ====
+    async function restoreStateServerFirstThenStorage() {
+        try {
+            const res = await fetch('<?= base_url('kalkulator-state/load') ?>', {
+                method: 'GET'
+            });
+            const json = await res.json();
+            if (json?.ok && json.data) {
+                const d = json.data;
+                const gt0 = v => Number(v) > 0;
+
+                const elNama = document.getElementById('namaProduk');
+                if (elNama && d.nama_produk) elNama.value = d.nama_produk;
+
+                const elJumlah = document.getElementById('jumlahBarang');
+                if (elJumlah && gt0(d.jumlah_barang)) elJumlah.value = formatRupiah(String(d.jumlah_barang));
+
+                const elHpp = document.getElementById('hpp');
+                if (elHpp && gt0(d.hpp)) elHpp.value = formatRupiah(String(d.hpp));
+
+                const elUnt = document.getElementById('keuntungan');
+                if (elUnt && gt0(d.keuntungan)) elUnt.value = formatRupiah(String(d.keuntungan));
+            }
+        } catch (e) {
+            /* silent */
+        }
+
+        const nama = NS.get(SS_KEYS.nama) || '';
+        const ukuran = NS.get(SS_KEYS.ukuran) || '';
+        const jumlah = NS.get(SS_KEYS.jumlah) || '';
+        const hpp = NS.get(SS_KEYS.hpp) || '';
+        const untung = NS.get(SS_KEYS.untung) || '';
+        const satuan = NS.get(SS_KEYS.satuan) || '';
 
         const elNama = document.getElementById('namaProduk');
-        if (elNama && nama) elNama.value = nama;
+        if (elNama && !elNama.value && nama) elNama.value = nama;
 
         const sel = document.getElementById('ukuran_kontainer');
         if (sel && ukuran) {
@@ -607,11 +753,13 @@ $cif             = $cif ?? [];
         updateUkuranHints();
 
         const elJumlah = document.getElementById('jumlahBarang');
-        if (elJumlah && jumlah) elJumlah.value = formatRupiah(jumlah);
+        if (elJumlah && !elJumlah.value && jumlah) elJumlah.value = formatRupiah(jumlah);
+
         const elHpp = document.getElementById('hpp');
-        if (elHpp && hpp) elHpp.value = formatRupiah(hpp);
+        if (elHpp && !elHpp.value && hpp) elHpp.value = formatRupiah(hpp);
+
         const elUnt = document.getElementById('keuntungan');
-        if (elUnt && untung) elUnt.value = formatRupiah(untung);
+        if (elUnt && !elUnt.value && untung) elUnt.value = formatRupiah(untung);
 
         const elSatuan = document.getElementById('satuan');
         if (elSatuan) elSatuan.value = satuan;
@@ -624,46 +772,6 @@ $cif             = $cif ?? [];
             hitungCFR();
             hitungCIF();
         } catch (e) {}
-    }
-
-    async function loadStateFromServer() {
-        try {
-            const res = await fetch('<?= base_url('kalkulator-state/load') ?>', {
-                method: 'GET'
-            });
-            const json = await res.json();
-            if (!json.ok || !json.data) return;
-            const d = json.data;
-            const gt0 = v => Number(v) > 0;
-
-            const elNama = document.getElementById('namaProduk');
-            if (elNama && !elNama.value && d.nama_produk) elNama.value = d.nama_produk;
-
-            const elJumlah = document.getElementById('jumlahBarang');
-            if (elJumlah && !elJumlah.value && gt0(d.jumlah_barang)) {
-                elJumlah.value = formatRupiah(String(d.jumlah_barang));
-            }
-
-            const elHpp = document.getElementById('hpp');
-            if (elHpp && !elHpp.value && gt0(d.hpp)) {
-                elHpp.value = formatRupiah(String(d.hpp));
-            }
-
-            const elUnt = document.getElementById('keuntungan');
-            if (elUnt && !elUnt.value && gt0(d.keuntungan)) {
-                elUnt.value = formatRupiah(String(d.keuntungan));
-            }
-
-            updateSatuanBadges();
-            try {
-                hitungExwork();
-                hitungFOB();
-                hitungCFR();
-                hitungCIF();
-            } catch (e) {}
-        } catch (err) {
-            /* silent */
-        }
     }
 
     // ==== Debounce helper ====
@@ -692,13 +800,10 @@ $cif             = $cif ?? [];
             satuanStatus.classList.remove('text-success', 'text-danger');
         }
     }
-
     const autosaveSatuan = debounce(async function() {
         try {
             const val = (satuanInput?.value || '').trim();
-
             updateSatuanBadges();
-
             setSatuanStatus('');
             const body = new URLSearchParams();
             body.set('satuan', val);
@@ -710,10 +815,9 @@ $cif             = $cif ?? [];
                 },
                 body
             });
-
             const json = await res.json();
             if (res.ok && json.ok) {
-                Store.setItem(SS_KEYS.satuan, val);
+                NS.set(SS_KEYS.satuan, val);
                 setSatuanStatus('', true);
                 try {
                     hitungExwork();
@@ -731,24 +835,21 @@ $cif             = $cif ?? [];
 
     if (satuanInput) {
         satuanInput.addEventListener('input', function() {
-            Store.setItem(SS_KEYS.satuan, (satuanInput.value || '').trim());
+            NS.set(SS_KEYS.satuan, (satuanInput.value || '').trim());
             updateSatuanBadges();
             autosaveSatuan();
         });
         satuanInput.addEventListener('change', function() {
-            Store.setItem(SS_KEYS.satuan, (satuanInput.value || '').trim());
+            NS.set(SS_KEYS.satuan, (satuanInput.value || '').trim());
             updateSatuanBadges();
             autosaveSatuan();
-
-            // Opsional: reset angka saat satuan berubah
             ['jumlahBarang', 'hpp', 'keuntungan', 'hargaExwork', 'hargaFOB', 'hargaCFR'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
-            Store.setItem(SS_KEYS.jumlah, '');
-            Store.setItem(SS_KEYS.hpp, '');
-            Store.setItem(SS_KEYS.untung, '');
-
+            NS.set(SS_KEYS.jumlah, '');
+            NS.set(SS_KEYS.hpp, '');
+            NS.set(SS_KEYS.untung, '');
             try {
                 hitungExwork();
                 hitungFOB();
@@ -777,7 +878,6 @@ $cif             = $cif ?? [];
             document.querySelector('.result-harga-exwork').innerText = 'Rekomendasi Harga Exwork: ';
             return;
         }
-
         jumlahBarang = parseFloat(jumlahBarang);
         hpp = parseFloat(hpp);
         keuntungan = parseFloat(keuntungan);
@@ -945,7 +1045,6 @@ $cif             = $cif ?? [];
             container.style.display = 'block';
             btnSubmit.style.display = 'inline-block';
         }
-
         btnAdd.addEventListener('click', function() {
             ensureVisible();
             const row = document.createElement('div');
@@ -968,8 +1067,6 @@ $cif             = $cif ?? [];
                     <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
                 </div>
             </div>`;
-
-            // format & perhitungan
             row.querySelector('.input-biaya-exwork').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
                 hitungExwork();
@@ -977,8 +1074,6 @@ $cif             = $cif ?? [];
                 hitungCFR();
                 hitungCIF();
             });
-
-            // hapus baris
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
                 row.remove();
                 updateCounter();
@@ -992,13 +1087,10 @@ $cif             = $cif ?? [];
                 hitungCIF();
                 updateUkuranHints();
             });
-
             container.appendChild(row);
             updateCounter();
             updateUkuranHints();
         });
-
-
         document.getElementById('formExworkAll').addEventListener('submit', function() {
             try {
                 saveStateOnce();
@@ -1023,7 +1115,6 @@ $cif             = $cif ?? [];
             container.style.display = 'block';
             btnSubmit.style.display = 'inline-block';
         }
-
         btnAdd.addEventListener('click', function() {
             ensureVisible();
             const row = document.createElement('div');
@@ -1046,7 +1137,6 @@ $cif             = $cif ?? [];
                     <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
                 </div>
             </div>`;
-
             row.querySelector('.input-biaya-fob').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
                 hitungExwork();
@@ -1054,7 +1144,6 @@ $cif             = $cif ?? [];
                 hitungCFR();
                 hitungCIF();
             });
-
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
                 row.remove();
                 updateCounter();
@@ -1068,12 +1157,10 @@ $cif             = $cif ?? [];
                 hitungCIF();
                 updateUkuranHints();
             });
-
             container.appendChild(row);
             updateCounter();
             updateUkuranHints();
         });
-
         form.addEventListener('submit', function() {
             try {
                 saveStateOnce();
@@ -1098,7 +1185,6 @@ $cif             = $cif ?? [];
             container.style.display = 'block';
             btnSubmit.style.display = 'inline-block';
         }
-
         btnAdd.addEventListener('click', function() {
             ensureVisible();
             const row = document.createElement('div');
@@ -1121,7 +1207,6 @@ $cif             = $cif ?? [];
                     <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
                 </div>
             </div>`;
-
             row.querySelector('.input-biaya-cfr').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
                 hitungExwork();
@@ -1129,7 +1214,6 @@ $cif             = $cif ?? [];
                 hitungCFR();
                 hitungCIF();
             });
-
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
                 row.remove();
                 updateCounter();
@@ -1143,12 +1227,10 @@ $cif             = $cif ?? [];
                 hitungCIF();
                 updateUkuranHints();
             });
-
             container.appendChild(row);
             updateCounter();
             updateUkuranHints();
         });
-
         form.addEventListener('submit', function() {
             try {
                 saveStateOnce();
@@ -1173,7 +1255,6 @@ $cif             = $cif ?? [];
             container.style.display = 'block';
             btnSubmit.style.display = 'inline-block';
         }
-
         btnAdd.addEventListener('click', function() {
             ensureVisible();
             const row = document.createElement('div');
@@ -1196,7 +1277,6 @@ $cif             = $cif ?? [];
                     <button type="button" class="btn btn-danger w-100 btn-hapus-baris"><i class="bi bi-x-lg"></i></button>
                 </div>
             </div>`;
-
             row.querySelector('.input-biaya-cif').addEventListener('keyup', function(e) {
                 e.target.value = formatRupiah(e.target.value);
                 hitungExwork();
@@ -1204,7 +1284,6 @@ $cif             = $cif ?? [];
                 hitungCFR();
                 hitungCIF();
             });
-
             row.querySelector('.btn-hapus-baris').addEventListener('click', function() {
                 row.remove();
                 updateCounter();
@@ -1218,12 +1297,10 @@ $cif             = $cif ?? [];
                 hitungCIF();
                 updateUkuranHints();
             });
-
             container.appendChild(row);
             updateCounter();
             updateUkuranHints();
         });
-
         form.addEventListener('submit', function() {
             try {
                 saveStateOnce();
@@ -1235,11 +1312,11 @@ $cif             = $cif ?? [];
 
     // ==== Restore saat halaman dibuka ====
     document.addEventListener('DOMContentLoaded', function() {
-        restoreStatePreferringStorage();
+        restoreStateServerFirstThenStorage(); // server dulu, baru storage per-user
         updateUkuranHints();
         updateSatuanBadges();
-        loadStateFromServer(); // boleh parallel
     });
 </script>
+
 
 <?= $this->endSection(); ?>

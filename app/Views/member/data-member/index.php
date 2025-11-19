@@ -68,7 +68,7 @@
                             <?php if (empty($item['foto_profil'])): ?>
                                 <img src="https://via.placeholder.com/500" class="card-img-top img-fluid member-img" alt="Member Photo" style="height: 220px;">
                             <?php else: ?>
-                                <img src="<?= base_url('img/' . $item['foto_profil']) ?>" class="card-img-top img-fluid member-img" alt="Member Photo" style="height: 220px;">
+                                <img src="<?= base_url('uploads/foto_usaha/' . $item['foto_profil']) ?>" class="card-img-top img-fluid member-img" alt="Member Photo" style="height: 220px;">
                             <?php endif; ?>
                             <div class="card-body text-center">
                                 <h5 class="card-title"><?= $item['nama_perusahaan'] ?></h5>

@@ -10,17 +10,17 @@ class GuestFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Sesuaikan key session dengan punyamu: 'user_id' dan/atau 'logged_in'
-        if (session()->get('user_id') || session()->get('logged_in')) {
-            // AJAX → JSON, selain itu redirect
-            if ($request->isAJAX()) {
-                return service('response')
-                    ->setStatusCode(409)
-                    ->setJSON(['message' => 'Sudah login', 'redirect' => site_url('beranda')]);
-            }
-            return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
+        $s = session();
+
+        // Jika sudah login, tolak akses halaman guest
+        if ($s->get('user_id') || $s->get('logged_in')) {
+            $s->setFlashdata('info', 'Kamu sudah login.');
+            return redirect()->to('/beranda');
         }
+        // kalau belum login, lanjut saja
     }
 
-    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {}
+    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
+    {
+    }
 }

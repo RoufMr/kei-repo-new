@@ -44,6 +44,9 @@
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+        max-width: 650px;
+        padding: 20px;
     }
 
     .card h2 {
@@ -122,7 +125,6 @@
         color: #03AADE;
     }
 
-
     /* Animasi */
     @keyframes fadeIn {
         from {
@@ -168,64 +170,74 @@
     /* end */
 
     @media (max-width: 768px) {
-        .card {
-            margin-left: 50px;
+        .lingkaran {
+            width: 220px;
+            height: 220px;
         }
 
         .card-body h5 {
             font-size: 1.25rem;
-            /* Adjust title size */
-        }
-
-        .card-img-top {
-            height: 180px;
-            /* Adjust image height */
-        }
-
-        .row .col-md-4 {
-            flex-basis: 50%;
-            /* Two cards per row on tablet */
         }
     }
 
     @media (max-width: 576px) {
-        .card {
-            margin-left: 40px;
+        .lingkaran {
+            width: 200px;
+            height: 200px;
         }
 
-        .row .col-md-4 {
-            flex-basis: 100%;
-            /* Full width card on mobile */
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between !important;
+            gap: 0 !important;
+            flex-wrap: nowrap;
+            /* Cegah menumpuk */
         }
 
-        .card-img-top {
-            height: 150px;
-            /* Smaller image height */
+        .nav-tabs .nav-item {
+            flex: 1;
+            /* Bagi rata */
+            text-align: center;
         }
 
-        .card-body h5 {
-            font-size: 1rem;
-            /* Smaller title on mobile */
+        .nav-tabs .nav-link {
+            width: 100%;
+            font-size: 14px;
+            padding: 10px 5px;
+            border-radius: 0;
         }
     }
 
     @media (max-width: 425px) {
         .card {
-            margin-right: 40px;
+            max-width: 90%;
+        }
+
+        .lingkaran {
+            width: 180px;
+            height: 180px;
         }
     }
 
     @media (max-width: 375px) {
         .card {
-            margin-right: 40px;
+            max-width: 92%;
+        }
+
+        .lingkaran {
+            width: 170px;
+            height: 170px;
         }
     }
 
     @media (max-width: 320px) {
+        .card {
+            max-width: 95%;
+        }
+
         .lingkaran {
-            width: 200px;
-            height: 200px;
-            right: 5px;
+            width: 160px;
+            height: 160px;
         }
     }
 </style>
@@ -249,7 +261,7 @@
         <?php endif; ?>
 
         <!-- Form untuk upload foto -->
-        <form action="<?= base_url('id/update-foto-profil'); ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= base_url('update-foto-profil'); ?>" method="post" enctype="multipart/form-data">
             <?= csrf_field(); ?>
 
             <div class="text-center mb-3 shadow lingkaran">
@@ -305,7 +317,7 @@
             <!-- Informasi Perusahaan -->
             <div class="tab-pane fade show active" id="informasi" role="tabpanel" aria-labelledby="informasi-tab">
                 <h5 class="mb-4"><?= lang('Blog.informasiakun'); ?></h5>
-                <form action="<?= base_url('id/ubah-informasi-akun'); ?>" method="POST" enctype="multipart/form-data">
+                <form action="<?= base_url('ubah-informasi-akun'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="password" class="form-label">Password</label>
@@ -320,7 +332,7 @@
             <!-- Profil Perusahaan -->
             <div class="tab-pane fade" id="profil" role="tabpanel" aria-labelledby="profil-tab">
                 <h5 class="mb-4"><?= lang('Blog.profilperusahaan'); ?></h5>
-                <form action="<?= base_url('id/ubah-profil-perusahaan'); ?>" method="POST" enctype="multipart/form-data">
+                <form action="<?= base_url('ubah-profil-perusahaan'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="nama_perusahaan" class="form-label"><?= lang('Blog.namaperusahaan'); ?></label>

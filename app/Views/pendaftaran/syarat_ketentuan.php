@@ -7,7 +7,7 @@ $this->setData([
 ]);
 ?>
 
-<div class="container my-5">
+<div class="container my-5 page-container">
     <!-- judul -->
     <div class="pendaftaran-section text-center">
         <h1><?= lang('Blog.syaratketentuan'); ?></h1>

@@ -364,6 +364,47 @@
             min-width: 200px;
         }
     }
+
+    /* Tabel sebaiknya scroll horizontal bila melebar */
+    .table-responsive {
+        overflow-x: auto;
+        /* was overflow-y */
+        width: 100%;
+    }
+
+    /* Mobile-first tweaks untuk planner */
+    @media (max-width: 767.98px) {
+        .planner-columns {
+            display: block;
+        }
+
+        .planner-columns {
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+        .planner-columns>.card {
+            width: 100% !important;
+            max-width: 100%;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-bottom: 16px;
+        }
+
+        /* Header tabel & sel lebih ramah mobile */
+        .table th,
+        .table td {
+            white-space: normal !important;
+            word-wrap: break-word;
+            vertical-align: top !important;
+        }
+
+        /* Judul card rapih */
+        .planner-columns>.card h3 {
+            text-align: left;
+            margin-bottom: 12px;
+        }
+    }
 </style>
 
 <div class="py-5" style="text-align: center;">
@@ -372,9 +413,9 @@
 </div>
 
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center planner-columns">
         <!-- Content Pillar Section -->
-        <div class="card shadow p-4 m-1 col-5">
+        <div class="card shadow p-4 m-1 col-12 col-md-5 order-1">
             <h3 class="text-center mb-4">Content Pillar</h3>
 
             <!-- Tabel untuk menampilkan komponen Content Pillar -->
@@ -489,7 +530,7 @@
         </div>
 
         <!-- Content Type Section -->
-        <div class="card shadow p-4 m-1 col-3">
+        <div class="card shadow p-4 m-1 col-12 col-md-3 order-2">
             <h3 class="text-center mb-4">Content Type</h3>
 
             <div class="table-responsive">
@@ -593,7 +634,7 @@
         </div>
 
         <!-- Platform Section -->
-        <div class="card shadow p-4 m-1 col-3">
+        <div class="card shadow p-4 m-1 col-12 col-md-3 order-3">
             <h3 class="text-center mb-4">Content Platform</h3>
 
             <div class="table-responsive">
@@ -732,7 +773,7 @@
         </div>
 
         <!-- Add New Content Section -->
-        <div class="card shadow p-3 m-2 col-12" id="add-content-card">
+        <div class="card shadow p-3 m-2 col-12 order-4" id="add-content-card">
             <h3 class="text-center mb-4">Tambah Konten Baru</h3>
 
             <form action="<?= base_url('/sosmed-planner/konten-planner/tambah') ?>" method="post" enctype="multipart/form-data">
@@ -878,7 +919,7 @@
 </div>
 
 <!-- Calendar Section -->
-<div class="card shadow p-3 m-2 col-12">
+<div class="card shadow p-3 m-2 col-12 order-5">
     <div class="calendar-container">
         <h3 class="text-center mb-4">
             <i class="fas fa-calendar-alt me-2"></i>

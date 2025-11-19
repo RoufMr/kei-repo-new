@@ -591,8 +591,6 @@ class KomunitasEkspor extends BaseController
         }
     }
 
-
-
     public function index()
     {
         $lang = session()->get('lang') ?? 'id';
@@ -663,6 +661,7 @@ class KomunitasEkspor extends BaseController
         $member = $model_member->where('role', 'member')->findAll();
         $top4_member = $model_member
             ->where('role', 'member')
+            ->where('status', 1)
             ->orderBy('popular_point', 'DESC')
             ->limit(4)
             ->findAll();
@@ -1083,12 +1082,10 @@ class KomunitasEkspor extends BaseController
 
     public function pendaftaran()
     {
-        // 🔒 Guard: jika sudah login, jangan boleh akses halaman pendaftaran
         if (session()->get('user_id') || session()->get('logged_in')) {
             return redirect()->to('/beranda')->with('info', 'Kamu sudah login.');
         }
 
-        // --- logic lama kamu (tetap) ---
         $model_webprofile = new WebProfile();
         $webprofile = $model_webprofile->findAll();
         $data['webprofile'] = $webprofile;
@@ -2110,7 +2107,7 @@ class KomunitasEkspor extends BaseController
                 unlink('uploads/foto_usaha/' . $oldFileName);
             }
 
-            return redirect()->to('id/edit-profile')->with('success', 'Foto profil berhasil diperbarui.');
+            return redirect()->to('edit-profile')->with('success', 'Foto profil berhasil diperbarui.');
         } else {
             // Jika update gagal, hapus file baru
             if (file_exists('uploads/foto_usaha/' . $newFileName)) {
@@ -2138,7 +2135,7 @@ class KomunitasEkspor extends BaseController
             $model_member->update($user_id, $data);
         }
 
-        return redirect()->to('id/edit-profile');
+        return redirect()->to('edit-profile');
     }
 
     public function ubah_profil_perusahaan()
@@ -2203,7 +2200,7 @@ class KomunitasEkspor extends BaseController
         // Update member's profile
         $model_member->update($user_id, $data);
 
-        return redirect()->to('id/edit-profile');
+        return redirect()->to('edit-profile');
     }
 
 
@@ -2802,6 +2799,7 @@ class KomunitasEkspor extends BaseController
             'keuntungan'    => 0,
         ];
 
+        $data['user_id'] = $user_id;
         return view('member/kalkulator-ekspor/kalkulator_ekspor', $data);
     }
 
