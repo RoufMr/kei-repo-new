@@ -6279,7 +6279,7 @@ class KomunitasEkspor extends BaseController
     {
         $model_video = new VideoTutorialModel();
 
-        $video = $model_video->getAllVideos();
+        $video = $model_video->getAllWithCategory();
 
         $data['video_tutorial'] = $video;
 
