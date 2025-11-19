@@ -261,7 +261,7 @@
         <?php endif; ?>
 
         <!-- Form untuk upload foto -->
-        <form action="<?= base_url('id/update-foto-profil'); ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= base_url('update-foto-profil'); ?>" method="post" enctype="multipart/form-data">
             <?= csrf_field(); ?>
 
             <div class="text-center mb-3 shadow lingkaran">
@@ -317,7 +317,7 @@
             <!-- Informasi Perusahaan -->
             <div class="tab-pane fade show active" id="informasi" role="tabpanel" aria-labelledby="informasi-tab">
                 <h5 class="mb-4"><?= lang('Blog.informasiakun'); ?></h5>
-                <form action="<?= base_url('id/ubah-informasi-akun'); ?>" method="POST" enctype="multipart/form-data">
+                <form action="<?= base_url('ubah-informasi-akun'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="password" class="form-label">Password</label>
@@ -332,7 +332,7 @@
             <!-- Profil Perusahaan -->
             <div class="tab-pane fade" id="profil" role="tabpanel" aria-labelledby="profil-tab">
                 <h5 class="mb-4"><?= lang('Blog.profilperusahaan'); ?></h5>
-                <form action="<?= base_url('id/ubah-profil-perusahaan'); ?>" method="POST" enctype="multipart/form-data">
+                <form action="<?= base_url('ubah-profil-perusahaan'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="nama_perusahaan" class="form-label"><?= lang('Blog.namaperusahaan'); ?></label>

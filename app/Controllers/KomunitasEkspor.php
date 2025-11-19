@@ -591,8 +591,6 @@ class KomunitasEkspor extends BaseController
         }
     }
 
-
-
     public function index()
     {
         $lang = session()->get('lang') ?? 'id';
@@ -663,6 +661,7 @@ class KomunitasEkspor extends BaseController
         $member = $model_member->where('role', 'member')->findAll();
         $top4_member = $model_member
             ->where('role', 'member')
+            ->where('status', 1)
             ->orderBy('popular_point', 'DESC')
             ->limit(4)
             ->findAll();
@@ -2108,7 +2107,7 @@ class KomunitasEkspor extends BaseController
                 unlink('uploads/foto_usaha/' . $oldFileName);
             }
 
-            return redirect()->to('id/edit-profile')->with('success', 'Foto profil berhasil diperbarui.');
+            return redirect()->to('edit-profile')->with('success', 'Foto profil berhasil diperbarui.');
         } else {
             // Jika update gagal, hapus file baru
             if (file_exists('uploads/foto_usaha/' . $newFileName)) {
@@ -2136,7 +2135,7 @@ class KomunitasEkspor extends BaseController
             $model_member->update($user_id, $data);
         }
 
-        return redirect()->to('id/edit-profile');
+        return redirect()->to('edit-profile');
     }
 
     public function ubah_profil_perusahaan()
@@ -2201,7 +2200,7 @@ class KomunitasEkspor extends BaseController
         // Update member's profile
         $model_member->update($user_id, $data);
 
-        return redirect()->to('id/edit-profile');
+        return redirect()->to('edit-profile');
     }
 
 

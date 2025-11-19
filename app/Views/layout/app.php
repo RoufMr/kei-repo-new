@@ -135,7 +135,6 @@
         visibility: visible;
         width: 100%;
     }
-
     /* end */
 
     /* sticky navbar */
