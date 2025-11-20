@@ -360,10 +360,10 @@
                                     style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                     <?= ($lang === 'en') ? $video['judul_video_en'] : $video['judul_video']; ?>
                                 </h5>
-                                <p
+                                <div
                                     style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
                                     <?= ($lang === 'en') ? $video['deskripsi_video_en'] : $video['deskripsi_video']; ?>
-                                </p>
+                                </div>
                                 <a href="<?= base_url(($lang === 'en' ? 'en/videos/' : 'id/video/')
                                                 . ($lang === 'en' ? $video['slug_en'] : $video['slug'])); ?>"
                                    class="btn btn-custom mt-auto w-100">

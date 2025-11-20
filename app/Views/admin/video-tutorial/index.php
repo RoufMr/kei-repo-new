@@ -215,6 +215,8 @@
                                         <th class="text-center" valign="middle">Thumbnail</th>
                                         <th class="text-center" valign="middle">URL Video</th>
                                         <th class="text-center" valign="middle">Deskripsi Video</th>
+                                        <th class="text-center" valign="middle">Title</th>
+                                        <th class="text-center" valign="middle">Meta Deskripsi</th>
                                         <th class="text-center" valign="middle">Aksi</th>
                                     </tr>
                                 </thead>
@@ -226,7 +228,7 @@
                                             <td class="text-center" valign="middle"><?= $item['judul_video']; ?></td>
                                             <td class="text-center" valign="middle"><?= $item['nama_kategori_video']; ?></td>
                                             <td class="text-center" valign="middle">
-                                                <img src="<?= base_url('/img/' . $item['thumbnail']) ?>" alt="Thumbnail" class="img-thumbnail" style="max-width: 100px;">
+                                                <img src="<?= base_url('img/' . $item['thumbnail']) ?>" alt="Thumbnail" class="img-thumbnail" style="max-width: 100px;">
                                             </td>
                                             <td class="text-center" valign="middle"><?= $item['video_url']; ?></td>
                                             <td class="text-center" valign="middle">
@@ -234,10 +236,12 @@
                                                     <?= $item['deskripsi_video']; ?>
                                                 </div>
                                             </td>
+                                            <td class="text-center" valign="middle"><?= $item['title_video']; ?></td>
+                                            <td class="text-center" valign="middle"><?= $item['meta_deskripsi_video']; ?></td>
                                             <td class="text-center align-middle">
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    <a href="<?= base_url('/admin-video-tutorial-delete/' . $item['id_video']) ?>" class="btn btn-sm text-white me-2" style="background-color: #F2BF02;">Hapus</a>
-                                                    <a href="<?= base_url('/admin-video-tutorial-ubah/' . $item['id_video']) ?>" class="btn btn-sm text-white" style="background-color: #03AADE;">Ubah</a>
+                                                    <a href="<?= base_url('admin-video-tutorial-delete/' . $item['id_video']) ?>" class="btn btn-sm text-white me-2" style="background-color: #F2BF02;">Hapus</a>
+                                                    <a href="<?= base_url('admin-video-tutorial-ubah/' . $item['id_video']) ?>" class="btn btn-sm text-white" style="background-color: #03AADE;">Ubah</a>
                                                 </div>
                                             </td>
                                         </tr>

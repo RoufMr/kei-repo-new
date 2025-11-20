@@ -1,47 +1,87 @@
 <?= $this->extend('member/layout/app'); ?>
 <?= $this->section('content'); ?>
+
 <?php
 $this->setData([
-    'title' => $video['title_video'] ,
-    'meta_description' => $video['meta_deskripsi_video'] 
+    'title'            => $video['title_video'],
+    'meta_description' => $video['meta_deskripsi_video']
 ]);
 ?>
+
 <style>
-    .rounded {
-        border-radius: 8px;
+    /* ===================================================
+       Layout umum detail video
+       =================================================== */
+    .video-detail-section {
+        padding: 60px 15px 30px;
+        background-color: #f9f9f9;
     }
 
-    .shadow-sm {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    .video-main-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        padding: 24px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
     }
 
-    .badge {
+    .video-detail-title {
+        font-size: 2rem;
+        margin: 16px 0;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .video-desc-title {
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .video-desc-text {
+        line-height: 1.6;
+        text-align: justify;
+    }
+
+    /* Badge kategori (samakan gaya dengan materi) */
+    .video-badge,
+    .video-main-card .badge {
         font-weight: normal;
         color: #fff;
-        font-size: 0.9rem;
-        padding: 0.8em 1.5em;
+        font-size: 0.85rem;
+        padding: 0.4em 0.8em;
         border-radius: 3px;
         background-color: #03AADE;
         display: inline-block;
     }
 
-    .card {
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
-    }
-
-    .card:hover {
-        box-shadow: 0px 0px 25px #03AADE !important;
-        transform: translateY(-5px) !important;
+    /* ===================================================
+       Overlay lokal hanya di area video
+       =================================================== */
+    .video-container {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        max-width: 100%;
     }
 
     .thumbnail-wrapper {
         position: relative;
         display: inline-block;
+        width: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        /* penting agar overlay & thumbnail tidak keluar */
+        margin-bottom: 16px;
     }
 
     .thumbnail-wrapper img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: inherit;
         filter: brightness(70%);
         transition: filter 0.3s ease;
+        margin-bottom: 0;
     }
 
     .thumbnail-wrapper:hover img {
@@ -71,90 +111,320 @@ $this->setData([
         border-top: 12px solid transparent;
         border-bottom: 12px solid transparent;
     }
+
+    /* Overlay hanya menutupi area video, selalu center */
+    .video-overlay {
+        position: absolute;
+        inset: 0;
+        /* top:0; right:0; bottom:0; left:0; */
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        /* mengikuti thumbnail */
+        padding: 0 8px;
+        /* sedikit ruang agar modal kecil tidak kepotong di hp */
+    }
+
+    .video-overlay[hidden] {
+        display: none !important;
+    }
+
+    /* Modal di tengah thumbnail */
+    .video-modal {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        text-align: center;
+        z-index: 11;
+        animation: fadeIn 0.2s ease-in-out;
+
+        /* default desktop */
+        max-width: 320px;
+        width: 100%;
+        padding: 18px 20px;
+    }
+
+    .video-modal h2 {
+        margin-bottom: 12px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .video-modal p {
+        margin-bottom: 14px;
+        font-size: 0.95rem;
+    }
+
+    .video-modal .btn {
+        background: #03AADE;
+        color: #fff;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 4px;
+        font-size: 0.9rem;
+        transition: 0.2s;
+    }
+
+    .video-modal .btn:hover {
+        background: #F2BF02;
+        color: #fff;
+    }
+
+    /* Animasi */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===================================================
+       Related video (sidebar)
+       =================================================== */
+    .related-title {
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .related-card {
+        border-radius: 10px;
+        border: 1px solid #eee;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .related-thumb {
+        object-fit: cover;
+        width: 100px;
+        height: 100px;
+    }
+
+    .related-title-text {
+        font-size: 16px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .related-desc-text {
+        font-size: 13px;
+        margin-bottom: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ===================================================
+       Responsive
+       =================================================== */
+    @media (max-width: 992px) {
+        .video-detail-section {
+            padding-inline: 20px;
+        }
+
+        .video-detail-title {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .video-detail-section {
+            padding: 40px 15px 20px;
+        }
+
+        .video-main-card {
+            padding: 20px 16px;
+        }
+
+        .video-detail-title {
+            font-size: 1.6rem;
+        }
+
+        .related-title {
+            margin-top: 24px;
+        }
+
+        .video-modal {
+            max-width: 280px;
+            padding: 14px 16px;
+        }
+
+        .video-modal h2 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+
+        .video-modal p {
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .video-modal .btn {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+        }
+
+    }
+
+    @media (max-width: 576px) {
+        .video-detail-title {
+            font-size: 1.4rem;
+        }
+
+        .video-main-card {
+            padding: 18px 14px;
+        }
+
+        .video-overlay {
+            padding: 0 10px;
+        }
+
+        .video-modal {
+            max-width: 240px;
+            padding: 12px 14px;
+            border-radius: 8px;
+        }
+
+        .video-modal h2 {
+            font-size: 0.95rem;
+        }
+
+        .video-modal p {
+            font-size: 0.85rem;
+        }
+
+        .video-modal .btn {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            margin: 2px 3px;
+        }
+    }
+
+    @media (max-width: 425px) {
+        .video-detail-title {
+            font-size: 1.25rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .video-detail-section {
+            padding-inline: 10px;
+        }
+
+        .video-detail-title {
+            font-size: 1.1rem;
+        }
+
+        .video-modal {
+            max-width: 210px;
+            padding: 10px 12px;
+        }
+
+        .video-modal h2 {
+            font-size: 0.9rem;
+        }
+
+        .video-modal p {
+            font-size: 0.8rem;
+        }
+
+        .video-modal .btn {
+            padding: 4px 10px;
+            font-size: 0.75rem;
+        }
+    }
 </style>
 
-<!-- Video Details Start -->
-<div class="container-fluid pt-5 mb-3">
+<section class="video-detail-section">
     <div class="container">
         <div class="row">
+            <!-- Kolom utama: video -->
             <div class="col-lg-8">
-                <div class="position-relative mb-3">
-                    <div class="bg-white border border-top-0 p-4 rounded shadow-sm">
+                <div class="video-main-card mb-3">
+                    <!-- Kategori -->
+                    <div class="mb-2">
+                        <span class="video-badge">
+                            <?= $kategori['nama_kategori_video']; ?>
+                        </span>
+                    </div>
 
-                        <!-- Tags Badges -->
-                        <div style="display: flex;">
-                            <div class="badge py-2">
-                                <?= esc($kategori['nama_kategori_video']); ?>
-                            </div>
-                        </div>
+                    <!-- Judul -->
+                    <h4 class="video-detail-title">
+                        <?= $video['judul_video']; ?>
+                    </h4>
 
-                        <!-- Video Title -->
-                        <h4 class="py-3 text-uppercase font-weight-bold"><?= esc($video['judul_video']); ?></h4>
-
-                        <!-- Plyr Video Player Start -->
-                        <div class="mb-3 text-center">
-                            <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                                <div class="thumbnail-wrapper">
-                                    <img src="<?= base_url('/img/' . $video['thumbnail']); ?>"
-                                        alt="<?= esc($video['judul_video']); ?>"
-                                        class="img-fluid rounded shadow-sm mb-3" />
-                                    <div class="play-button"></div>
-                                </div>
+                    <!-- Area Video + Overlay Lokal -->
+                        <div class="thumbnail-wrapper">
+                            <a href="<?= esc($video['video_url']); ?>" target="_blank" rel="noopener noreferrer"
+                                class="text-decoration-none thumb-trigger"
+                                data-video-url="<?= esc($video['video_url']); ?>">
+                                <img
+                                    src="<?= base_url('img/' . $video['thumbnail']); ?>"
+                                    alt="<?=  esc($video['judul_video']); ?>"
+                                    class="thumb-img"
+                                    loading="lazy"
+                                    decoding="async" />
+                                <div class="play-button"></div>
                             </a>
-                        </div>
-                        <!-- Plyr Video Player End -->
-
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <h5 class="font-weight-bold py-2">Deskripsi</h5>
-                            <p><?= esc($video['deskripsi_video']); ?></p>
+                    </div>
+                    
+                    <!-- Deskripsi -->
+                    <div class="mt-3">
+                        <h5 class="video-desc-title"><?= lang('Blog.titleDesc') ?></h5>
+                        <div class="video-desc-text">
+                            <?= $video['deskripsi_video']; ?>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Kolom samping: related video -->
             <div class="col-lg-4">
-                <!-- Video Lainnya -->
-                <div class="mb-3">
-                    <div class="section-title mb-0">
-                        <h4 class="m-0 py-4 font-weight-bold">Video Lainnya</h4>
-                    </div>
+                <h4 class="related-title"><?= lang('Blog.titleOther') ?></h4>
 
-                    <?php foreach ($related_video as $related_video): ?>
-                        <div class="card bg-white border border-top-0 p-3 rounded shadow-sm mb-3">
-                            <a href="<?= base_url('video/' . esc($related_video['slug'])); ?>" class="text-decoration-none">
-                                <div class="d-flex align-items-center bg-white rounded border border-light overflow-hidden shadow-sm">
-                                    <img class="img-fluid" style="object-fit: cover; width: 100px; height: 100px;" src="<?= base_url('/img/' . esc($related_video['thumbnail'])); ?>" alt="Thumbnail Video">
-                                    <div class="w-100 h-100 px-3 d-flex flex-column justify-content-center">
-                                        <h3 class="text-uppercase font-weight-bold text-dark" style="font-size: 18px; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                            <?= esc($related_video['judul_video']); ?>
-                                        </h3>
-                                        <p class="text-dark" style="font-size: 14px; margin-bottom: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                            <?= esc($related_video['deskripsi_video']); ?>
-                                        </p>
+                <?php foreach ($related_video as $item): ?>
+                    <div class="card related-card bg-white p-3 mb-3">
+                        <a href="<?= base_url('video') . '/' . $item['slug']; ?>"
+                            class="text-decoration-none">
+                            <div class="d-flex align-items-center bg-white rounded overflow-hidden">
+                                <img
+                                    class="img-fluid related-thumb"
+                                    src="<?= base_url('img/' . $item['thumbnail']); ?>"
+                                    alt="<?= $item['judul_video']; ?>">
+                                <div class="w-100 h-100 px-3 d-flex flex-column justify-content-center">
+                                    <h3 class="text-dark related-title-text">
+                                        <?= $item['judul_video']; ?>
+                                    </h3>
+                                    <div class="text-dark related-desc-text">
+                                        <?= $item['deskripsi_video']; ?>
                                     </div>
                                 </div>
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-                <!-- Video Lainnya End -->
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+
             </div>
         </div>
     </div>
-</div>
-<!-- Video Details End -->
+</section>
 
-<!-- Init Plyr + Disable Right Click -->
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const player = new Plyr('#plyr-video');
-
-        // Disable right click on video
-        const video = document.getElementById('plyr-video');
-        video.addEventListener('contextmenu', e => e.preventDefault());
-        video.addEventListener('dragstart', e => e.preventDefault());
-    });
-</script> -->
 
 <?= $this->endSection(); ?>

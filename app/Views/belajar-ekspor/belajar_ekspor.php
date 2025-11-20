@@ -584,9 +584,9 @@
                                     style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
                                     <?= ($lang == 'en') ? $item['judul_belajar_ekspor_en'] : $item['judul_belajar_ekspor']; ?>
                                 </h5>
-                                <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
                                     <?= ($lang == 'en') ? $item['deskripsi_belajar_ekspor_en'] : $item['deskripsi_belajar_ekspor']; ?>
-                                </p>
+                                </div>
                                 <a href="<?= base_url(($lang == 'en' ? 'en/lessons/' : 'id/materi/')
                                                 . (($lang == 'en') ? $item['slug_en'] : $item['slug'])); ?>"
                                     class="btn btn-custom mt-auto w-100">

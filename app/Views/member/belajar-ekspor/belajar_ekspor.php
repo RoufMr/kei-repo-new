@@ -1,22 +1,17 @@
 <?= $this->extend('member/layout/app'); ?>
 <?= $this->section('content'); ?>
 
-
 <style>
-    /* Artikel Detail Section */
+    /* ===================================================
+       Section header & layout
+       =================================================== */
     .artikel-detail-section {
-        padding: 0px 15px;
+        padding: 0 15px;
     }
 
-    /* css */
-    /* start css search */
-    .form button {
-        border: none;
-        background: none;
-        color: #fff;
-    }
-
-    /* styling of whole input container */
+    /* ===================================================
+       Search bar
+       =================================================== */
     .form {
         --timing: 0.3s;
         --width-of-input: 600px;
@@ -26,8 +21,10 @@
         --border-color: #F2BF02;
         --border-radius: 30px;
         --after-border-radius: 1px;
+
         position: relative;
-        width: var(--width-of-input);
+        width: 100%;
+        max-width: var(--width-of-input);
         height: var(--height-of-input);
         display: flex;
         align-items: center;
@@ -38,7 +35,12 @@
         margin: 0 auto;
     }
 
-    /* styling of Input */
+    .form button {
+        border: none;
+        background: none;
+        color: #fff;
+    }
+
     .input {
         font-size: 0.9rem;
         background-color: transparent;
@@ -54,7 +56,6 @@
         color: #fff;
     }
 
-    /* styling of animated border */
     .form:before {
         content: "";
         position: absolute;
@@ -69,44 +70,39 @@
         transition: transform var(--timing) ease;
     }
 
-    /* Hover on Input */
     .form:focus-within {
         border-radius: var(--after-border-radius);
     }
 
-    input:focus {
+    .input:focus {
         outline: none;
     }
 
-    /* here is code of animated border */
     .form:focus-within:before {
         transform: scale(1);
     }
 
-    /* styling of close button */
-    /* == you can click the close button to remove text == */
     .reset {
         border: none;
         background: none;
         opacity: 0;
         visibility: hidden;
+        transition: opacity 0.2s ease;
     }
 
-    /* close button shown when typing */
     input:not(:placeholder-shown)~.reset {
         opacity: 1;
         visibility: visible;
     }
 
-    /* sizing svg icons */
     .form svg {
         width: 17px;
         margin-top: 3px;
     }
 
-    /* end search css */
-
-    /* start filter css */
+    /* ===================================================
+       Filter dropdown
+       =================================================== */
     .filter-container {
         display: flex;
         justify-content: flex-end;
@@ -125,16 +121,9 @@
         border-radius: 30px;
     }
 
-    .menu:hover {
-        background-color: #F2BF02;
-    }
-
     .menu a {
         text-decoration: none;
         color: inherit;
-        font-family: inherit;
-        font-size: inherit;
-        line-height: inherit;
     }
 
     .menu .link {
@@ -147,15 +136,13 @@
         border-radius: 30px;
         overflow: hidden;
         transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+        color: #fff;
     }
 
     .menu .link::after {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        inset: 0;
         background-color: #F2BF02;
         z-index: -1;
         transform: scaleX(0);
@@ -181,11 +168,11 @@
         align-items: center;
         position: absolute;
         top: 100%;
-        border-radius: 0 0 30px 30px;
         left: 0;
         width: 100%;
+        border-radius: 0 0 30px 30px;
         overflow: hidden;
-        border: 1px solid #cccccc;
+        border: 1px solid #03AADE;
         opacity: 0;
         visibility: hidden;
         transform: translateY(-12px);
@@ -200,12 +187,9 @@
         visibility: visible;
         transform: translateY(0);
         pointer-events: auto;
-        border-top: transparent;
-        border-color: #03AADE;
     }
 
     .menu .item:hover .link {
-        color: #ffffff;
         border-radius: 30px 30px 0 0;
     }
 
@@ -215,13 +199,11 @@
     }
 
     .menu .item:hover .link svg {
-        fill: #ffffff;
         transform: rotate(-180deg);
     }
 
     .submenu .submenu-item {
         width: 100%;
-        transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     .submenu .submenu-link {
@@ -231,27 +213,21 @@
         position: relative;
         text-align: center;
         transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .submenu .submenu-item:last-child .submenu-link {
-        border-bottom: none;
+        color: #000;
     }
 
     .submenu .submenu-link::before {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        transform: scaleX(0);
-        width: 100%;
-        height: 100%;
+        inset: 0;
         background-color: #03AADE;
         z-index: -1;
+        transform: scaleX(0);
         transform-origin: left;
         transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
-    .submenu .submenu-link:hover:before {
+    .submenu .submenu-link:hover::before {
         transform: scaleX(1);
         transform-origin: right;
     }
@@ -260,8 +236,9 @@
         color: #ffffff;
     }
 
-    /* end filter css */
-
+    /* ===================================================
+       Card artikel
+       =================================================== */
     .card {
         transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
@@ -274,14 +251,11 @@
     .badge {
         font-weight: normal;
         color: #fff;
-        font-size: 0.9rem;
-        padding: 0.5em 1em;
+        font-size: 0.85rem;
+        padding: 0.4em 0.8em;
         border-radius: 3px;
         background-color: #03AADE;
-        width: auto;
-        /* Membuat lebar badge mengikuti panjang teks */
         display: inline-block;
-        /* Menjamin badge sesuai dengan teks */
     }
 
     .btn-custom {
@@ -295,115 +269,280 @@
         color: #ffffff;
     }
 
-    .card-text {
-        color: #03AADE;
+    .card-content-inner {
+        max-width: 340px;
+        /* <= max-width untuk text di dalam card */
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
-    .tampilkan {
-        color: #03AADE;
+    /* ===================================================
+       RESPONSIVE BREAKPOINTS
+       =================================================== */
+
+    /* ≤ 992px */
+    @media (max-width: 992px) {
+        .artikel-detail-section {
+            padding-inline: 20px;
+        }
+
+        .text-custom-title {
+            font-size: 1.8rem;
+        }
+
+        .text-custom-paragraph {
+            font-size: 1rem;
+        }
     }
 
-    /*responsive mobile*/
+    /* ≤ 768px */
     @media (max-width: 768px) {
         .form {
-            --width-of-input: 250px;
+            --width-of-input: 100%;
             --height-of-input: 45px;
         }
 
         .filter-container {
-            padding: 0px 15px;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
+            padding: 0 15px;
+            justify-content: center;
         }
 
         .menu {
             font-size: 14px;
-            line-height: 1.4;
-            color: #000000;
-            width: fit-content;
-            display: flex;
-            list-style: none;
-            margin-right: 0;
-            background-color: #03AADE;
-            border-radius: 30px;
         }
+
+        .menu .link {
+            padding: 10px 28px;
+        }
+
+        .text-custom-title {
+            font-size: 1.6rem;
+        }
+
+        .text-custom-paragraph {
+            font-size: 0.95rem;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+        }
+
+        .card-content-inner {
+            max-width: 320px;
+        }
+
+        .card-body p {
+            font-size: 13px;
+        }
+
+        .card-content-inner a {
+            font-size: 13px;
+        }
+    }
+
+    /* ≤ 576px */
+    @media (max-width: 576px) {
+        .artikel-detail-section {
+            padding-inline: 10px;
+        }
+
+        .text-custom-title {
+            font-size: 1.4rem;
+        }
+
+        .text-custom-paragraph {
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.3em 0.6em;
+        }
+
+        .menu .link {
+            padding: 8px 22px;
+            gap: 8px;
+        }
+
+        /* Card punya padding kiri kanan */
+        .card {
+            margin: 0 20px;
+            border-radius: 14px;
+        }
+
+        /* .card-body p {
+            font-size: 0.9rem;
+        } */
+
+        .card-content-inner {
+            max-width: 420px;
+        }
+    }
+
+    /* ≤ 425px */
+    @media (max-width: 425px) {
+        .text-custom-title {
+            font-size: 1.25rem;
+        }
+
+        .text-custom-paragraph {
+            font-size: 0.85rem;
+        }
+
+        .form {
+            --height-of-input: 42px;
+        }
+
+        .menu {
+            font-size: 13px;
+        }
+
+        .menu .link {
+            padding: 8px 18px;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+        }
+
+        .card-title {
+            font-size: 0.8rem;
+        }
+
+        .card-body p {
+            font-size: 10px;
+        }
+
+        .card-content-inner a{
+            font-size: 10px;
+        }
+    }
+
+    /* ≤ 360px */
+    @media (max-width: 360px) {
+        .artikel-detail-section {
+            padding-inline: 8px;
+        }
+
+        .text-custom-title {
+            font-size: 1.1rem;
+        }
+
+        .text-custom-paragraph {
+            font-size: 0.8rem;
+        }
+
+        .menu {
+            font-size: 12px;
+        }
+
+        .menu .link {
+            padding: 7px 14px;
+            gap: 6px;
+        }
+
+        .form {
+            --height-of-input: 40px;
+        }
+
+        /* .card-title {
+            font-size: 0.95rem;
+        }
+
+        .card-body p {
+            font-size: 0.8rem;
+        }
+
+        .card-content-inner {
+            max-width: 260px;
+        } */
     }
 </style>
 
-<!-- judul -->
-<div class="artikel-detail-section py-5" style="text-align: center;">
+<!-- Header + Search -->
+<div class="artikel-detail-section py-5 text-center">
     <h2 class="text-custom-title">
         <?= !empty($current_category_name)
             ? esc($current_category_name)
             : lang('Blog.headerMateri') ?>
     </h2>
-    <!-- <h2 class="text-custom-title">
-        <?= esc($title ?? lang('Blog.headerMateri')) ?>
-    </h2> -->
 
     <p class="text-custom-paragraph mt-2">
         <?= lang('Blog.belajarEksporSubtitle') ?>
     </p>
 
-    <!-- Search Bar Start -->
     <form class="form mt-4" action="#" method="GET" onsubmit="
-    event.preventDefault();
-    const base =  'materi/keyword=';
-    const input = this.querySelector('input[name=keyword]');
-    let kw = (input.value || '').trim();
-    if (!kw) { input.focus(); return false; }
-    // Encode: spasi -> + (agar sesuai contoh URL), karakter lain tetap aman
-    kw = encodeURIComponent(kw).replace(/%20/g, '+');
-    window.location.href = '<?= base_url() ?>' + base + kw;
-    return false;
-">
+        event.preventDefault();
+        const lang = '<?= 'id' ?>';
+        const base =  'materi/keyword=';
+        const input = this.querySelector('input[name=keyword]');
+        let kw = (input.value || '').trim();
+        if (!kw) { input.focus(); return false; }
+        kw = encodeURIComponent(kw).replace(/%20/g, '+');
+        window.location.href = '<?= base_url() ?>' + base + kw;
+        return false;
+    ">
         <button type="submit" aria-label="Search">
-            <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
-                <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+            <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+                <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+                    stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
         </button>
-        <input class="input" name="keyword" placeholder="<?= lang('Blog.belajarEksporCTA') ?>" required type="text" autocomplete="off">
-        <button class="reset" type="button" aria-label="Clear"
-            onclick="this.previousElementSibling.value=''; this.previousElementSibling.focus();">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        <input
+            id="searchInput"
+            class="input"
+            name="keyword"
+            placeholder="<?= lang('Blog.belajarEksporCTA') ?>"
+            required
+            type="text"
+            autocomplete="off">
+        <button
+            id="searchReset"
+            type="button"
+            class="reset"
+            aria-label="Clear search"
+            data-reset-url="<?= base_url( 'materi'); ?>">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
     </form>
-    <!-- Search Bar End -->
-
 </div>
 
 <section class="container">
-    <!-- start filter -->
+    <!-- Filter -->
     <div class="filter-container">
         <div class="menu">
             <div class="item">
                 <a href="#" class="link text-light">
                     <span><?= lang('Blog.filterCategory') ?></span>
                     <svg viewBox="0 0 360 360" xml:space="preserve">
-                        <g id="SVGRepo_iconCarrier">
-                            <path
-                                id="XMLID_225_"
-                                d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"></path>
-                        </g>
+                        <path
+                            d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393
+                               c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150
+                               c2.813,2.813,6.628,4.393,10.606,4.393s7.794-1.581,10.606-4.394l149.996-150
+                               C331.465,94.749,331.465,85.251,325.607,79.393z">
+                        </path>
                     </svg>
                 </a>
                 <div class="submenu">
-                    <!-- Tampilkan kategori dari database -->
                     <?php if (!empty($kategori_belajar_ekspor)): ?>
-                        <!-- Tampilkan link ke semua kategori -->
                         <div class="submenu-item">
-                            <a href="<?= base_url(('materi')); ?>" class="submenu-link <?= empty($active_category) ? 'active' : ''; ?>">
+                            <a href="<?= base_url( 'materi'); ?>"
+                                class="submenu-link <?= empty($active_category) ? 'active' : ''; ?>">
                                 <?= lang('Blog.filterAllPlaceholder') ?>
                             </a>
                         </div>
-                        <!-- Loop kategori -->
                         <?php foreach ($kategori_belajar_ekspor as $item): ?>
                             <div class="submenu-item">
-                                <!-- dropdown kategori -->
-                                <a href="<?= base_url(('materi/') . ( $item['slug'])); ?>" class="submenu-link <?= $active_category == $item['id_kategori_belajar_ekspor'] ? 'active' : ''; ?>">
+                                <a href="<?= base_url('materi/')
+                                                . $item['slug']; ?>"
+                                    class="submenu-link <?= $active_category == $item['id_kategori_belajar_ekspor'] ? 'active' : ''; ?>">
                                     <?=  $item['nama_kategori']; ?>
                                 </a>
                             </div>
@@ -417,36 +556,48 @@
             </div>
         </div>
     </div>
-    <!-- end filter -->
 
-    <div class="row container g-4 mb-5">
+    <!-- List Materi -->
+    <div class="row g-4 mb-5">
         <?php if (!empty($belajar_ekspor)): ?>
-            <!-- Menampilkan artikel sesuai kategori -->
             <?php foreach ($belajar_ekspor as $item): ?>
-                <!-- Card -->
-                <div class="col-md-4">
+                <!-- 2 kolom di tablet (sm), 3 kolom di desktop (lg) -->
+                <div class="col-12 col-sm-6 col-lg-4">
                     <div class="card h-100 shadow-sm">
-                        <img src="<?= base_url('/img/' . $item['foto_belajar_ekspor']); ?>" class="card-img-top img-fluid" alt="<?= $item['judul_belajar_ekspor']; ?>" style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
+                        <img
+                            src="<?= base_url('img/' . esc($item['foto_belajar_ekspor'], 'url')); ?>"
+                            class="card-img-top img-fluid"
+                            alt="<?= esc( $item['judul_belajar_ekspor']); ?>"
+                            style="object-fit: cover; object-position: center; aspect-ratio: 16/9;"
+                            loading="lazy">
                         <div class="card-body d-flex flex-column">
-                            <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($item['created_at'])); ?></p>
-                                <span class="badge"><?= $item['nama_kategori']; ?></span>
+                            <div class="card-content-inner">
+                                <div class="mb-3 d-flex justify-content-between align-items-center">
+                                    <p class="mb-0">
+                                        <?= date('d F Y', strtotime($item['created_at'])); ?>
+                                    </p>
+                                    <span class="badge">
+                                        <?= esc($item['nama_kategori']); ?>
+                                    </span>
+                                </div>
+                                <h5 class="card-title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <?= $item['judul_belajar_ekspor']; ?>
+                                </h5>
+                                <div style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <?=  $item['deskripsi_belajar_ekspor']; ?>
+                                </div>
+                                <a href="<?= base_url( 'materi/')
+                                                .  $item['slug']; ?>"
+                                    class="btn btn-custom mt-auto w-100">
+                                    <?= lang('Blog.readMore') ?>
+                                </a>
                             </div>
-                            <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <?= $item['judul_belajar_ekspor']; ?>
-                            </h5>
-                            <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <?= $item['deskripsi_belajar_ekspor']; ?>
-                            </p>
-                            <!-- tombol read more -->
-                            <a href="<?= base_url(('materi/') . ($item['slug'])); ?>" class="btn btn-custom mt-auto">
-                                <?= lang('Blog.readMore') ?>
-                            </a>
-
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
+
             <div class="mt-5">
                 <?= $pager->links('default', 'bootstrap_pagination') ?>
             </div>
@@ -459,5 +610,33 @@
         <?php endif; ?>
     </div>
 </section>
+
+<script>
+    (function() {
+        const resetBtn = document.getElementById('searchReset');
+        const input = document.getElementById('searchInput');
+
+        if (!resetBtn || !input) return;
+
+        const toggleReset = () => {
+            if (input.value && input.value.trim() !== '') {
+                resetBtn.style.opacity = '1';
+                resetBtn.style.visibility = 'visible';
+            } else {
+                resetBtn.style.opacity = '0';
+                resetBtn.style.visibility = 'hidden';
+            }
+        };
+
+        input.addEventListener('input', toggleReset);
+        toggleReset();
+
+        resetBtn.addEventListener('click', function() {
+            input.value = '';
+            const url = this.dataset.resetUrl;
+            if (url) window.location.href = url;
+        });
+    })();
+</script>
 
 <?= $this->endSection(); ?>

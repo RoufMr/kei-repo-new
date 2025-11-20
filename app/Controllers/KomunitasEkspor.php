@@ -713,6 +713,11 @@ class KomunitasEkspor extends BaseController
     {
         $lang = session()->get('lang') ?? 'id';
         $data['lang'] = $lang;
+        $model_meta = new Meta();
+        $meta = $model_meta
+            ->select('title_tentang,meta_description_tentang ')
+            ->first();
+        $data['meta'] = $meta;
 
         $model_webprofile = new WebProfile();
         $model_tentang = new TentangKami();

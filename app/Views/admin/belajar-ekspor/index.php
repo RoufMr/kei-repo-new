@@ -215,7 +215,7 @@
                                         <th class="text-center align-middle">Kategori</th>
                                         <th class="text-center align-middle" style="width: 300px;">Deskripsi</th>
                                         <th class="text-center align-middle" style="width: 60px;">Slug</th>
-                                        <th class="text-center align-middle" style="width: 60px;">Meta Title</th>
+                                        <th class="text-center align-middle" style="width: 60px;">Title</th>
                                         <th class="text-center align-middle" style="width: 60px;">Meta Description</th>
                                         <th class="text-center align-middle">Aksi</th>
                                     </tr>
@@ -227,7 +227,7 @@
                                             <td class="text-center align-middle"><?= $no++; ?></td>
                                             <td class="text-center align-middle"><?= $item['judul_belajar_ekspor']; ?></td>
                                             <td class="text-center align-middle">
-                                                <img src="<?= base_url('/img/' . $item['foto_belajar_ekspor']) ?>" alt="<?= $item['judul_belajar_ekspor']; ?>" class="img-fluid" style="max-width: 80px;">
+                                                <img src="<?= base_url('img/' . $item['foto_belajar_ekspor']) ?>" alt="<?= $item['judul_belajar_ekspor']; ?>" class="img-fluid" style="max-width: 80px;">
                                             </td>
                                             <td class="text-center align-middle"><?= $item['nama_kategori']; ?></td>
                                             <td class="text-center align-middle">
@@ -236,13 +236,13 @@
                                                 </div>
                                             </td>
                                             <td class="text-center align-middle"><?= $item['slug']; ?></td>
-                                            <td class="text-center align-middle"><?= $item['meta_title']; ?></td>
+                                            <td class="text-center align-middle"><?= $item['title_belajar_ekspor']; ?></td>
                                             <td class="text-center align-middle"><?= $item['meta_deskripsi']; ?></td>
 
                                             <td class="text-center align-middle">
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    <a href="<?= base_url('/admin-belajar-ekspor-delete/' . $item['id_belajar_ekspor']); ?>" class="btn btn-sm text-white me-2" style="background-color: #F2BF02;">Hapus</a>
-                                                    <a href="<?= base_url('/admin-belajar-ekspor-ubah/' . $item['id_belajar_ekspor']) ?>" class="btn btn-sm text-white" style="background-color: #03AADE;">Ubah</a>
+                                                    <a href="<?= base_url('admin-belajar-ekspor-delete/' . $item['id_belajar_ekspor']); ?>" class="btn btn-sm text-white me-2" style="background-color: #F2BF02;">Hapus</a>
+                                                    <a href="<?= base_url('admin-belajar-ekspor-ubah/' . $item['id_belajar_ekspor']) ?>" class="btn btn-sm text-white" style="background-color: #03AADE;">Ubah</a>
                                                 </div>
                                             </td>
                                         </tr>
