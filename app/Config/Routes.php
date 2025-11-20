@@ -18,14 +18,14 @@ $routes->group('id', ['filter' => 'guest'], function ($routes) {
     $routes->get('materi/keyword=(:any)', 'KomunitasEkspor::search_belajar_ekspor/$1');
     $routes->get('materi', 'KomunitasEkspor::belajar_ekspor');
     // 🔧 Hindari duplikasi rute 'materi/(:segment)'. Pakai pola berbeda:
-    $routes->get('materi/kategori/(:segment)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
-    $routes->get('materi/detail/(:segment)',   'KomunitasEkspor::belajar_ekspor_detail/$1');
+    $routes->get('materi/(:segment)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
+    $routes->get('materi/(:segment)',   'KomunitasEkspor::belajar_ekspor_detail/$1');
 
     // Video (visitor)
     $routes->get('video/keyword=(:any)', 'KomunitasEkspor::search_video_tutorial/$1');
     $routes->get('video', 'KomunitasEkspor::video_tutorial');
-    $routes->get('video/selengkapnya/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
-    $routes->get('video/detail/(:segment)',       'KomunitasEkspor::video_tutorial_detail/$1');
+    $routes->get('video/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    $routes->get('video/(:segment)',       'KomunitasEkspor::video_tutorial_detail/$1');
 
     $routes->get('pendaftaran', 'KomunitasEkspor::pendaftaran');
     $routes->get('syarat-ketentuan', 'KomunitasEkspor::syarat_ketentuan');
@@ -38,14 +38,14 @@ $routes->group('en', ['filter' => 'guest'], function ($routes) {
     // Lessons (visitor)
     $routes->get('lessons/keyword=(:any)', 'KomunitasEkspor::search_belajar_ekspor/$1');
     $routes->get('lessons', 'KomunitasEkspor::belajar_ekspor');
-    $routes->get('lessons/category/(:segment)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
-    $routes->get('lessons/detail/(:segment)',   'KomunitasEkspor::belajar_ekspor_detail/$1');
+    $routes->get('lessons/(:segment)', 'KomunitasEkspor::kategori_belajar_ekspor/$1');
+    $routes->get('lessons/(:segment)',   'KomunitasEkspor::belajar_ekspor_detail/$1');
 
     // Videos (visitor)
     $routes->get('videos/keyword=(:any)', 'KomunitasEkspor::search_video_tutorial/$1');
     $routes->get('videos', 'KomunitasEkspor::video_tutorial');
-    $routes->get('videos/more/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
-    $routes->get('videos/detail/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
+    $routes->get('videos/(:segment)', 'KomunitasEkspor::video_selengkapnya/$1');
+    $routes->get('videos/(:segment)', 'KomunitasEkspor::video_tutorial_detail/$1');
 
     $routes->get('registration', 'KomunitasEkspor::pendaftaran');
     $routes->get('terms-conditions', 'KomunitasEkspor::syarat_ketentuan');

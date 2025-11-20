@@ -3,16 +3,20 @@
 
 <?php
 $this->setData([
-    'title' => $artikel['title_belajar_ekspor'],
+    'title'            => $artikel['title_belajar_ekspor'],
     'meta_description' => $artikel['meta_deskripsi']
 ]);
 ?>
 <style>
     /* Artikel Detail Section */
     .artikel-detail-section {
+        position: relative;
+        /* supaya overlay & modal absolute menempel di sini */
         padding: 60px 15px;
         background-color: #f9f9f9;
         border-bottom: 1px solid #ddd;
+        overflow: hidden;
+        /* ➜ modal & overlay tidak bisa keluar area ini */
     }
 
     .artikel-detail-header h1 {
@@ -27,19 +31,15 @@ $this->setData([
         margin-bottom: 10px;
     }
 
-    /* Add spacing between elements */
+    /* Spasi antar elemen dalam artikel */
     .artikel-text *+* {
         margin-top: 20px;
     }
 
-
     .image-wrapper {
         text-align: center;
-        /* Center the image within this wrapper */
         margin-top: 30px;
     }
-
-    /* Image styling */
 
     .artikel-text {
         line-height: 1.6;
@@ -48,7 +48,6 @@ $this->setData([
         padding-inline-end: 50px;
         text-align: justify;
     }
-
 
     /* Recommended Articles Section */
     .recommended-articles-section {
@@ -70,7 +69,6 @@ $this->setData([
         font-size: 1rem;
         color: #03AADE;
         flex-grow: 1;
-        /* Allow text to grow and fill available space */
     }
 
     .btn-custom {
@@ -91,10 +89,8 @@ $this->setData([
         padding: 0.8em 1.5em;
         border-radius: 3px;
         background-color: #03AADE;
-        width: auto;
-        /* Membuat lebar badge mengikuti panjang teks */
         display: inline-block;
-        /* Menjamin badge sesuai dengan teks */
+        width: auto;
     }
 
     .line-separator {
@@ -113,9 +109,68 @@ $this->setData([
         transform: translateY(-5px) !important;
     }
 
+    .fake-lorem {
+        margin-top: 20px;
+        line-height: 1.6;
+        text-align: justify;
+    }
+
+    /* Paywall modal */
+    .paywall-overlay {
+        position: absolute;
+        top: 20%;
+        /* mulai blur dari 20% tinggi artikel */
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: none;
+        z-index: 10;
+    }
+
+    .paywall-modal {
+        position: absolute;
+        /* relative ke artikel-detail-section */
+        top: 50%;
+        /* posisi awal di tengah, nanti diatur JS */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        z-index: 20;
+        display: none;
+    }
+
+    .paywall-modal h2 {
+        margin-bottom: 20px;
+    }
+
+    .paywall-modal button {
+        background: #03AADE;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 4px;
+    }
+
+    .paywall-modal button:hover {
+        background: #F2BF02;
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
         .artikel-text {
-            padding: 0px;
+            padding: 0;
+            font-size: 1rem;
         }
 
         .artikel-detail-header h1 {
@@ -126,8 +181,46 @@ $this->setData([
             padding: 0 15px;
         }
 
+        .paywall-overlay {
+            top: 8%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .artikel-detail-section {
+            padding: 40px 10px;
+        }
+
+        .artikel-detail-header h1 {
+            font-size: 1.8rem;
+        }
+
         .artikel-text {
-            font-size: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .paywall-modal {
+            padding: 22px 20px;
+        }
+    }
+
+    @media (max-width: 425px) {
+        .artikel-detail-header h1 {
+            font-size: 1.6rem;
+        }
+
+        .artikel-text {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .artikel-detail-header h1 {
+            font-size: 1.4rem;
+        }
+
+        .artikel-text {
+            font-size: 0.85rem;
         }
     }
 </style>
@@ -137,26 +230,30 @@ $this->setData([
     <div class="container">
         <!-- Article Header -->
         <div class="artikel-detail-header text-center">
-            <h1><?= $artikel['judul_belajar_ekspor']; ?></h1>
+            <h1><?= esc($artikel['judul_belajar_ekspor']); ?></h1>
             <p class="text-muted mt-4"><?= date('d F Y', strtotime($artikel['created_at'])); ?></p>
         </div>
 
         <div class="artikel-detail-content">
             <div class="image-wrapper">
-                <img src="<?= base_url('/img/' . $artikel['foto_belajar_ekspor']); ?>" class="artikel-img img-fluid" alt="<?= $artikel['judul_belajar_ekspor']; ?>" style="width: 750px; aspect-ratio: 16/9;" loading="lazy">
+                <img
+                    src="<?= base_url('img/' . esc($artikel['foto_belajar_ekspor'], 'url')); ?>"
+                    class="artikel-img img-fluid"
+                    alt="<?= esc($artikel['judul_belajar_ekspor']); ?>"
+                    style="width: 750px; max-width: 100%; aspect-ratio: 16/9; object-fit: cover;"
+                    loading="lazy">
             </div>
 
             <!-- Tags Badges -->
-            <div style="display: flex; justify-content: center; align-items: center;">
+            <div class="d-flex justify-content-center align-items-center">
                 <div class="badge mt-4">
-                    <?= $kategori['nama_kategori']; ?>
+                    <?= esc($kategori['nama_kategori']); ?>
                 </div>
             </div>
 
             <div class="py-4">
                 <hr class="line-separator">
             </div>
-
 
             <!-- Deskripsi artikel -->
             <div class="artikel-text">
@@ -167,33 +264,55 @@ $this->setData([
             </div>
         </div>
 
-
         <!-- Back Button -->
         <div class="artikel-detail-footer text-center mt-5">
-            <a href="<?= base_url('materi'); ?>" class="btn btn-custom"><?= lang('Blog.backtoArticle') ?></a>
+            <a href="<?= base_url('materi'); ?>"
+                class="btn btn-custom">
+                <?= lang('Blog.backtoArticle') ?>
+            </a>
         </div>
     </div>
 </section>
-
 <!-- artikel-detail section end -->
 
 <!-- recommended articles section start -->
 <section class="recommended-articles-section">
     <div class="container">
-        <h2 class="text-center">Baca lainnya</h2>
+        <h2 class="text-center"><?= 'Baca lainnya'; ?></h2>
         <div class="row">
             <?php foreach ($belajar_ekspor as $item): ?>
                 <div class="col-md-4 mt-4">
                     <div class="card h-100">
-                        <img src="<?= base_url('img/' . $item['foto_belajar_ekspor']); ?>" class="card-img-top img-fluid" alt="<?= $item['judul_belajar_ekspor']; ?>" style="object-fit: cover; object-position: center; aspect-ratio: 16/9;" loading="lazy">
+                        <img
+                            src="<?= base_url('img/' . esc($item['foto_belajar_ekspor'], 'url')); ?>"
+                            class="card-img-top img-fluid"
+                            alt="<?= esc($item['judul_belajar_ekspor']); ?>"
+                            style="object-fit: cover; object-position: center; aspect-ratio: 16/9;"
+                            loading="lazy">
                         <div class="card-body d-flex flex-column">
                             <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <p class="card-text mb-0" style="font-size: 1rem;"><?= date('d F Y', strtotime($item['created_at'])); ?></p>
-                                <span class="badge"><?= $item['kategori']['nama_kategori']; ?></span>
+                                <p class="card-text mb-0" style="font-size: 1rem;">
+                                    <?= date('d F Y', strtotime($item['created_at'])); ?>
+                                </p>
+                                <span class="badge">
+                                    <?= esc($item['kategori']['nama_kategori']); ?>
+                                </span>
                             </div>
-                            <h5 class="card-title" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><?= $item['judul_belajar_ekspor']; ?></h5>
-                            <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><?= $item['deskripsi_belajar_ekspor']; ?></p>
-                            <a href="<?= base_url('materi/' . $item['slug']); ?>" class="btn btn-custom mt-auto" style="width: 100%; display: block; text-align: center;">Baca Selengkapnya</a>
+                            <h5 class="card-title"
+                                style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <?= esc($item['judul_belajar_ekspor']); ?>
+                            </h5>
+                            <div style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <?= esc($item['deskripsi_belajar_ekspor']); ?>
+                            </div>
+                            <a href="<?= base_url(
+                                            ('materi/') .
+                                                ($item['slug'])
+                                        ); ?>"
+                                class="btn btn-custom mt-auto"
+                                style="width: 100%; display: block; text-align: center;">
+                                <?= 'Baca Selengkapnya'; ?>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -201,9 +320,7 @@ $this->setData([
         </div>
     </div>
 </section>
-
-
-
+<!-- recommended articles section end -->
 
 
 <?= $this->endSection(); ?>

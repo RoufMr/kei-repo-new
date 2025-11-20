@@ -1095,7 +1095,7 @@
     </nav>
 
     <!-- ================= Content ================= -->
-<div>
+    <div>
         <?= $this->renderSection('content'); ?>
     </div>
     <!-- ================= WhatsApp Float ================= -->

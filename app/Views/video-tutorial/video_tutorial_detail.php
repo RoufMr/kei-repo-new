@@ -411,9 +411,9 @@ $this->setData([
                     <!-- Deskripsi -->
                     <div class="mt-3">
                         <h5 class="video-desc-title"><?= lang('Blog.titleDesc') ?></h5>
-                        <p class="video-desc-text">
+                        <div class="video-desc-text">
                             <?= ($lang === 'en') ? $video['deskripsi_video_en'] : $video['deskripsi_video']; ?>
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -435,9 +435,9 @@ $this->setData([
                                     <h3 class="text-dark related-title-text">
                                         <?= $lang === 'en' ? $item['judul_video_en'] : $item['judul_video']; ?>
                                     </h3>
-                                    <p class="text-dark related-desc-text">
+                                    <div class="text-dark related-desc-text">
                                         <?= $lang === 'en' ? $item['deskripsi_video_en'] : $item['deskripsi_video']; ?>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                         </a>
