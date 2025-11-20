@@ -23,6 +23,10 @@ $this->setData([
     :root {
         --font-size-title-cta: 38px;
         --font-size-desc-cta: 18px;
+
+        /* Carousel default (desktop) */
+        --font-size-title-carousel: 34px;
+        --font-size-desc-carousel: 16px;
     }
 
     /* ===================================================
@@ -30,12 +34,50 @@ $this->setData([
        =================================================== */
     .carousel-item img {
         width: 100%;
-        max-height: 500px;
+        max-height: 520px;
+        /* tinggi nyaman untuk desktop */
+        min-height: 260px;
+        /* supaya di HP tidak terlalu gepeng */
         object-fit: cover;
     }
 
     .carousel-caption {
-        bottom: 12%;
+        bottom: 18%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(90%, 900px);
+        padding: 16px 24px;
+        background: rgba(0, 0, 0, 0.35);
+        /* overlay supaya teks lebih terbaca */
+        border-radius: 12px;
+
+        /* ✅ supaya benar-benar membungkus semua isi, rapi di semua ukuran */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .title-carousel {
+        font-size: var(--font-size-title-carousel);
+        line-height: 1.3;
+        font-weight: 700;
+        font-family: "Poetsen One", sans-serif;
+    }
+
+    .desc-carousel {
+        font-size: var(--font-size-desc-carousel);
+        font-family: "Lato", sans-serif;
+        line-height: 1.5;
+        margin-top: 8px;
+    }
+
+    .carousel-indicators {
+        margin-bottom: 2.8rem;
     }
 
     /* ===================================================
@@ -59,9 +101,9 @@ $this->setData([
         font-size: var(--font-size-title-cta);
     }
 
-    .daftar-section .card-body {
+    /* .daftar-section .card-body {
         font-size: var(--font-size-desc-cta);
-    }
+    } */
 
     .desc-cta {
         font-size: var(--font-size-desc-cta);
@@ -139,9 +181,8 @@ $this->setData([
         margin: 10px auto 0;
     }
 
-
     /* ===================================================
-       5. Garis dekoratif (dipakai di beberapa section)
+       5. Garis dekoratif
        =================================================== */
     .border-top6,
     .border-top7 {
@@ -228,10 +269,27 @@ $this->setData([
        8. Responsif
        =================================================== */
 
+    /* <= 992px (tablet landscape) */
     @media (max-width: 992px) {
         :root {
-            --font-size-title-cta: 32px;
+            --font-size-title-cta: 34px;
             --font-size-desc-cta: 16px;
+
+            --font-size-title-carousel: 28px;
+            --font-size-desc-carousel: 14px;
+        }
+
+        .carousel-item img {
+            max-height: 460px;
+        }
+
+        .carousel-caption {
+            bottom: 10%;
+            width: min(94%, 800px);
+        }
+
+        .carousel-indicators {
+            display: none !important;
         }
 
         .peta2 .map {
@@ -240,22 +298,28 @@ $this->setData([
         }
     }
 
+    /* <= 768px (tablet portrait / HP besar) */
     @media (max-width: 768px) {
         :root {
             --font-size-title-cta: 32px;
             --font-size-desc-cta: 15px;
+
+            --font-size-title-carousel: 24px;
+            --font-size-desc-carousel: 13px;
         }
 
         .carousel-item img {
-            max-height: 380px;
+            max-height: 420px;
         }
 
-        .carousel-caption h5 {
-            font-size: 1.1rem;
+        .carousel-caption {
+            bottom: 8%;
+            padding: 12px 16px 20px;
+            width: 94%;
         }
 
-        .carousel-caption p {
-            font-size: 0.85rem;
+        .title-carousel {
+            line-height: 1.3;
         }
 
         .daftar-section {
@@ -266,14 +330,6 @@ $this->setData([
 
         .daftar-section .card-body {
             padding: 0 !important;
-        }
-
-        .daftar-section .card-body .title-cta {
-            font-size: var(--font-size-title-cta);
-        }
-
-        .daftar-section .desc-cta {
-            font-size: var(--font-size-desc-cta);
         }
 
         .daftar-section img.daftar-img {
@@ -321,10 +377,42 @@ $this->setData([
         }
     }
 
+    /* <= 576px (HP) */
     @media (max-width: 576px) {
         :root {
             --font-size-title-cta: 28px;
-            --font-size-desc-cta: 12px;
+            --font-size-desc-cta: 13px;
+
+            --font-size-title-carousel: 20px;
+            --font-size-desc-carousel: 12px;
+        }
+
+        .carousel-caption {
+            top: 50%;
+            bottom: auto;
+            /* hilangkan posisi di bawah */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 90%;
+            padding: 10px 14px;
+            text-align: center;
+
+            /* ✅ kalau teksnya panjang banget, scroll di dalam box, bukan keluar gambar */
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .carousel-item img {
+            max-height: 360px;
+        }
+
+        .title-carousel {
+            line-height: 1.35;
+        }
+
+        .desc-carousel {
+            line-height: 1.4;
         }
 
         .manfaat-item {
@@ -358,10 +446,32 @@ $this->setData([
         }
     }
 
+    /* <= 425px (HP kecil) */
     @media (max-width: 425px) {
         :root {
-            --font-size-title-cta: 22px;
+            --font-size-title-cta: 24px;
             --font-size-desc-cta: 12px;
+
+            --font-size-title-carousel: 18px;
+            --font-size-desc-carousel: 11px;
+        }
+
+        .carousel-item img {
+            max-height: 320px;
+        }
+
+        /* .carousel-caption {
+            bottom: 6%;
+            height: 130px;
+            padding: 8px 12px;
+        } */
+
+        .title-carousel {
+            line-height: 1.3;
+        }
+
+        .desc-carousel {
+            line-height: 1.35;
         }
 
         .manfaat-item {
@@ -390,22 +500,44 @@ $this->setData([
         }
     }
 
+    /* <= 375px (HP very small) */
     @media (max-width: 375px) {
         :root {
-            --font-size-title-cta: 20px;
-            --font-size-desc-cta: 12px;
+            --font-size-title-cta: 22px;
+            --font-size-desc-cta: 11px;
+
+            --font-size-title-carousel: 16px;
+            --font-size-desc-carousel: 10px;
         }
+
+        .carousel-item img {
+            max-height: 280px;
+        }
+
+        /* .carousel-caption {
+            bottom: 5%;
+            align-items: center;
+        } */
 
         .peta2 .map {
             max-height: 250px;
         }
     }
 
+    /* <= 320px (super kecil) */
     @media (max-width: 320px) {
         :root {
-            --font-size-title-cta: 18px;
+            --font-size-title-cta: 20px;
             --font-size-desc-cta: 10px;
+
+            --font-size-title-carousel: 14px;
+            --font-size-desc-carousel: 9px;
         }
+
+        .carousel-item img {
+            max-height: 250px;
+        }
+
     }
 </style>
 
@@ -438,9 +570,9 @@ $this->setData([
                     <img src="<?= base_url('img/' . $s['img_slider']); ?>"
                         class="d-block w-100"
                         alt="Slide <?= $index + 1 ?>">
-                    <div class="carousel-caption d-block text-light mb-3">
-                        <h5><?= ($lang == 'en') ? $s['judul_slider_en'] : $s['judul_slider'] ?></h5>
-                        <p><?= ($lang == 'en') ? $s['deskripsi_slider_en'] : $s['deskripsi_slider'] ?></p>
+                    <div class="carousel-caption d-block text-light">
+                        <div class="title-carousel fw-bold"><?= esc(($lang == 'en') ? $s['judul_slider_en'] : $s['judul_slider']); ?></div>
+                        <div class="desc-carousel"><?= esc(($lang == 'en') ? $s['deskripsi_slider_en'] : $s['deskripsi_slider']); ?></div>
 
                     </div>
                 </div>
@@ -475,7 +607,9 @@ $this->setData([
 
         <!-- Gambar -->
         <div class="col-md-6 d-flex justify-content-center">
-            <img src="/img/slider-2.jpg" class="rounded shadow daftar-img" alt="Image Description">
+            <img src="<?= base_url('img/slider-2.jpg'); ?>"
+                class="rounded shadow daftar-img"
+                alt="Image Description">
         </div>
     </div>
 </section>
@@ -560,7 +694,7 @@ $this->setData([
                     </div>
                 </div>
                 <div class="card-footer bg-light py-3">
-                    <button class="btn btn-primary btn-sm" >
+                    <button class="btn btn-primary btn-sm">
                         <?= lang('Blog.currentPackage'); ?>
                     </button>
                 </div>
@@ -590,9 +724,9 @@ $this->setData([
                     </div>
                 </div>
                 <div class="card-footer bg-light py-3">
-                    <button class="btn btn-primary btn-sm" ><?php echo lang('Blog.currentPackage'); ?></button>
+                    <button class="btn btn-primary btn-sm"><?php echo lang('Blog.currentPackage'); ?></button>
                 </div>
-    
+
             </div>
         </div>
     </div>

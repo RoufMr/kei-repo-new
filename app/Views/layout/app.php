@@ -820,6 +820,10 @@
                 width: 100%;
             }
 
+            .navbar .dropdown-menu .dropdown-item {
+                font-size: 8px !important;
+            }
+
             .login-btn {
                 margin-top: 6px;
                 max-width: 50px;
